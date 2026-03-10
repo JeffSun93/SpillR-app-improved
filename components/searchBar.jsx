@@ -10,82 +10,69 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
           clicked ? styles.searchBar__clicked : styles.searchBar__unclicked
         }
       >
-        {/* search Icon */}
-        <Feather
-          name="search"
-          size={20}
-          color="black"
-          style={{ marginLeft: 1 }}
-        />
-        {/* Input field */}
+        {/* Search Icon */}
+        <Feather name="search" size={20} color="black" />
+        {/* Input Field */}
         <TextInput
           style={styles.input}
           placeholder="Search"
           value={searchPhrase}
           onChangeText={setSearchPhrase}
-          onFocus={() => {
-            setClicked(true);
-          }}
+          onFocus={() => setClicked(true)}
         />
-        {/* cross Icon, depending on whether the search bar is clicked or not */}
+        {/* Cross Icon */}
         {clicked && (
           <Entypo
             name="cross"
             size={20}
             color="black"
-            style={{ padding: 1 }}
-            onPress={() => {
-              setSearchPhrase("");
-            }}
+            onPress={() => setSearchPhrase("")}
           />
         )}
       </View>
-      {/* cancel button, depending on whether the search bar is clicked or not */}
+      {/* Cancel Button */}
       {clicked && (
-        <View>
-          <Button
-            title="Cancel"
-            onPress={() => {
-              Keyboard.dismiss();
-              setClicked(false);
-            }}
-          ></Button>
-        </View>
+        <Button
+          title="Cancel"
+          onPress={() => {
+            Keyboard.dismiss();
+            setClicked(false);
+          }}
+        />
       )}
     </View>
   );
 };
+
 export default SearchBar;
 
-// styles
 const styles = StyleSheet.create({
   container: {
-    margin: 15,
-    justifyContent: "flex-start",
-    alignItems: "center",
     flexDirection: "row",
-    width: "90%",
+    alignItems: "center",
+    marginVertical: 10,
+    width: "100%",
   },
   searchBar__unclicked: {
+    flex: 1,
     padding: 10,
     flexDirection: "row",
-    width: "100%",
     backgroundColor: "#e4e5e5",
     borderRadius: 15,
     alignItems: "center",
   },
   searchBar__clicked: {
+    flex: 1,
     padding: 10,
     flexDirection: "row",
-    width: "80%",
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
   },
   input: {
-    fontSize: 20,
+    fontSize: 18,
     marginLeft: 10,
-    width: "90%",
+    flex: 1,
   },
 });
