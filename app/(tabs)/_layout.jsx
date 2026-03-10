@@ -13,7 +13,8 @@ export default function TabsLayout() {
         tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: "#484848",
-          height: 60,
+          height: 70,
+          paddingTop: 10,
         },
       }}
     >
@@ -22,7 +23,7 @@ export default function TabsLayout() {
         options={{
           headerShown: false,
           tabBarIcon: () => (
-            <Image source={homeIcon} style={{ width: 24, height: 24 }} />
+            <Image source={homeIcon} style={{ width: 28, height: 28 }} />
           ),
         }}
       />
@@ -32,7 +33,7 @@ export default function TabsLayout() {
         options={{
           headerShown: false,
           tabBarIcon: () => (
-            <Image source={searchIcon} style={{ width: 24, height: 24 }} />
+            <Image source={searchIcon} style={{ width: 28, height: 28 }} />
           ),
         }}
       />
@@ -44,7 +45,7 @@ export default function TabsLayout() {
           tabBarIcon: () => (
             <Image
               source={notificationIcon}
-              style={{ width: 24, height: 24 }}
+              style={{ width: 28, height: 28 }}
             />
           ),
         }}
@@ -55,7 +56,16 @@ export default function TabsLayout() {
         options={{
           headerShown: false,
           tabBarIcon: () => (
-            <Image source={userIcon} style={{ width: 24, height: 24 }} />
+            <Image
+              source={userIcon}
+              style={{
+                width: 28,
+                height: 28,
+                borderWidth: 2,
+                borderColor: "white",
+                borderRadius: 12,
+              }}
+            />
           ),
         }}
       />
