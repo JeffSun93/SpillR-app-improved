@@ -1,13 +1,17 @@
-import { View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, StyleSheet } from "react-native";
 import TrendingCard from "./trendingCard";
 
 export default function Trending() {
   return (
-    <View style={styles.trending}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={styles.trending}
+    >
       <TrendingCard />
       <TrendingCard />
       <TrendingCard />
-    </View>
+    </ScrollView>
   );
 }
 
