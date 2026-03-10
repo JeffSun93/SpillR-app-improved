@@ -1,17 +1,5 @@
-import { View, Text, StyleSheet } from "react-native";
+import UserPage from "../components/userpage/UserPage";
 
 export default function User() {
-  return (
-    <View style={styles.container}>
-      <Text>User Page</Text>
-    </View>
-  );
+  return <UserPage />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
