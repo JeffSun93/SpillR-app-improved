@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet } from "react-native";
-import SearchBar from "../../components/searchBar";
 
 export default function Notifications() {
   return (

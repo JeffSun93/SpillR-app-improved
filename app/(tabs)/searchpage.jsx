@@ -6,7 +6,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useState } from "react";
-import SearchBar from "../../components/searchBar";
+import SearchBar from "../components/searchBar";
 
 export default function Search() {
   const [searchPhrase, setSearchPhrase] = useState("");
