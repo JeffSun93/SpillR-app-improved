@@ -28,7 +28,7 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
-        name="search"
+        name="searchpage"
         options={{
           headerShown: false,
           tabBarIcon: () => (
