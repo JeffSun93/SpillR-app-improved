@@ -1,12 +1,45 @@
-import { View, Text } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { getTvShowById } from "../../utils/utilsFunctions";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
+  const [show, setShow] = useState(null);
+
+  useEffect(() => {
+    async function loadShow() {
+      const data = await getTvShowById(id);
+      setShow(data);
+    }
+
+    loadShow();
+  }, [id]);
+
+  if (!show) return <Text>Loading...</Text>;
 
   return (
-    <View>
-      <Text>TV Show ID: {id}</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>{show.name}</Text>
+      <View style={styles.paragraph}>
+        <Text style={styles.description}>{show.description}</Text>
+        <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 2,
+  },
+  title: {
+    fontSize: 30,
+    marginBottom: 20,
+  },
+  image: { width: 120, height: 180, borderRadius: 6, marginBottom: 8 },
+  paragraph: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+});
