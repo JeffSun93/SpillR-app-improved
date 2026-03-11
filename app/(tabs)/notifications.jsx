@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet } from "react-native";
-import DataTest from "../components/DataTest";
+import Dropdown from "../components/Dropdown";
 
 export default function Notifications() {
   return (
     <View style={styles.container}>
-      <Text>Notifications Page</Text>
-      <DataTest />
+      {/* <Text>Notifications Page</Text> */}
+      <Dropdown />
     </View>
   );
 }
