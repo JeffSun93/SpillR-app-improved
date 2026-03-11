@@ -1,12 +1,24 @@
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function TrendingCard(props) {
   const show = props.show;
+  const router = useRouter();
+
   return (
-    <View style={styles.card}>
-      <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
-      <Text>{show.name}</Text>
-    </View>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "./tv-show/[id]",
+          params: { id: show.tv_show_id },
+        })
+      }
+    >
+      <View style={styles.card}>
+        <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
+        <Text>{show.name}</Text>
+      </View>
+    </Pressable>
   );
 }
 
