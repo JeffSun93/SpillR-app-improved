@@ -1,10 +1,5 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import SearchBar from "../components/searchBar";
 
@@ -13,19 +8,22 @@ export default function Search() {
   const [clicked, setClicked] = useState(false);
 
   return (
-    <TouchableWithoutFeedback onPress={() => setClicked(false)}>
-      <View style={styles.container}>
-        <SearchBar
-          searchPhrase={searchPhrase}
-          setSearchPhrase={setSearchPhrase}
-          clicked={clicked}
-          setClicked={setClicked}
-        />
-        <View style={styles.results}>
-          <Text>Search Page</Text>
+    <SafeAreaView style={styles.container}>
+      <TouchableWithoutFeedback onPress={() => setClicked(false)}>
+        <View style={{ flex: 1 }}>
+          <SearchBar
+            searchPhrase={searchPhrase}
+            setSearchPhrase={setSearchPhrase}
+            clicked={clicked}
+            setClicked={setClicked}
+          />
+
+          <View style={styles.results}>
+            <Text>Search Page</Text>
+          </View>
         </View>
-      </View>
-    </TouchableWithoutFeedback>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
   );
 }
 
@@ -34,7 +32,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 16,
-    paddingTop: 16, // optional, adds spacing from top if needed
   },
   results: {
     flex: 1,
