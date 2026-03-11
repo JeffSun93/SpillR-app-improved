@@ -13,10 +13,16 @@ export default function TrendingCard(props) {
 const styles = StyleSheet.create({
   card: {
     marginTop: 16,
+    marginRight: 12,
     backgroundColor: "#aaaaaaff",
     padding: 30,
     borderRadius: 8,
     marginHorizontal: 6,
+    marginBottom: 12,
+  },
+  gridCard: {
+    width: "48%",
+    marginRight: 0,
   },
   image: { width: 120, height: 180, borderRadius: 6, marginBottom: 8 },
 });

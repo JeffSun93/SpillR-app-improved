@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import TrendingCard from "./trendingCard";
 
 const trendingTvShows = [
@@ -34,17 +34,36 @@ const trendingTvShows = [
   },
 ];
 
-export default function Trending() {
+export default function Trending({ horizontal = true }) {
+  if (horizontal) {
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.horizontalList}
+      >
+        {trendingTvShows.map((show) => (
+          <TrendingCard
+            key={show.tv_show_id}
+            show={show}
+            horizontal={horizontal}
+          />
+        ))}
+      </ScrollView>
+    );
+  }
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.trending}
-    >
-      {trendingTvShows.map((show) => {
-        return <TrendingCard key={show.tv_show_id} show={show} />;
-      })}
-    </ScrollView>
+    <FlatList
+      data={trendingTvShows}
+      renderItem={({ item }) => (
+        <TrendingCard show={item} horizontal={horizontal} />
+      )}
+      keyExtractor={(item) => item.tv_show_id.toString()}
+      numColumns={2}
+      columnWrapperStyle={styles.row}
+      scrollEnabled={false}
+    />
   );
 }
 

@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import SearchBar from "../components/searchBar";
+import Trending from "../components/home-page/trending";
 
 export default function Search() {
   const [searchPhrase, setSearchPhrase] = useState("");
@@ -17,10 +24,14 @@ export default function Search() {
             clicked={clicked}
             setClicked={setClicked}
           />
-
-          <View style={styles.results}>
-            <Text>Search Page</Text>
-          </View>
+          <ScrollView contentContainerStyle={styles.scrollContent}>
+            <View style={styles.results}>
+              <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}>
+                Trending Shows
+              </Text>
+              <Trending horizontal={false} />
+            </View>
+          </ScrollView>
         </View>
       </TouchableWithoutFeedback>
     </SafeAreaView>
@@ -30,12 +41,14 @@ export default function Search() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#232222",
     paddingHorizontal: 16,
   },
   results: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: 20,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingBottom: 100,
   },
 });
