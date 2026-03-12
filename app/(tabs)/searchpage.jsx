@@ -31,8 +31,6 @@ export default function Search() {
     }
   }, [searchPhrase]);
 
-  console.log(searchResults);
-
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => setClicked(false)}>
