@@ -54,16 +54,13 @@ export default function Trending({ horizontal = true }) {
   }
 
   return (
-    <FlatList
-      data={trendingTvShows}
-      renderItem={({ item }) => (
-        <TrendingCard show={item} horizontal={horizontal} />
-      )}
-      keyExtractor={(item) => item.tv_show_id.toString()}
-      numColumns={3}
-      columnWrapperStyle={styles.row}
-      showsVerticalScrollIndicator={false}
-    />
+    <View style={styles.grid}>
+      {trendingTvShows.map((show) => (
+        <View key={show.tv_show_id} style={styles.gridItem}>
+          <TrendingCard show={show} horizontal={horizontal} />
+        </View>
+      ))}
+    </View>
   );
 }
 
