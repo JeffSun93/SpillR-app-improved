@@ -60,9 +60,9 @@ export default function Trending({ horizontal = true }) {
         <TrendingCard show={item} horizontal={horizontal} />
       )}
       keyExtractor={(item) => item.tv_show_id.toString()}
-      numColumns={2}
+      numColumns={3}
       columnWrapperStyle={styles.row}
-      scrollEnabled={false}
+      showsVerticalScrollIndicator={false}
     />
   );
 }
@@ -72,5 +72,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 20,
+  },
+  row: {
+    justifyContent: "space-between",
   },
 });

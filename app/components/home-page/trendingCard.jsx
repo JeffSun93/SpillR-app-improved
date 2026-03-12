@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function TrendingCard(props) {
-  const show = props.show;
+export default function TrendingCard({ show, horizontal = true }) {
   const router = useRouter();
+
+  const IMAGE_WIDTH = horizontal ? 140 : 100;
+  const IMAGE_HEIGHT = horizontal ? 200 : 150;
 
   return (
     <Pressable
@@ -13,28 +15,40 @@ export default function TrendingCard(props) {
           params: { id: show.tv_show_id },
         })
       }
+      style={[
+        styles.card,
+        horizontal ? styles.horizontalCard : styles.gridCard,
+      ]}
     >
-      <View style={styles.card}>
-        <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
-        <Text>{show.name}</Text>
-      </View>
+      <Image
+        source={{ uri: show.tv_show_img_url }}
+        style={{
+          width: IMAGE_WIDTH,
+          height: IMAGE_HEIGHT,
+          borderRadius: 6,
+          marginBottom: 4,
+        }}
+      />
+      <Text style={styles.title} numberOfLines={1}>
+        {show.name}
+      </Text>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    marginTop: 16,
-    marginRight: 12,
-    backgroundColor: "#aaaaaaff",
-    padding: 30,
-    borderRadius: 8,
-    marginHorizontal: 6,
-    marginBottom: 12,
+    margin: 6,
   },
+  horizontalCard: {},
   gridCard: {
-    width: "48%",
-    marginRight: 0,
+    flex: 1,
+    alignItems: "center",
   },
-  image: { width: 120, height: 180, borderRadius: 6, marginBottom: 8 },
+  title: {
+    color: "white",
+    fontSize: 12,
+    fontWeight: "500",
+    textAlign: "center",
+  },
 });
