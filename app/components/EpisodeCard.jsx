@@ -1,13 +1,35 @@
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, Text, Image, Pressable } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function EpisodeCard({ episode, selectedSeason }) {
+  const router = useRouter();
   return (
-    <View key={episode.episode_id}>
-      <Text>{`Season ${selectedSeason.season_number}, Episode ${episode.episode_number}`}</Text>
-      <Image
-        style={{ width: 40, height: 40 }}
-        source={{ uri: episode.episode_url }}
-      />
-    </View>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: `/episode-live-chat/[id]`,
+          params: {
+            id: String(episode.episode_id),
+            showName: selectedSeason.show_name,
+          },
+        })
+      }
+    >
+      <View style={styles.episodeCard}>
+        <View key={episode.episode_id}>
+          <Text>{`Season ${selectedSeason.season_number}, Episode ${episode.episode_number}`}</Text>
+          <Image
+            style={{ width: "100%", aspectRatio: 1, borderRadius: 6 }}
+            source={{ uri: episode.episode_url }}
+          />
+        </View>
+      </View>
+    </Pressable>
   );
 }
+
+const styles = StyleSheet.create({
+  episodeCard: {
+    width: "100%",
+  },
+});

@@ -65,15 +65,15 @@ export default function Dropdown({ name }) {
         </View>
       )}
 
-      <EpisodesList selectedSeason={selectedSeason} />
+      <EpisodesList selectedSeason={selectedSeason} showName={name} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: 140,
-    marginLeft: 20,
+    width: "100%",
+    marginLeft: 0,
   },
   button: {
     flexDirection: "row",

@@ -72,6 +72,18 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
   };
 }
 
+export async function getEpisodeById(id) {
+  let { data, error } = await supabase
+    .from("episodes")
+    .select("*")
+    .eq("episode_id", id)
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 
