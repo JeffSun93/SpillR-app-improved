@@ -1,5 +1,4 @@
 import { View, Text, StyleSheet } from "react-native";
-import Dropdown from "../components/Dropdown";
 
 export default function Notifications() {
   return (
