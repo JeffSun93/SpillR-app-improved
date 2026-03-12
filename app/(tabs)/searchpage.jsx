@@ -34,37 +34,46 @@ export default function Search() {
   return (
     <SafeAreaView style={styles.container}>
       <TouchableWithoutFeedback onPress={() => setClicked(false)}>
-        <View style={{ flex: 1 }}>
-          <SearchBar
-            searchPhrase={searchPhrase}
-            setSearchPhrase={setSearchPhrase}
-            clicked={clicked}
-            setClicked={setClicked}
-          />
-          {loading ? (
-            <ActivityIndicator size="large" color="white" />
-          ) : searchResults.length > 0 ? (
-            <FlatList
-              data={searchResults}
-              keyExtractor={(item) => item?.tv_show_id?.toString()}
-              numColumns={2}
-              columnWrapperStyle={{ justifyContent: "space-between" }}
-              renderItem={({ item }) => <SearchResultCard show={item} />}
-              contentContainerStyle={{ paddingTop: 20, paddingBottom: 100 }}
+        <FlatList
+          data={searchResults}
+          keyExtractor={(item) => item.tv_show_id.toString()}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between" }}
+          renderItem={({ item }) => <SearchResultCard show={item} />}
+          ListHeaderComponent={
+            <SearchBar
+              searchPhrase={searchPhrase}
+              setSearchPhrase={setSearchPhrase}
+              clicked={clicked}
+              setClicked={setClicked}
             />
-          ) : (
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-              <View style={styles.results}>
-                <Text
-                  style={{ color: "white", fontSize: 18, fontWeight: "600" }}
-                >
-                  Trending Shows
-                </Text>
-                <Trending horizontal={false} />
-              </View>
-            </ScrollView>
-          )}
-        </View>
+          }
+          ListFooterComponent={
+            <View style={{ marginTop: 20 }}>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 18,
+                  fontWeight: "600",
+                  marginBottom: 10,
+                }}
+              >
+                Trending Shows
+              </Text>
+              <Trending horizontal={false} />
+            </View>
+          }
+          contentContainerStyle={{ paddingTop: 20, paddingBottom: 100 }}
+          ListEmptyComponent={
+            loading ? (
+              <ActivityIndicator
+                size="large"
+                color="white"
+                style={{ marginTop: 20 }}
+              />
+            ) : null
+          }
+        />
       </TouchableWithoutFeedback>
     </SafeAreaView>
   );
