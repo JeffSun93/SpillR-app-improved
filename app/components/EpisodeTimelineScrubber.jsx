@@ -1,15 +1,22 @@
 import { useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 
 export default function EpisodeTimelineScrubber() {
   const [currentSeconds, setCurrentSeconds] = useState(1200);
 
   const runtimeSeconds = 3600;
   const trackWidth = 300;
-  const currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
+  let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
+
+  const handlePress = (event) => {
+    const x = event.nativeEvent.locationX;
+    const positionToSeconds = (x / trackWidth) * runtimeSeconds;
+    console.log(positionToSeconds);
+    setCurrentSeconds(positionToSeconds);
+  };
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={handlePress}>
       <View style={styles.greyTrackBar}>
         <View
           style={[
@@ -21,7 +28,7 @@ export default function EpisodeTimelineScrubber() {
           style={[styles.purpleProgressBar, { width: currentWidth }]}
         ></View>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
