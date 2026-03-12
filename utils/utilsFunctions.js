@@ -72,6 +72,19 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
   };
 }
 
+export async function searchTvShowsByName(name) {
+  let { data, error } = await supabase
+    .from("tv_shows")
+    .select("*")
+    .ilike("name", `%${name}%`)
+    .limit(20);
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 
