@@ -6,14 +6,7 @@ export default function TrendingCard(props) {
   const router = useRouter();
 
   return (
-    <Pressable
-      onPress={() =>
-        router.push({
-          pathname: "/tv-show/[id]",
-          params: { id: show.tv_show_id },
-        })
-      }
-    >
+    <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
       <View style={styles.card}>
         <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
         <Text>{show.name}</Text>
