@@ -17,11 +17,14 @@ export default function LiveChatPage() {
 
   //   const navigation = useNavigation();
   const [episode, setEpisode] = useState(null);
+  const [episodeRuntime, setEpisodeRuntime] = useState(60);
+  const [isScrubbing, setIsScrubbing] = useState(false);
 
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
       setEpisode(data);
+      setEpisodeRuntime(data.runtime_total);
 
       //   navigation.setOptions({
       //     title: `Episode ${data.episode_number}`,
@@ -43,6 +46,7 @@ export default function LiveChatPage() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
+        scrollEnabled={!isScrubbing}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -61,7 +65,12 @@ export default function LiveChatPage() {
         />
         <View style={styles.container}>
           <Text style={styles.title}>{episode.episode_number}</Text>
-          <EpisodeTimelineScrubber />
+          <View style={styles.timelineContainer}>
+            <EpisodeTimelineScrubber
+              setIsScrubbing={setIsScrubbing}
+              episodeRuntime={episodeRuntime}
+            />
+          </View>
           <View style={styles.paragraph}>
             <Text style={styles.description}>{episode.synopsis}</Text>
           </View>
@@ -72,6 +81,9 @@ export default function LiveChatPage() {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   title: {
     fontSize: 30,
     marginBottom: 20,
@@ -92,5 +104,9 @@ const styles = StyleSheet.create({
   description: {
     flex: 1, // takes up remaining horizontal space
     flexWrap: "wrap",
+  },
+  timelineContainer: {
+    alignItems: "center",
+    marginHorizontal: 15,
   },
 });

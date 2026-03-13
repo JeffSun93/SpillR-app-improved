@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function EpisodeTimelineScrubber() {
-  const [currentSeconds, setCurrentSeconds] = useState(1200);
+export default function EpisodeTimelineScrubber({
+  episodeRuntime,
+  setIsScrubbing,
+}) {
+  const [currentSeconds, setCurrentSeconds] = useState(0);
 
-  const runtimeSeconds = 3600;
+  const runtimeSeconds = episodeRuntime * 60;
   const roundedSeconds = Math.floor(currentSeconds);
   let minutes = Math.floor(roundedSeconds / 60);
   let seconds = Math.floor(roundedSeconds % 60);
@@ -39,8 +42,13 @@ export default function EpisodeTimelineScrubber() {
         style={styles.greyTrackBar}
         onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
         onMoveShouldSetResponder={() => true}
-        onResponderGrant={handlePress}
+        onResponderGrant={() => {
+          setIsScrubbing(true);
+          handlePress;
+        }}
         onResponderMove={handlePress}
+        onResponderRelease={() => setIsScrubbing(false)}
+        onResponderTerminate={() => setIsScrubbing(false)}
       >
         <View
           style={[
