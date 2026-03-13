@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import { Stack } from "expo-router";
+import { cleanText } from "../../utils/cleanText";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
@@ -40,6 +41,8 @@ export default function LiveChatPage() {
 
   if (!episode) return <Text>Loading...</Text>;
 
+  const synopsis = cleanText(episode.synopsis);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
@@ -63,7 +66,7 @@ export default function LiveChatPage() {
           <Text style={styles.title}>{episode.episode_number}</Text>
           <EpisodeTimelineScrubber />
           <View style={styles.paragraph}>
-            <Text style={styles.description}>{episode.synopsis}</Text>
+            <Text style={styles.description}>{synopsis}</Text>
           </View>
         </View>
       </ScrollView>
