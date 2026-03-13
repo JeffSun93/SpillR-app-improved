@@ -20,7 +20,7 @@ export default function UserPage() {
           <View style={styles.buttonNameContainer}>
             <View style={styles.nameContainer}>
               <Text style={styles.username}>{loggedInUser.name}</Text>
-              <Text style={styles.handle}>{loggedInUser.username}</Text>
+              <Text style={styles.handle}>@{loggedInUser.username}</Text>
             </View>
             <TouchableOpacity style={styles.editButton}>
               <Text style={styles.buttonText}>Edit</Text>
@@ -170,9 +170,9 @@ const styles = StyleSheet.create({
   },
 
   handle: {
-    color: "#505050",
+    color: "#a4a4a4ff",
     paddingLeft: "7.5%",
-    marginTop: 0,
+    marginTop: 10,
     fontSize: 15,
   },
 
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     height: 100,
     width: 100,
+    borderRadius: 50,
   },
   statsContainer: {
     flexDirection: "row",

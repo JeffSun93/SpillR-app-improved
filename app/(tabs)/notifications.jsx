@@ -1,19 +1,18 @@
-import { View, Text, StyleSheet } from "react-native";
-// import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+import { View, ScrollView } from "react-native";
+import Header from "../components/notifications-page/header";
+import NotificationsList from "../components/notifications-page/notificationsList";
+import { globalStyles } from "../../styles/globalStyles";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Notifications() {
   return (
-    <View style={styles.container}>
-      <Text>Notifications Page</Text>
-      {/* <EpisodeTimelineScrubber /> */}
-    </View>
+    <SafeAreaView style={globalStyles.container}>
+      <View>
+        <ScrollView>
+          <Header />
+          <NotificationsList />
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});

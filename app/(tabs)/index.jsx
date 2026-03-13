@@ -1,17 +1,19 @@
-import { SafeAreaView, View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import Header from "../components/home-page/header";
 import Trending from "../components/home-page/trending";
 import FriendsAreWatching from "../components/home-page/friendsAreWatching";
 import Comments from "../components/home-page/comments";
+import { globalStyles } from "../../styles/globalStyles";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={globalStyles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={globalStyles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
           <Header />
           <Trending />
           <FriendsAreWatching />
@@ -21,14 +23,3 @@ export default function Home() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
-  scrollContent: { paddingTop: 20, paddingBottom: 20 },
-  container: {
-    flex: 1,
-    width: "100%",
-  },
-});

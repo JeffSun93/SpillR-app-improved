@@ -10,29 +10,22 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { Stack } from "expo-router";
-import Comments from "../components/home-page/comments.jsx";
+import { cleanText } from "../../utils/cleanText";
+import PollsList from "../components/tv-show-chat/PollsList";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
 
   //   const navigation = useNavigation();
   const [episode, setEpisode] = useState(null);
+  const [episodeRuntime, setEpisodeRuntime] = useState(60);
+  const [isScrubbing, setIsScrubbing] = useState(false);
 
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
       setEpisode(data);
-
-      //   navigation.setOptions({
-      //     title: `Episode ${data.episode_number}`,
-      //     headerStyle: {
-      //       backgroundColor: "#484848",
-      //     },
-      //     headerTintColor: "#fff",
-      //     headerTitleStyle: {
-      //       fontWeight: "bold",
-      //     },
-      //   });
+      setEpisodeRuntime(data.runtime_total);
     }
 
     loadEpisode();
@@ -40,9 +33,12 @@ export default function LiveChatPage() {
 
   if (!episode) return <Text>Loading...</Text>;
 
+  const synopsis = cleanText(episode.synopsis);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView
+        scrollEnabled={!isScrubbing}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
@@ -60,9 +56,19 @@ export default function LiveChatPage() {
           }}
         />
         <View style={styles.container}>
-          <Text style={styles.title}>{episode.episode_number}</Text>
+          <Text style={styles.showName}>{showName}</Text>
+          <Text style={styles.title}>Episode: {episode.episode_number}</Text>
+          <View style={styles.timelineContainer}>
+            <EpisodeTimelineScrubber
+              setIsScrubbing={setIsScrubbing}
+              episodeRuntime={episodeRuntime}
+            />
+          </View>
           <View style={styles.paragraph}>
-            <Text style={styles.description}>{episode.synopsis}</Text>
+            <Text style={styles.description}>{synopsis}</Text>
+          </View>
+          <View styles={{ height: 220, justifyContent: "center" }}>
+            <PollsList />
           </View>
         </View>
       </ScrollView>
@@ -74,16 +80,19 @@ export default function LiveChatPage() {
 
 const styles = StyleSheet.create({
   safeArea: {
-    backgroundColor: "red",
+    flex: 1,
   },
   title: {
-    fontSize: 30,
-    marginBottom: 20,
+    fontSize: 16,
+    marginBottom: 10,
+    marginLeft: 20,
   },
   paragraph: {
     flexDirection: "row",
     gap: 12,
     alignItems: "flex-start",
+    // marginLeft: 20,
+    padding: 20,
   },
   image: {
     width: 120,
@@ -96,5 +105,16 @@ const styles = StyleSheet.create({
   description: {
     flex: 1, // takes up remaining horizontal space
     flexWrap: "wrap",
+  },
+  timelineContainer: {
+    alignItems: "center",
+    marginHorizontal: 15,
+    marginVertical: 15,
+  },
+  showName: {
+    fontSize: 30,
+    marginTop: 20,
+    marginLeft: 20,
+    fontWeight: "bold",
   },
 });

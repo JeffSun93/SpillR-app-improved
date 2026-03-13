@@ -1,27 +1,24 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import TitleText from "../ui/TitleText";
+import { globalStyles } from "../../../styles/globalStyles";
 
 export default function Header() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>SpillR</Text>
-      <Text style={styles.secondHeader}>Trending</Text>
+    <View style={globalStyles.container}>
+      <View style={styles.titleContainer}>
+        <TitleText style={styles.header}>SpillR</TitleText>
+      </View>
+      <TitleText>Trending</TitleText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    paddingHorizontal: 20,
+  header: {
+    fontSize: 30,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  secondHeader: {
-    marginTop: 20,
-    textAlign: "left",
-    fontSize: 20,
+  titleContainer: {
+    alignItems: "center",
+    marginBottom: 5,
   },
 });

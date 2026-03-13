@@ -12,6 +12,7 @@ import { getTvShowById } from "../../utils/utilsFunctions";
 import Dropdown from "../components/Dropdown";
 import EpisodesList from "../components/EpisodesList";
 import { Stack } from "expo-router";
+import { cleanText } from "../../utils/cleanText";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
@@ -41,13 +42,15 @@ export default function TvShowPage() {
 
   if (!show) return <Text>Loading...</Text>;
 
+  const description = cleanText(show.description);
+
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Stack.Screen options={{ title: show?.name }} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Stack.Screen options={{ title: show?.name }} />
         <View style={styles.container}>
           <Text style={styles.title}>{show.name}</Text>
           <View style={styles.paragraph}>
@@ -55,7 +58,7 @@ export default function TvShowPage() {
               source={{ uri: show.tv_show_img_url }}
               style={styles.image}
             />
-            <Text style={styles.description}>{show.description}</Text>
+            <Text style={styles.description}>{description}</Text>
           </View>
           <Dropdown name={show.name} />
         </View>
