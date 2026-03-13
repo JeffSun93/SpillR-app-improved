@@ -7,9 +7,8 @@ export default function EpisodeCard({ episode, selectedSeason }) {
     <Pressable
       onPress={() =>
         router.push({
-          pathname: `/episode-live-chat/[id]`,
+          pathname: `/episode-live-chat/${episode.episode_id}`,
           params: {
-            id: String(episode.episode_id),
             showName: selectedSeason.show_name,
           },
         })
