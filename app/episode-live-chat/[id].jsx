@@ -16,8 +16,6 @@ import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import Comments from "../components/home-page/comments";
 import { globalStyles } from "../../styles/globalStyles";
 
-import Comments from "../components/home-page/comments";
-
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
 
