@@ -124,13 +124,13 @@ const styles = StyleSheet.create({
   },
   playOrPauseButton: {
     fontSize: 20,
-    color: "black",
+    color: "white",
   },
   greyTrackBar: {
     height: 8,
     width: 300,
     borderRadius: 5,
-    backgroundColor: "#383838ac",
+    backgroundColor: "#c4c4c4ac",
   },
   purpleProgressBar: {
     height: 8,
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   },
   timeDisplay: {
     marginTop: 5,
-    color: "black",
+    color: "white",
     width: 50,
     textAlign: "center",
   },

@@ -12,6 +12,7 @@ import { getEpisodeById } from "../../utils/utilsFunctions";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
+import { globalStyles } from "../../styles/globalStyles";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
@@ -36,7 +37,7 @@ export default function LiveChatPage() {
   const synopsis = cleanText(episode.synopsis);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={globalStyles.container}>
       <ScrollView
         scrollEnabled={!isScrubbing}
         contentContainerStyle={styles.scrollContent}
@@ -86,6 +87,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     marginLeft: 20,
+    color: "white",
   },
   paragraph: {
     flexDirection: "row",
@@ -93,6 +95,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     // marginLeft: 20,
     padding: 20,
+    color: "white",
   },
   image: {
     width: 120,
@@ -105,6 +108,7 @@ const styles = StyleSheet.create({
   description: {
     flex: 1, // takes up remaining horizontal space
     flexWrap: "wrap",
+    color: "white",
   },
   timelineContainer: {
     alignItems: "center",
@@ -116,5 +120,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
     fontWeight: "bold",
+    color: "white",
   },
 });
