@@ -9,7 +9,6 @@ import {
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getEpisodeById } from "../../utils/utilsFunctions";
-import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
@@ -73,6 +72,8 @@ export default function LiveChatPage() {
           </View>
         </View>
       </ScrollView>
+
+      <Comments episode_id={3129601} />
     </SafeAreaView>
   );
 }

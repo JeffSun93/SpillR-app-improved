@@ -1,4 +1,4 @@
-import { supabase } from "../lib/supabaseClient";
+import { supabase } from "../lib/supabaseClient.js";
 
 export async function getTvShowByName(name) {
   let { data, error } = await supabase // get tv show by name
@@ -97,6 +97,19 @@ export async function searchTvShowsByName(name) {
 
   return data;
 }
+
+export async function getUserById(userId) {
+  let { data, error } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("user_id", userId)
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 
