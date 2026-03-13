@@ -76,7 +76,7 @@ export default function LiveChatPage() {
         </View>
       </ScrollView>
 
-      <Comments episode_id={3129601} />
+      <Comments episode_id={id} />
     </SafeAreaView>
   );
 }

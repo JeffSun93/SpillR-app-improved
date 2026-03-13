@@ -15,28 +15,35 @@ export default function Comments(props) {
     fetchComments(episode_id);
   }, [episode_id]);
   return (
-    <ScrollView
-      style={styles.commentsBox}
-      nestedScrollEnabled
-      showsVerticalScrollIndicator={false}
-    >
-      {comments?.length > 0 ? (
-        comments.map((comment) => {
-          return (
-            <View key={comment.comment_id}>
-              <CommentCard
-                user_id={comment.user_id}
-                body={comment.body}
-                created_at={comment.created_at}
-              />
-              <View style={styles.divider} />
-            </View>
-          );
-        })
-      ) : (
-        <Text>No comments yet</Text>
-      )}
-    </ScrollView>
+    <>
+      <Text style={styles.sectionTitle}>Comments and replies</Text>
+      <ScrollView
+        style={styles.commentsBox}
+        nestedScrollEnabled
+        showsVerticalScrollIndicator={false}
+      >
+        {comments?.length > 0 ? (
+          comments.map((comment, index) => {
+            return (
+              <>
+                <View style={styles.commentRow} key={comment.comment_id}>
+                  <CommentCard
+                    user_id={comment.user_id}
+                    body={comment.body}
+                    created_at={comment.created_at}
+                  />
+                </View>
+                {index !== comments.length - 1 && (
+                  <View style={styles.divider} />
+                )}
+              </>
+            );
+          })
+        ) : (
+          <Text>No comments yet</Text>
+        )}
+      </ScrollView>
+    </>
   );
 }
 

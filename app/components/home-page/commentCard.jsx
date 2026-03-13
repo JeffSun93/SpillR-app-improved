@@ -20,17 +20,20 @@ export default function CommentCard(props) {
     fetchUser();
   }, [user_id]);
   return (
-    <View style={styles.commentRow}>
+    <>
       <Image style={styles.commentAvatar} source={{ uri: userurl }} />
-      <View style={styles.commentTopRow}>
-        <Text style={styles.commentUser}>@{username}</Text>
-        <Text style={styles.commentTime}>{commentTime}</Text>
+      <View style={styles.commentContent}>
+        <View style={styles.commentTopRow}>
+          <Text style={styles.commentUser}>@{username}</Text>
+          <Text style={styles.commentTime}>{commentTime}</Text>
+        </View>
+
+        <Text style={styles.commentMeta}>
+          you replied to @jazzmine1256 Love Island S4:
+        </Text>
+        <Text style={styles.commentText}>{body}</Text>
       </View>
-      <Text style={styles.commentMeta}>
-        you replied to @jazzmine1256 Love Island S4:
-      </Text>
-      <Text style={styles.commentText}>{body}</Text>
-    </View>
+    </>
   );
 }
 
