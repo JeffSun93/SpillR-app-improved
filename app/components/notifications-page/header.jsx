@@ -17,23 +17,11 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   MarginTop: 16,
-  //   alignItems: "center",
-  // },
-
-  titleText: {
-    fontSize: 28,
-    fontWeight: "bold",
-  },
   options: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 20,
     gap: 30,
-  },
-  optionText: {
-    fontSize: 18,
   },
 });
