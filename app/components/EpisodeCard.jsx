@@ -16,11 +16,13 @@ export default function EpisodeCard({ episode, selectedSeason, showName }) {
     >
       <View style={styles.episodeCard}>
         <View key={episode.episode_id}>
-          <Text>{`Season ${selectedSeason.season_number}, Episode ${episode.episode_number}`}</Text>
           <Image
             style={{ width: "100%", aspectRatio: 1, borderRadius: 6 }}
             source={{ uri: episode.episode_url }}
           />
+          <Text
+            style={styles.episodeInfo}
+          >{`Season ${selectedSeason.season_number}, Episode ${episode.episode_number}`}</Text>
         </View>
       </View>
     </Pressable>
@@ -30,5 +32,9 @@ export default function EpisodeCard({ episode, selectedSeason, showName }) {
 const styles = StyleSheet.create({
   episodeCard: {
     width: "100%",
+  },
+  episodeInfo: {
+    marginTop: 10,
+    color: "white",
   },
 });

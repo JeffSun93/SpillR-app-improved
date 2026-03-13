@@ -13,6 +13,7 @@ import Dropdown from "../components/Dropdown";
 import EpisodesList from "../components/EpisodesList";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
+import { globalStyles } from "../../styles/globalStyles";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
@@ -45,13 +46,13 @@ export default function TvShowPage() {
   const description = cleanText(show.description);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={globalStyles.container}>
       <Stack.Screen options={{ title: show?.name }} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
           <Text style={styles.title}>{show.name}</Text>
           <View style={styles.paragraph}>
             <Image
@@ -71,6 +72,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     marginBottom: 20,
+    color: "grey",
   },
   paragraph: {
     flexDirection: "row",
@@ -88,5 +90,6 @@ const styles = StyleSheet.create({
   description: {
     flex: 1, // takes up remaining horizontal space
     flexWrap: "wrap",
+    color: "grey",
   },
 });
