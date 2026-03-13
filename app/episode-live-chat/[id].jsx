@@ -15,6 +15,8 @@ import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import Comments from "../components/home-page/comments";
 import { globalStyles } from "../../styles/globalStyles";
+import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+import Comments from "../components/home-page/comments";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
@@ -74,9 +76,9 @@ export default function LiveChatPage() {
             <PollsList />
           </View>
         </View>
-      </ScrollView>
 
-      <Comments episode_id={3129601} />
+        <Comments episode_id={3129601} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
