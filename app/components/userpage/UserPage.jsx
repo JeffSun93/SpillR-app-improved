@@ -1,5 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { useContext } from "react";
+import { UserContext } from "../../context/User";
 import {
   ScrollView,
   View,
@@ -10,24 +11,26 @@ import {
 } from "react-native";
 
 export default function UserPage() {
+  const { loggedInUser } = useContext(UserContext);
+
   return (
     <SafeAreaView style={styles.scrollArea}>
       <ScrollView>
         <View style={styles.pageColor}>
-          <View style={styles.headerContainer}>
-            <View style={styles.buttonNameContainer}>
-              <Text style={styles.username}>Aki</Text>
-              <TouchableOpacity style={styles.editButton}>
-                <Text style={styles.buttonText}>Edit</Text>
-              </TouchableOpacity>
+          <View style={styles.buttonNameContainer}>
+            <View style={styles.nameContainer}>
+              <Text style={styles.username}>{loggedInUser.name}</Text>
+              <Text style={styles.handle}>{loggedInUser.username}</Text>
             </View>
-            <Text style={styles.handle}>@theesudani</Text>
+            <TouchableOpacity style={styles.editButton}>
+              <Text style={styles.buttonText}>Edit</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.profileRow}>
             <Image
               style={styles.userImage}
-              source={require("../../../assets/user.png")}
+              source={{ uri: loggedInUser.avatar_url }}
             />
 
             <View style={styles.statsContainer}>
@@ -72,7 +75,7 @@ export default function UserPage() {
             <View style={styles.commentRow}>
               <Image
                 style={styles.commentAvatar}
-                source={require("../../../assets/user.png")}
+                source={{ uri: loggedInUser.avatar_url }}
               />
               <View style={styles.commentContent}>
                 <View style={styles.commentTopRow}>
@@ -94,7 +97,7 @@ export default function UserPage() {
             <View style={styles.commentRow}>
               <Image
                 style={styles.commentAvatar}
-                source={require("../../../assets/user.png")}
+                source={{ uri: loggedInUser.avatar_url }}
               />
               <View style={styles.commentContent}>
                 <View style={styles.commentTopRow}>
@@ -116,7 +119,7 @@ export default function UserPage() {
             <View style={styles.commentRow}>
               <Image
                 style={styles.commentAvatar}
-                source={require("../../../assets/user.png")}
+                source={{ uri: loggedInUser.avatar_url }}
               />
               <View style={styles.commentContent}>
                 <View style={styles.commentTopRow}>
@@ -143,31 +146,38 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#232222",
   },
+  nameContainer: {
+    flex: 1,
+  },
   headerContainer: {
     marginTop: 50,
     justifyContent: "flex-start",
   },
   username: {
-    paddingLeft: "7.5%",
-    fontSize: 40,
+    fontSize: 32,
     fontWeight: "bold",
     color: "white",
-    paddingBottom: 0,
+    flexWrap: "wrap",
+    flexShrink: 1,
   },
+
+  buttonNameContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    paddingHorizontal: "7.5%",
+    marginTop: 50,
+  },
+
   handle: {
     color: "#505050",
     paddingLeft: "7.5%",
     marginTop: 0,
     fontSize: 15,
   },
-  buttonNameContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingRight: 20,
-  },
 
   editButton: {
+    marginTop: 50,
     borderColor: "#2663f4",
     borderWidth: 1.2,
     borderRadius: 15,
