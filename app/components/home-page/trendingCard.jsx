@@ -6,8 +6,8 @@ import TitleText from "../ui/ShowTitleText";
 export default function TrendingCard({ show, horizontal = true }) {
   const router = useRouter();
 
-  const IMAGE_WIDTH = horizontal ? 140 : 100;
-  const IMAGE_HEIGHT = horizontal ? 200 : 150;
+  const IMAGE_WIDTH = horizontal ? 140 : 140;
+  const IMAGE_HEIGHT = horizontal ? 200 : 200;
 
   return (
     <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import TitleText from "../ui/ShowTitleText";
+import TitleText from "../ui/TitleText";
 import { globalStyles } from "../../../styles/globalStyles";
 
 export default function Header() {

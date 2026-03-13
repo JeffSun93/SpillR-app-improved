@@ -1,24 +1,26 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-
+import TitleText from "../ui/TitleText";
+import ShowTitleText from "../ui/ShowTitleText";
+import { globalStyles } from "../../../styles/globalStyles";
 export default function Header() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.titleText}>Notifications</Text>
+    <View style={globalStyles.container}>
+      <TitleText>Notifications</TitleText>
 
       <View style={styles.options}>
-        <Text style={styles.optionText}>All</Text>
-        <Text style={styles.optionText}>Mentions</Text>
-        <Text style={styles.optionText}>Requests</Text>
+        <ShowTitleText>All</ShowTitleText>
+        <ShowTitleText>Mentions</ShowTitleText>
+        <ShowTitleText>Requests</ShowTitleText>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    MarginTop: 16,
-    alignItems: "center",
-  },
+  // container: {
+  //   MarginTop: 16,
+  //   alignItems: "center",
+  // },
 
   titleText: {
     fontSize: 28,
