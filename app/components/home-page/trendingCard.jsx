@@ -1,5 +1,7 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useRouter } from "expo-router";
+import { globalStyles } from "../../../styles/globalStyles";
+import TitleText from "../ui/ShowTitleText";
 
 export default function TrendingCard({ show, horizontal = true }) {
   const router = useRouter();
@@ -9,7 +11,7 @@ export default function TrendingCard({ show, horizontal = true }) {
 
   return (
     <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
-      <View style={styles.card}>
+      <View style={globalStyles.color}>
         <Image
           source={{ uri: show.tv_show_img_url }}
           style={{
@@ -19,25 +21,8 @@ export default function TrendingCard({ show, horizontal = true }) {
             marginBottom: 4,
           }}
         />
-        <Text>{show.name}</Text>
+        <TitleText style={globalStyles.color}>{show.name}</TitleText>
       </View>
     </Pressable>
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    margin: 6,
-  },
-  horizontalCard: {},
-  gridCard: {
-    flex: 1,
-    alignItems: "center",
-  },
-  title: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-});

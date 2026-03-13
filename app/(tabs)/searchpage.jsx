@@ -13,6 +13,8 @@ import SearchBar from "../components/searchBar";
 import Trending from "../components/home-page/trending";
 import SearchResultCard from "../components/search-page/SearchResultCard";
 import { searchTvShowsByName } from "../../utils/utilsFunctions";
+import { globalStyles } from "../../styles/globalStyles";
+import TitleText from "../components/ui/TitleText";
 
 export default function Search() {
   const [searchPhrase, setSearchPhrase] = useState("");
@@ -32,7 +34,7 @@ export default function Search() {
   }, [searchPhrase]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={globalStyles.container}>
       <TouchableWithoutFeedback onPress={() => setClicked(false)}>
         <FlatList
           data={searchResults}
@@ -50,16 +52,7 @@ export default function Search() {
           }
           ListFooterComponent={
             <View style={{ marginTop: 20 }}>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 18,
-                  fontWeight: "600",
-                  marginBottom: 10,
-                }}
-              >
-                Trending Shows
-              </Text>
+              <TitleText>Trending Shows</TitleText>
               <Trending horizontal={false} />
             </View>
           }
@@ -79,18 +72,3 @@ export default function Search() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#232222",
-    paddingHorizontal: 16,
-  },
-  results: {
-    marginTop: 20,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 100,
-  },
-});

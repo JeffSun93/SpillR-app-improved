@@ -1,5 +1,6 @@
 import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import TrendingCard from "./trendingCard";
+import { globalStyles } from "../../../styles/globalStyles";
 
 const trendingTvShows = [
   {
@@ -40,7 +41,7 @@ export default function Trending({ horizontal = true }) {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalList}
+        contentContainerStyle={globalStyles.horizontalList}
       >
         {trendingTvShows.map((show) => (
           <TrendingCard
@@ -54,23 +55,12 @@ export default function Trending({ horizontal = true }) {
   }
 
   return (
-    <View style={styles.grid}>
+    <View style={globalStyles.grid}>
       {trendingTvShows.map((show) => (
-        <View key={show.tv_show_id} style={styles.gridItem}>
+        <View key={show.tv_show_id} style={globalStyles.gridItem}>
           <TrendingCard show={show} horizontal={horizontal} />
         </View>
       ))}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  trending: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingTop: 20,
-  },
-  row: {
-    justifyContent: "space-between",
-  },
-});
