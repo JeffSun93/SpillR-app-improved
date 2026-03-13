@@ -20,6 +20,7 @@ export default function EpisodeTimelineScrubber({
           const next = prev + 1;
           if (next >= runtimeSeconds) {
             setEpisodeFinished(true);
+            setIsPlaying(false);
             return prev;
           }
           return next;

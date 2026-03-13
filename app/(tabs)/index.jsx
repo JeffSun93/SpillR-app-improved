@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
 import Header from "../components/home-page/header";
 import Trending from "../components/home-page/trending";
 import FriendsAreWatching from "../components/home-page/friendsAreWatching";
