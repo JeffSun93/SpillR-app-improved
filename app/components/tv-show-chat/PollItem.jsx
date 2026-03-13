@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, Button } from "react-native";
+import { View, Text, StyleSheet, Image, Button, Pressable } from "react-native";
 import { globalStyles } from "../../../styles/globalStyles";
 import TitleText from "../ui/ShowTitleText";
 
@@ -11,17 +11,32 @@ export default function PollItem({ poll, horizontal = true }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{poll.poll_name}</Text>
-      <Button>
-        {poll.field_1} vs {poll.field_2}
-      </Button>
+      <View style={styles.buttons}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text style={styles.buttonText}>{poll.field_1}</Text>
+        </Pressable>
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            pressed && styles.buttonPressed,
+          ]}
+        >
+          <Text style={styles.buttonText}>{poll.field_2}</Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    width: 200,
-    height: 100,
+    width: 300,
+    height: 120,
     padding: 12,
     marginRight: 5,
     backgroundColor: "#ff5ab8ff",
@@ -32,5 +47,27 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
     marginBottom: 6,
+  },
+  button: {
+    flex: 1,
+    backgroundColor: "#d41e64ff",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    alignItems: "center",
+    height: 60,
+  },
+  buttonPressed: {
+    opacity: 0.75,
+    transform: [{ scale: 0.97 }],
+  },
+  buttonText: {
+    color: "#ffffffff",
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  buttons: {
+    flexDirection: "row",
+    gap: 8,
   },
 });
