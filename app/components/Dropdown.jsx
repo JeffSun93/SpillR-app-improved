@@ -15,7 +15,7 @@ export default function Dropdown({ name }) {
       try {
         setLoading(true);
         const data = await getSeasonsAndEpisodesByShowName(name);
-        console.log(data.seasons[0].episodes);
+
         setSeasons(data.seasons);
         setSelectedSeason(data.seasons[0]);
       } catch (error) {

@@ -9,6 +9,7 @@ import {
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getEpisodeById } from "../../utils/utilsFunctions";
+import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import { Stack } from "expo-router";
 
 export default function LiveChatPage() {
@@ -60,6 +61,7 @@ export default function LiveChatPage() {
         />
         <View style={styles.container}>
           <Text style={styles.title}>{episode.episode_number}</Text>
+          <EpisodeTimelineScrubber />
           <View style={styles.paragraph}>
             <Text style={styles.description}>{episode.synopsis}</Text>
           </View>

@@ -18,7 +18,7 @@ export async function getTvShowById(id) {
     .from("tv_shows")
     .select("*")
     .eq("tv_show_id", id)
-    .single();
+    .maybeSingle();
   console.log("Searching for show id:", id);
   if (error) {
     throw error;
