@@ -43,11 +43,11 @@ export default function TvShowPage() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Stack.Screen options={{ title: show?.name }} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Stack.Screen options={{ title: show?.name }} />
         <View style={styles.container}>
           <Text style={styles.title}>{show.name}</Text>
           <View style={styles.paragraph}>
