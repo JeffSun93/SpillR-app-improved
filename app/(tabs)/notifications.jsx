@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
-// import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+import Header from "../components/notifications-page/header";
+import NotificationsList from "../components/notifications-page/notificationsList";
 
 export default function Notifications() {
   return (
     <View style={styles.container}>
-      <Text>Notifications Page</Text>
-      {/* <EpisodeTimelineScrubber /> */}
+      <Header />
+      <NotificationsList />
     </View>
   );
 }
@@ -13,7 +14,7 @@ export default function Notifications() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+
+    marginTop: 80,
   },
 });

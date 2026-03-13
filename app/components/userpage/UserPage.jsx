@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     marginLeft: "10%",
     height: 100,
     width: 100,
+    borderRadius: 50,
   },
   statsContainer: {
     flexDirection: "row",
