@@ -5,7 +5,7 @@ export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.color.background,
-    paddingHorizontal: theme.spacing.md,
+    paddingHorizontal: theme.spacing.xs,
   },
 
   sectionTitle: {

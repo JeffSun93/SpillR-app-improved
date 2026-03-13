@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import TitleText from "../ui/ShowTitleText";
+import TitleText from "../ui/TitleText";
 import { globalStyles } from "../../../styles/globalStyles";
 
 export default function Header() {
@@ -12,9 +12,10 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  // title: {
-  //   fontSize: 24,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  // },
+  title: {
+    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
