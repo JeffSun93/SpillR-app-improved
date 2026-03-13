@@ -16,7 +16,6 @@ import PollsList from "../components/tv-show-chat/PollsList";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
-  console.log(showName);
 
   //   const navigation = useNavigation();
   const [episode, setEpisode] = useState(null);
@@ -59,7 +58,7 @@ export default function LiveChatPage() {
         />
         <View style={styles.container}>
           <Text style={styles.showName}>{showName}</Text>
-          <Text style={styles.title}>episode: {episode.episode_number}</Text>
+          <Text style={styles.title}>Episode: {episode.episode_number}</Text>
           <View style={styles.timelineContainer}>
             <EpisodeTimelineScrubber
               setIsScrubbing={setIsScrubbing}
@@ -69,7 +68,7 @@ export default function LiveChatPage() {
           <View style={styles.paragraph}>
             <Text style={styles.description}>{synopsis}</Text>
           </View>
-          <View styles={{ height: 220 }}>
+          <View styles={{ height: 220, justifyContent: "center" }}>
             <PollsList />
           </View>
         </View>
@@ -83,13 +82,16 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 16,
+    marginBottom: 10,
+    marginLeft: 20,
   },
   paragraph: {
     flexDirection: "row",
     gap: 12,
     alignItems: "flex-start",
+    // marginLeft: 20,
+    padding: 20,
   },
   image: {
     width: 120,
@@ -110,5 +112,8 @@ const styles = StyleSheet.create({
   },
   showName: {
     fontSize: 30,
+    marginTop: 20,
+    marginLeft: 20,
+    fontWeight: "bold",
   },
 });
