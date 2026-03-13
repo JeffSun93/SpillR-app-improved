@@ -6,8 +6,9 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
   setIsScrubbing,
+  currentSeconds,
+  setCurrentSeconds,
 }) {
-  const [currentSeconds, setCurrentSeconds] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [episodeFinished, setEpisodeFinished] = useState(false);
 
