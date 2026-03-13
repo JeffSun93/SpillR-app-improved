@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
+import CommentText from "../ui/CommentText";
 
 export default function CommentCard() {
   return (
@@ -6,10 +7,10 @@ export default function CommentCard() {
       <Text style={styles.author}>
         @jazzmine1256 in LoveIslandUK S5 Ep10 at 15:17
       </Text>
-      <Text>
+      <CommentText>
         .. Remell?? Why would you volunteer that you've been with 5 girls in a
         night willingly? No gun to your head
-      </Text>
+      </CommentText>
     </View>
   );
 }
