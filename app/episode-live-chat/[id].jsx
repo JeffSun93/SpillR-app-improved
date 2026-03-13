@@ -12,6 +12,8 @@ import { getEpisodeById } from "../../utils/utilsFunctions";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
+import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+import Comments from "../components/home-page/comments";
 import { globalStyles } from "../../styles/globalStyles";
 
 export default function LiveChatPage() {
