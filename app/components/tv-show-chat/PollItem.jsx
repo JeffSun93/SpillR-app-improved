@@ -37,11 +37,14 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     height: 120,
-    padding: 12,
+    padding: 10,
     marginRight: 5,
-    backgroundColor: "#ff5ab8ff",
+    marginTop: 0,
+    backgroundColor: "#1B1B1B",
     borderRadius: 8,
     justifyContent: "space-between",
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.1)",
   },
   title: {
     color: "#fff",
@@ -50,7 +53,7 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: "#d41e64ff",
+    backgroundColor: "rgba(255,255,255,0.1)",
     paddingVertical: 10,
     paddingHorizontal: 16,
     borderRadius: 20,

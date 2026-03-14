@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { backButton } from "../../styles/BackButton";
 
 export default function Layout() {
   const router = useRouter();
@@ -28,16 +29,7 @@ export default function Layout() {
             onPress={() => {
               if (router.canGoBack()) router.back();
             }}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              backgroundColor: "rgba(0,0,0,0.4)",
-              alignItems: "center",
-              justifyContent: "center",
-              borderWidth: 0,
-              overflow: "hidden",
-            }}
+            style={backButton}
           >
             <Ionicons name="chevron-back" size={24} color="white" />
           </TouchableOpacity>

@@ -2,6 +2,7 @@ import { Stack } from "expo-router";
 import { TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { backButton } from "../../styles/BackButton";
 
 export default function Layout() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export default function Layout() {
         headerTitleStyle: { fontWeight: "bold" },
         headerLeft: () => (
           <TouchableOpacity
+            style={backButton}
             onPress={() => {
               if (router.canGoBack()) router.back();
             }}

@@ -41,10 +41,10 @@ export default function LiveChatPage() {
   const synopsis = cleanText(episode.synopsis);
 
   return (
-    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 10 }]}>
+    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 5 }]}>
       <ScrollView
         scrollEnabled={!isScrubbing}
-        contentContainerStyle={{ paddingTop: 80, paddingBottom: 0 }}
+        contentContainerStyle={{ paddingTop: 70, paddingBottom: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <Stack.Screen

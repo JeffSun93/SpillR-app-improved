@@ -10,132 +10,72 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { commentStyles } from "../../../styles/commentStyles";
+import Comments from "../comments";
+import ProfileHeader from "./Header";
+import SubLi from "./SubscribedLi";
 
 export default function UserPage() {
   const { loggedInUser } = useContext(UserContext);
+  const userComments = [
+    {
+      comment_id: 1,
+      user_id: loggedInUser.user_id,
+      body: "Why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
+      created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+      reply_id: "r1",
+      tv_show_name: "Love Island",
+      season_number: 4,
+      episode_number: 3,
+    },
+    {
+      comment_id: 2,
+      user_id: loggedInUser.user_id,
+      body: "I am crying because she was wrong from the start and still so confident about it",
+      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      reaction_id: "re1",
+      tv_show_name: "Traitors",
+      season_number: 4,
+      episode_number: 2,
+    },
+    {
+      comment_id: 3,
+      user_id: loggedInUser.user_id,
+      body: "This cast is so messy but I cannot stop watching",
+      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      tv_show_name: "Geordie Shore",
+      season_number: 12,
+      episode_number: 1,
+    },
+  ];
+  for (let i = 0; i < userComments.length; i++) {
+    let type = "";
+    const obj = userComments[i];
+    const keys = Object.keys(obj);
+
+    if (keys.includes("reply_id")) {
+      type = "reply";
+    } else if (keys.includes("reaction_id")) {
+      type = "reaction";
+    } else {
+      type = "comment";
+    }
+
+    obj.Commenttype = type;
+  }
   const firstName = loggedInUser.name.split(" ")[0];
   return (
     <View style={styles.scrollArea}>
       <ScrollView>
         <View style={styles.pageColor}>
-          <View style={styles.buttonNameContainer}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.username}>{firstName}</Text>
-              <Text style={styles.handle}>@{loggedInUser.username}</Text>
-            </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.profileRow}>
-            <Image
-              style={styles.userImage}
-              source={{ uri: loggedInUser.avatar_url }}
-            />
-
-            <View style={styles.statsContainer}>
-              <View style={styles.stat}>
-                <Text style={styles.statNumber}>10</Text>
-                <Text style={styles.statLabel}>Friends</Text>
-              </View>
-
-              <View style={styles.stat}>
-                <Text style={styles.statNumber}>19</Text>
-                <Text style={styles.statLabel}>Subscribed</Text>
-              </View>
-            </View>
-          </View>
-
-          <Text style={styles.bio}>
-            Love Island is life!!! Also stream the new BTS album if you're a
-            real one and not an OP x
-          </Text>
+          <ProfileHeader />
 
           <Text style={styles.sectionTitle}>Subscribed Shows</Text>
 
-          <View style={styles.showContainer}>
-            <Image
-              style={styles.showCard}
-              source={require("../../../assets/geordie-shore.png")}
-            />
-
-            <Image
-              style={styles.showCard}
-              source={require("../../../assets/traitors.png")}
-            />
-          </View>
+          <SubLi />
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <ScrollView
-            style={commentStyles.commentsBox}
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={commentStyles.commentRow}>
-              <Image
-                style={commentStyles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={commentStyles.commentContent}>
-                <View style={commentStyles.commentTopRow}>
-                  <Text style={commentStyles.commentUser}>@theesudani</Text>
-                  <Text style={commentStyles.commentTime}>2m</Text>
-                </View>
-                <Text style={commentStyles.commentMeta}>
-                  you replied to @jazzmine1256 Love Island S4:
-                </Text>
-                <Text style={commentStyles.commentText}>
-                  Why would you volunteer that you've been with 5 girls in a
-                  night willingly? No gun to your head
-                </Text>
-              </View>
-            </View>
-
-            <View style={commentStyles.divider} />
-
-            <View style={commentStyles.commentRow}>
-              <Image
-                style={commentStyles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={commentStyles.commentContent}>
-                <View style={commentStyles.commentTopRow}>
-                  <Text style={commentStyles.commentUser}>@theesudani</Text>
-                  <Text style={commentStyles.commentTime}>2h</Text>
-                </View>
-                <Text style={commentStyles.commentMeta}>
-                  you reacted to @jazzmine1256 comment on Traitors S4 E2:
-                </Text>
-                <Text style={commentStyles.commentText}>
-                  I am crying because she was wrong from the start and still so
-                  confident about it
-                </Text>
-              </View>
-            </View>
-
-            <View style={commentStyles.divider} />
-
-            <View style={commentStyles.commentRow}>
-              <Image
-                style={commentStyles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={commentStyles.commentContent}>
-                <View style={commentStyles.commentTopRow}>
-                  <Text style={commentStyles.commentUser}>@theesudani</Text>
-                  <Text style={commentStyles.commentTime}>1d</Text>
-                </View>
-                <Text style={commentStyles.commentMeta}>
-                  you commented on Geordie Shore:
-                </Text>
-                <Text style={commentStyles.commentText}>
-                  This cast is so messy but I cannot stop watching
-                </Text>
-              </View>
-            </View>
-          </ScrollView>
+          <Comments userComments={userComments} isHome={true} />
         </View>
       </ScrollView>
     </View>
@@ -240,6 +180,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginLeft: 20,
     marginBottom: 10,
+    fontWeight: 700,
   },
   showContainer: {
     flexDirection: "row",

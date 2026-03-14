@@ -1,6 +1,7 @@
 import { Image, View, Text, StyleSheet } from "react-native";
 import { getUserById } from "../../utils/utilsFunctions.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { UserContext } from "../context/User";
 import { commentStyles } from "../../styles/commentStyles";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";
@@ -8,12 +9,32 @@ import { timeAgo } from "../../utils/CleanTime.js";
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
 export default function CommentCard(props) {
-  const { body, user_id, created_at } = props;
+  const {
+    body,
+    user_id,
+    created_at,
+    type,
+    tv_show_name,
+    episode_number,
+    season_number,
+  } = props;
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
+  const { loggedInUser } = useContext(UserContext);
   const [relativeTime, setRelativeTime] = useState(
     created_at ? timeAgo(created_at) : "",
   );
+
+  const actionMap = {
+    comment: "commented on:",
+    reply: "replied in: ",
+    reaction: "reacted in: ",
+  };
+
+  const actor = username === loggedInUser.username ? "you" : `@${username}`;
+  const meta = type
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
+    : null;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -28,6 +49,7 @@ export default function CommentCard(props) {
     };
     fetchUser();
   }, [user_id]);
+
   return (
     <View>
       <View style={commentStyles.commentRow}>
@@ -37,7 +59,7 @@ export default function CommentCard(props) {
             <Text style={commentStyles.commentUser}>@{username}</Text>
             <Text style={commentStyles.commentTime}>{relativeTime}</Text>
           </View>
-          <Text style={commentStyles.commentMeta}>{null}</Text>
+          <Text style={commentStyles.commentMeta}>{meta}</Text>
           <Text style={commentStyles.commentText}>{body}</Text>
         </View>
       </View>

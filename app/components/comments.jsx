@@ -6,9 +6,12 @@ import { commentStyles } from "../../styles/commentStyles";
 
 export default function Comments(props) {
   const [comments, setComments] = useState(null);
-  const { episode_id } = props;
+  const { episode_id, isHome, userComments } = props;
   useEffect(() => {
-    if (!episode_id) return;
+    if (!episode_id) {
+      if (userComments) setComments(userComments);
+      return;
+    }
     const fetchComments = async (id) => {
       const results = await getCommentsByEpisodeId(id);
       setComments(results);
@@ -29,6 +32,10 @@ export default function Comments(props) {
                 user_id={comment.user_id}
                 body={comment.body}
                 created_at={comment.created_at}
+                season_number={comment.season_number}
+                episode_number={comment.episode_number}
+                tv_show_name={comment.tv_show_name}
+                type={comment.Commenttype}
               />
               <View style={styles.divider} />
             </View>
@@ -36,8 +43,9 @@ export default function Comments(props) {
         })
       ) : (
         <Text style={styles.noComments}>
-          No reactions at this timestamp yet, keep playing to see more... or be
-          the first?
+          {isHome
+            ? null
+            : `No reactions at this timestamp yet, keep playing to see more... or be the first?`}
         </Text>
       )}
     </ScrollView>

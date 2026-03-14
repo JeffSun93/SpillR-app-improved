@@ -30,8 +30,8 @@ export async function getSeasonsByShowId(showId) {
   let { data, error } = await supabase
     .from("seasons")
     .select("*")
-    .eq("tv_show_id", showId);
-
+    .eq("tv_show_id", showId)
+    .order("season_number", { ascending: true });
   if (error) {
     throw error;
   }
@@ -42,8 +42,8 @@ export async function getEpisodesBySeasonId(seasonId) {
   let { data, error } = await supabase
     .from("episodes")
     .select("*")
-    .eq("season_id", seasonId);
-
+    .eq("season_id", seasonId)
+    .order("episode_number", { ascending: false });
   if (error) {
     throw error;
   }
