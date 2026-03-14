@@ -1,6 +1,6 @@
 export const typography = {
   title: {
-    fontSize: 20,
+    fontSize: 40,
     fontWeight: "600",
     fontFamily: "Inter_600SemiBold",
   },

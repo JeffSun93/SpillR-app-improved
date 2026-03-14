@@ -72,6 +72,21 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
   };
 }
 
+export async function getSeasonsAndEpisodesByShowId(showId) {
+  const seasons = await getSeasonsByShowId(showId);
+  const seasonsWithEpisodes = [];
+
+  for (const season of seasons) {
+    const episodes = await getEpisodesBySeasonId(season.season_id);
+    seasonsWithEpisodes.push({
+      ...season,
+      episodes,
+    });
+  }
+
+  return { seasons: seasonsWithEpisodes };
+}
+
 export async function getEpisodeById(id) {
   let { data, error } = await supabase
     .from("episodes")
@@ -172,10 +187,9 @@ export async function getUserById(userId) {
     .from("profiles")
     .select("*")
     .eq("user_id", userId)
-    .single();
-  if (error) {
-    throw error;
-  }
+    .maybeSingle();
+
+  if (error) throw error;
   return data;
 }
 

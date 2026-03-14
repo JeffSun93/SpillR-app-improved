@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import EpisodesList from "./EpisodesList";
 
-export default function Dropdown({ name, seasons }) {
+export default function Dropdown({ name, seasons, tv_show_img_url }) {
   const [selectedSeason, setSelectedSeason] = useState({});
   const [latestSeason, setLatestSeason] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -37,15 +37,15 @@ export default function Dropdown({ name, seasons }) {
           {loading
             ? "Loading seasons..."
             : selectedSeason.season_number > latestSeason?.season_number
-              ? `Upcoming Season ${selectedSeason.season_number}`
+              ? `Next Season ${selectedSeason.season_number}`
               : selectedSeason.season_number === latestSeason?.season_number
                 ? `Latest Season`
                 : `Season ${selectedSeason.season_number}`}
         </Text>
-        <Image
+        {/* <Image
           style={styles.dropdownArrow}
           source={require("../../assets/dropdown_arrow.png")}
-        />
+        /> */}
       </TouchableOpacity>
 
       {visible && (
@@ -64,7 +64,11 @@ export default function Dropdown({ name, seasons }) {
         </View>
       )}
 
-      <EpisodesList selectedSeason={selectedSeason} showName={name} />
+      <EpisodesList
+        selectedSeason={selectedSeason}
+        showName={name}
+        tv_show_img_url={tv_show_img_url}
+      />
     </View>
   );
 }
@@ -74,14 +78,16 @@ const styles = StyleSheet.create({
     top: 50,
     width: "100%",
     zIndex: 999,
-    backgroundColor: "#1B1B1B",
     marginLeft: 0,
   },
   button: {
+    width: "30%",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
     gap: 30,
+    marginLeft: 8,
+    marginBottom: 8,
     backgroundColor: "#1B1B1B",
     height: 40,
     paddingHorizontal: 10,
@@ -106,6 +112,8 @@ const styles = StyleSheet.create({
     top: 45, //button height
     left: 0,
     right: 0,
+    marginLeft: 8,
+    marginBottom: 8,
     backgroundColor: "#1B1B1B",
     borderRadius: 6,
     paddingVertical: 5,

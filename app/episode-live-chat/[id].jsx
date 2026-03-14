@@ -13,16 +13,17 @@ import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
-import CommentList from "../components/tv-show-chat/CommentList";
+import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
 
 export default function LiveChatPage() {
-  const { id, showName } = useLocalSearchParams();
+  const { id, showName, seasonNumber } = useLocalSearchParams();
 
   //   const navigation = useNavigation();
   const [episode, setEpisode] = useState(null);
   const [episodeRuntime, setEpisodeRuntime] = useState(60);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const [currentSeconds, setCurrentSeconds] = useState(0);
 
   useEffect(() => {
@@ -40,28 +41,28 @@ export default function LiveChatPage() {
   const synopsis = cleanText(episode.synopsis);
 
   return (
-    <SafeAreaView style={globalStyles.container}>
+    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 10 }]}>
       <ScrollView
         scrollEnabled={!isScrubbing}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ paddingTop: 80, paddingBottom: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <Stack.Screen
           options={{
-            title: ` Episode: ${episode?.episode_number} `,
-            headerBackTitle: showName,
+            headerTransparent: true,
+            headerTitle: "",
+            headerTintColor: "#FFFFFF",
             headerStyle: {
-              backgroundColor: "#484848",
+              backgroundColor: "transparent",
             },
-            headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
+            headerShadowVisible: false,
           }}
         />
         <View style={styles.container}>
           <Text style={styles.showName}>{showName}</Text>
-          <Text style={styles.title}>Episode: {episode.episode_number}</Text>
+          <Text style={styles.title}>
+            S{seasonNumber} Ep: {episode.episode_number}
+          </Text>
           <View style={styles.timelineContainer}>
             <EpisodeTimelineScrubber
               currentSeconds={currentSeconds}
@@ -71,7 +72,18 @@ export default function LiveChatPage() {
             />
           </View>
           <View style={styles.paragraph}>
-            <Text style={styles.description}>{synopsis}</Text>
+            <Text
+              style={styles.description}
+              numberOfLines={expanded ? undefined : 3}
+            >
+              {synopsis}
+            </Text>
+            <Text
+              style={styles.readMore}
+              onPress={() => setExpanded(!expanded)}
+            >
+              {expanded ? "Read less" : "Read more"}
+            </Text>
           </View>
           <View styles={{ height: 220, justifyContent: "center" }}>
             <PollsList />
@@ -80,11 +92,18 @@ export default function LiveChatPage() {
 
         <CommentList currentSeconds={currentSeconds} episode_id={id} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  readMore: {
+    color: "#FFFFFF",
+    fontSize: 13,
+    fontWeight: "600",
+    marginTop: 4,
+    textDecorationLine: "underline",
+  },
   safeArea: {
     flex: 1,
   },
@@ -95,7 +114,6 @@ const styles = StyleSheet.create({
     color: "white",
   },
   paragraph: {
-    flexDirection: "row",
     gap: 12,
     alignItems: "flex-start",
     // marginLeft: 20,

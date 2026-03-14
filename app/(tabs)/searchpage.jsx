@@ -79,8 +79,8 @@ export default function Search() {
         ListFooterComponent={
           <View style={{ marginTop: 20 }}>
             {notFound && !loading && <Text>No shows found</Text>}
-            <Text>Trending Shows</Text>
-            <Trending horizontal={false} />
+            <Text style={globalStyles.title}>People liked</Text>
+            <Trending />
           </View>
         }
         contentContainerStyle={{ paddingTop: 20, paddingBottom: 100 }}

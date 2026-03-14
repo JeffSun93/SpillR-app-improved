@@ -1,43 +1,54 @@
-import { Image, View, Text, StyleSheet } from "react-native";
-import { getUserById } from "../../../utils/utilsFunctions.js";
+import { ScrollView, View, Text, StyleSheet } from "react-native";
+import CommentCard from "./commentCard";
+import { getCommentsByEpisodeId } from "../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect } from "react";
-// import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { commentStyles } from "../../styles/commentStyles";
 
-export default function CommentCard(props) {
-  const { body, user_id, created_at } = props;
-  const [username, setUserName] = useState(null);
-  const [userurl, setUserurl] = useState(null);
-  const [commentTime, setCommentTime] = useState(null);
+export default function Comments(props) {
+  const [comments, setComments] = useState(null);
+  const { episode_id } = props;
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!user_id) return;
-      const result = await getUserById(user_id);
-      console.log(result);
-      setUserName(result.username);
-      setUserurl(result.avatar_url);
-      setCommentTime(created_at);
+    if (!episode_id) return;
+    const fetchComments = async (id) => {
+      const results = await getCommentsByEpisodeId(id);
+      setComments(results);
     };
-    fetchUser();
-  }, [user_id]);
+    fetchComments(episode_id);
+  }, [episode_id]);
   return (
-    <>
-      <Image style={styles.commentAvatar} source={{ uri: userurl }} />
-      <View style={styles.commentContent}>
-        <View style={styles.commentTopRow}>
-          <Text style={styles.commentUser}>@{username}</Text>
-          <Text style={styles.commentTime}>{commentTime}</Text>
-        </View>
-
-        <Text style={styles.commentMeta}>
-          you replied to @jazzmine1256 Love Island S4:
+    <ScrollView
+      style={commentStyles.commentsBox}
+      nestedScrollEnabled
+      showsVerticalScrollIndicator={false}
+    >
+      {comments?.length > 0 ? (
+        comments.map((comment) => {
+          return (
+            <View key={comment.comment_id}>
+              <CommentCard
+                user_id={comment.user_id}
+                body={comment.body}
+                created_at={comment.created_at}
+              />
+              <View style={styles.divider} />
+            </View>
+          );
+        })
+      ) : (
+        <Text style={styles.noComments}>
+          No reactions at this timestamp yet, keep playing to see more... or be
+          the first?
         </Text>
-        <Text style={styles.commentText}>{body}</Text>
-      </View>
-    </>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  noComments: {
+    marginTop: 20,
+    color: "white",
+  },
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",

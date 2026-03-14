@@ -15,7 +15,10 @@ import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import { globalStyles } from "../../styles/globalStyles";
 import { LinearGradient } from "expo-linear-gradient";
-import { getSeasonsAndEpisodesByShowName } from "../../utils/utilsFunctions";
+import {
+  getSeasonsAndEpisodesByShowName,
+  getSeasonsAndEpisodesByShowId,
+} from "../../utils/utilsFunctions";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
@@ -37,8 +40,8 @@ export default function TvShowPage() {
           headerTitle: "",
         });
 
-        const seasonsData = await getSeasonsAndEpisodesByShowName(
-          showData.name,
+        const seasonsData = await getSeasonsAndEpisodesByShowId(
+          showData.tv_show_id,
         );
 
         setSeasons(seasonsData.seasons);
@@ -57,7 +60,7 @@ export default function TvShowPage() {
   const description = cleanText(show.description);
 
   return (
-    <View style={[globalStyles.container, { flex: 1 }]}>
+    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 0 }]}>
       <Stack.Screen
         options={{
           headerTransparent: true,
@@ -114,7 +117,11 @@ export default function TvShowPage() {
             </LinearGradient>
           </View>
 
-          <Dropdown name={show.name} seasons={seasons} />
+          <Dropdown
+            name={show.name}
+            seasons={seasons}
+            tv_show_img_url={show.tv_show_img_url}
+          />
         </View>
       </ScrollView>
     </View>
@@ -124,11 +131,12 @@ export default function TvShowPage() {
 const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
-    height: 300,
+    height: 350,
     borderRadius: 0,
     overflow: "hidden",
-    marginBottom: 0,
-    marginTop: 65,
+    margin: 0,
+    padding: 0,
+    resizeMode: "cover",
   },
   image: {
     width: "100%",
@@ -143,11 +151,11 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#FFFFFF",
     marginBottom: 6,
-    fontFamily: "Inter_600SemiBold",
+    // fontFamily: "Inter_600SemiBold",
   },
   description: {
     color: "#FFFFFF",
