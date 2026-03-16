@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import TitleText from "../ui/TitleText";
 import ShowTitleText from "../ui/ShowTitleText";
-import { globalStyles } from "../../../styles/globalStyles";
+
 export default function Header() {
   return (
-    <View style={globalStyles.container}>
+    <View style={styles.header}>
       <TitleText>Notifications</TitleText>
 
       <View style={styles.options}>
@@ -17,6 +17,10 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
   options: {
     flexDirection: "row",
     justifyContent: "center",

@@ -8,10 +8,8 @@ export default function Notifications() {
   return (
     <SafeAreaView style={globalStyles.container}>
       <View>
-        <ScrollView>
-          <Header />
-          <NotificationsList />
-        </ScrollView>
+        <Header />
+        <NotificationsList />
       </View>
     </SafeAreaView>
   );
