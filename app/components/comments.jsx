@@ -58,44 +58,73 @@ export default function Comments(props) {
     }
   }, [currentSeconds, isPlaying, episode_id, isHome]);
 
+  const bufferRef = useRef([]);
+
   // ─── Effect 3: scrubbing ────────────────────────────────────────────────────
-  // User is scrubbing (regardless of play state) — immediate replace fetch
-  // whenever isScrubbing is true or debouncedSeconds settles on a new value
   useEffect(() => {
     if (!scrubFinished || isHome || !episode_id) return;
     if (currentSecondsRef.current === 0 && !isPlaying) return;
 
     const safeSeconds = Math.floor(currentSecondsRef.current);
     getFilteredCommentsByEpisodeId(episode_id, safeSeconds).then((result) => {
-      setComments(result);
-      setScrubFinished(false); // reset so it can fire again next scrub
+      bufferRef.current = result;
+      // show all fetched results immediately — no filter, user jumped here deliberately
+      const sorted = [...result].sort(
+        (a, b) => b.runtime_seconds - a.runtime_seconds,
+      );
+      setComments(sorted);
+      setScrubFinished(false);
     });
   }, [scrubFinished]);
+
   // ─── Effect 4: 30-second polling while playing ──────────────────────────────
-  // Only runs when playing and not scrubbing — merges new comments in
+  // Fetches 3 mins ahead and buffers — does NOT set comments directly
   useEffect(() => {
     if (isHome || !episode_id) return;
     if (!isPlaying || isScrubbing) return;
 
-    setComments([]);
+    if (bufferRef.current.length === 0 || currentSecondsRef.current === 0) {
+      bufferRef.current = [];
+      setComments([]);
+    }
 
     const interval = setInterval(async () => {
-      const safeSeconds = Math.floor(
-        Math.max(0, currentSecondsRef.current - SPOILER_DELAY),
-      );
+      const safeSeconds = Math.floor(currentSecondsRef.current);
       const results = await getFilteredCommentsByEpisodeId(
         episode_id,
         safeSeconds,
       );
-      setComments((prev) => {
-        const existingIds = new Set(prev.map((c) => c.comment_id));
+
+      // merge into buffer with dedup
+      bufferRef.current = (() => {
+        const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
         const incoming = results.filter((c) => !existingIds.has(c.comment_id));
-        return [...incoming, ...prev];
-      });
+        return [...bufferRef.current, ...incoming];
+      })();
     }, 30000);
 
     return () => clearInterval(interval);
   }, [isPlaying, isScrubbing, episode_id, isHome]);
+
+  // ─── Effect 5: reveal buffered comments as currentSeconds advances ───────────
+  // Runs every second — filters buffer down to only what's due
+  // ─── Effect 5: reveal buffered comments as currentSeconds advances ───────────
+  useEffect(() => {
+    if (isScrubbing || isHome) return;
+
+    const newlyDue = bufferRef.current.filter(
+      (c) => c.runtime_seconds === currentSeconds,
+    );
+
+    if (newlyDue.length === 0) return;
+
+    setComments((prev) => {
+      const existingIds = new Set(prev.map((c) => c.comment_id));
+      const incoming = newlyDue.filter((c) => !existingIds.has(c.comment_id));
+      if (incoming.length === 0) return prev;
+      return [...incoming, ...prev]; // prepend to top
+    });
+  }, [currentSeconds]);
 
   return (
     <ScrollView
