@@ -10,8 +10,10 @@ export default function Comments(props) {
   const { currentSeconds, episode_id, isHome, userComments, isChat } = props;
   useEffect(() => {
     if (!episode_id) {
-      if (userComments) setComments(userComments);
-      return;
+      if (userComments) {
+        setComments(userComments);
+        console.log(userComments);
+      }
     }
     const fetchComments = async (id) => {
       const results = await getCommentsByEpisodeId(id);
@@ -20,12 +22,14 @@ export default function Comments(props) {
     fetchComments(episode_id);
   }, [episode_id]);
 
-  const filteredCommentsByRuntimeRange = comments.filter(
-    // needs to be fetched later instead
-    (comment) =>
-      comment.runtime_seconds >= currentSeconds - 1200 &&
-      comment.runtime_seconds <= currentSeconds,
-  );
+  const filteredCommentsByRuntimeRange =
+    isHome && userComments
+      ? comments
+      : comments.filter(
+          (comment) =>
+            comment.runtime_seconds >= currentSeconds - 1200 &&
+            comment.runtime_seconds <= currentSeconds,
+        );
   return (
     <ScrollView
       style={commentStyles.commentsBox}
