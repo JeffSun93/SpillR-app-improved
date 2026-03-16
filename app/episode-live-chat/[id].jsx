@@ -5,18 +5,18 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  ImageBackground,
 } from "react-native";
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
 import { useEffect, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
-import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+import FloatingButton from "../components/FloatingButton";
 import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
-import { LinearGradient } from "expo-linear-gradient";
-import { ImageBackground } from "react-native";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -62,6 +62,11 @@ export default function LiveChatPage() {
             headerShadowVisible: false,
           }}
         />
+
+        <View style={styles.floating}>
+          <FloatingButton episodeId={episode.episode_id} />
+        </View>
+
         <View style={styles.container}>
           <ImageBackground
             source={{ uri: episode.episode_url }}
