@@ -139,6 +139,22 @@ export async function getEpisodeById(id) {
 //   }
 // }
 
+export async function getFeedComments(user_id, offset) {
+  // should be default 0 offset
+  try {
+    const { data, error } = await fetch(
+      `https://spillr-be.onrender.com/api/comments/a1b2c3d4-e5f6-7890-abcd-ef1234567890/feed?offset=${offset}`,
+    );
+
+    if (error) throw new Error();
+
+    return data;
+  } catch (error) {
+    console.log("Feed comment search failed", error);
+    return;
+  }
+}
+
 export async function searchLocalTvShows(name) {
   try {
     const { data, error } = await supabase
