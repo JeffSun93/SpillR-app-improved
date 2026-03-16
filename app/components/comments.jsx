@@ -88,6 +88,21 @@ export default function Comments(props) {
       setComments([]);
     }
 
+    // immediate fetch so buffer is populated before first 30s tick
+    const fetchImmediate = async () => {
+      const safeSeconds = Math.floor(currentSecondsRef.current);
+      const results = await getFilteredCommentsByEpisodeId(
+        episode_id,
+        safeSeconds,
+      );
+      bufferRef.current = (() => {
+        const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
+        const incoming = results.filter((c) => !existingIds.has(c.comment_id));
+        return [...bufferRef.current, ...incoming];
+      })();
+    };
+    fetchImmediate();
+
     const interval = setInterval(async () => {
       const safeSeconds = Math.floor(currentSecondsRef.current);
       const results = await getFilteredCommentsByEpisodeId(
