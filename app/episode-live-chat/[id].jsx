@@ -20,6 +20,8 @@ import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostBox.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
+import socket from "../../socket/connection";
+import { EpisodeProvider } from "../context/Episode";
 import PostBox from "../components/PostBox.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
@@ -58,6 +60,17 @@ export default function LiveChatPage() {
     };
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (isPlaying && !socket.connected) {
+      socket.connect();
+      socket.emit("room:join", id);
+      console.log(`socket connected and joined room ${id}`);
+    }
+    return () => {
+      socket.disconnect();
+    };
+  }, [isPlaying]);
+
   if (!episode) return <Text>Loading...</Text>;
 
   const synopsis = cleanText(episode.synopsis);
@@ -81,7 +94,24 @@ export default function LiveChatPage() {
           }}
         />
 
+        <View style={styles.container}>
+          <ImageBackground
+            source={{ uri: episode.episode_url }}
+            style={styles.heroImage}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(102,102,102,0)",
+                "rgba(16,16,16,0.90)",
+                "rgba(16,16,16,1)",
+              ]}
+              locations={[0.01, 0.7, 1]}
+              style={styles.heroOverlay}
         <EpisodeProvider episodeId={episode.episode_id}>
+          <View style={styles.floating}>
+            <FloatingButton episodeId={episode.episode_id} />
+          </View>
+          <EpisodeProvider episodeId={episode.episode_id}>
           <View style={styles.floating}>
             <FloatingButton episodeId={episode.episode_id} />
           </View>
@@ -161,58 +191,58 @@ export default function LiveChatPage() {
           </View>
 
         <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
+            <ImageBackground
+              source={{ uri: episode.episode_url }}
+              style={styles.heroImage}
             >
-              <Text style={styles.title}>
-                S{seasonNumber} Ep:{" "}
-                {!episode.episode_number
-                  ? "Season special"
-                  : episode.episode_number}
+              <LinearGradient
+                colors={[
+                  "rgba(102,102,102,0)",
+                  "rgba(16,16,16,0.90)",
+                  "rgba(16,16,16,1)",
+                ]}
+                locations={[0.01, 0.7, 1]}
+                style={styles.heroOverlay}
+              >
+                <Text style={styles.title}>
+                  S{seasonNumber} Ep:{" "}
+                  {!episode.episode_number
+                    ? "Season special"
+                    : episode.episode_number}
+                </Text>
+                <Text style={styles.showName}>{showName}</Text>
+                <View style={styles.timelineContainer}>
+                  <EpisodeTimelineScrubber
+                    setScrubFinished={setScrubFinished}
+                    episodeRuntime={episodeRuntime}
+                    currentSeconds={currentSeconds}
+                    setCurrentSeconds={setCurrentSeconds}
+                    isPlaying={isPlaying}
+                    setIsPlaying={setIsPlaying}
+                    isScrubbing={isScrubbing}
+                    setIsScrubbing={setIsScrubbing}
+                  />
+                </View>
+              </LinearGradient>
+            </ImageBackground>
+            <View style={styles.paragraph}>
+              <Text
+                style={styles.description}
+                numberOfLines={expanded ? undefined : 3}
+              >
+                {synopsis}
               </Text>
-              <Text style={styles.showName}>{showName}</Text>
-              <View style={styles.timelineContainer}>
-                <EpisodeTimelineScrubber
-                  setScrubFinished={setScrubFinished}
-                  episodeRuntime={episodeRuntime}
-                  currentSeconds={currentSeconds}
-                  setCurrentSeconds={setCurrentSeconds}
-                  isPlaying={isPlaying}
-                  setIsPlaying={setIsPlaying}
-                  isScrubbing={isScrubbing}
-                  setIsScrubbing={setIsScrubbing}
-                />
-              </View>
-            </LinearGradient>
-          </ImageBackground>
-          <View style={styles.paragraph}>
-            <Text
-              style={styles.description}
-              numberOfLines={expanded ? undefined : 3}
-            >
-              {synopsis}
-            </Text>
-            <Text
-              style={styles.readMore}
-              onPress={() => setExpanded(!expanded)}
-            >
-              {expanded ? "Read less" : "Read more"}
-            </Text>
+              <Text
+                style={styles.readMore}
+                onPress={() => setExpanded(!expanded)}
+              >
+                {expanded ? "Read less" : "Read more"}
+              </Text>
+            </View>
+            <View styles={{ height: 220, justifyContent: "center" }}>
+              <PollsList />
+            </View>
           </View>
-          <View styles={{ height: 220, justifyContent: "center" }}>
-            <PollsList />
-          </View>
-        </View>
 
           <Comments
             setScrubFinished={setScrubFinished}
