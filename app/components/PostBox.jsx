@@ -1,16 +1,16 @@
 import {
-  KeyboardAvoidingView,
-  Platform,
+  ScrollView,
+  View,
+  Text,
   StyleSheet,
   TextInput,
   Image,
-  View,
   TouchableOpacity,
 } from "react-native";
-import { useContext } from "react";
-import { UserContext } from "../context/User";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
+import { useContext } from "react";
+import { UserContext } from "../context/User.jsx";
 
 const PostBox = ({ comment_id, episode_id, style }) => {
   const { loggedInUser } = useContext(UserContext);
@@ -20,12 +20,8 @@ const PostBox = ({ comment_id, episode_id, style }) => {
     console.log(input);
     setInput("");
   };
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={[styles.container, style]}
-    >
+    <View style={[styles.container, style]}>
       <Image style={styles.avatar} source={{ uri: loggedInUser.avatar_url }} />
       <View style={styles.inputWrapper}>
         <TextInput
@@ -39,9 +35,10 @@ const PostBox = ({ comment_id, episode_id, style }) => {
           <Send width={20} height={20} />
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     borderRadius: 30,
@@ -51,6 +48,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 15,
     paddingBottom: 15,
+    backgroundColor: "#101010",
     flexDirection: "row",
     alignItems: "center",
     gap: 10,

@@ -17,6 +17,7 @@ import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
 import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
+import PostBox from "../components/PostBox.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
 import PostBox from "../components/PostBox.jsx";
@@ -159,6 +160,60 @@ export default function LiveChatPage() {
             </View>
           </View>
 
+        <View style={styles.container}>
+          <ImageBackground
+            source={{ uri: episode.episode_url }}
+            style={styles.heroImage}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(102,102,102,0)",
+                "rgba(16,16,16,0.90)",
+                "rgba(16,16,16,1)",
+              ]}
+              locations={[0.01, 0.7, 1]}
+              style={styles.heroOverlay}
+            >
+              <Text style={styles.title}>
+                S{seasonNumber} Ep:{" "}
+                {!episode.episode_number
+                  ? "Season special"
+                  : episode.episode_number}
+              </Text>
+              <Text style={styles.showName}>{showName}</Text>
+              <View style={styles.timelineContainer}>
+                <EpisodeTimelineScrubber
+                  setScrubFinished={setScrubFinished}
+                  episodeRuntime={episodeRuntime}
+                  currentSeconds={currentSeconds}
+                  setCurrentSeconds={setCurrentSeconds}
+                  isPlaying={isPlaying}
+                  setIsPlaying={setIsPlaying}
+                  isScrubbing={isScrubbing}
+                  setIsScrubbing={setIsScrubbing}
+                />
+              </View>
+            </LinearGradient>
+          </ImageBackground>
+          <View style={styles.paragraph}>
+            <Text
+              style={styles.description}
+              numberOfLines={expanded ? undefined : 3}
+            >
+              {synopsis}
+            </Text>
+            <Text
+              style={styles.readMore}
+              onPress={() => setExpanded(!expanded)}
+            >
+              {expanded ? "Read less" : "Read more"}
+            </Text>
+          </View>
+          <View styles={{ height: 220, justifyContent: "center" }}>
+            <PollsList />
+          </View>
+        </View>
+
           <Comments
             setScrubFinished={setScrubFinished}
             scrubFinished={scrubFinished}
@@ -179,6 +234,14 @@ export default function LiveChatPage() {
         />
       </View>
       {showPost && <PostBox episode_id={id} style={styles.postBar} />}
+      <View style={styles.fab}>
+        <FloatingButton
+          episodeId={episode.episode_id}
+          showPost={showPost}
+          setShowPost={setShowPost}
+        />
+      </View>
+      {showPost && <PostBox episode_id={id} style={styles.postBar} />}
     </View>
   );
 }
@@ -187,7 +250,7 @@ const styles = StyleSheet.create({
   postBar: {
     position: "absolute",
     width: "80%",
-    bottom: 35,
+    bottom: 25,
     left: 0,
     right: 0,
   },
