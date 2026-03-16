@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -9,7 +9,6 @@ const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
-  scrubFinished,
   setScrubFinished,
   setIsScrubbing,
   currentSeconds,
@@ -18,8 +17,15 @@ export default function EpisodeTimelineScrubber({
   setIsPlaying,
 }) {
   const [episodeFinished, setEpisodeFinished] = useState(false);
+  const [scrubWidth, setScrubWidth] = useState(0);
+  const scrubPositionRef = useRef(currentSeconds);
 
   const runtimeSeconds = episodeRuntime * 60;
+
+  // keep scrubWidth in sync with playback, but not during scrubbing
+  useEffect(() => {
+    setScrubWidth((currentSeconds / runtimeSeconds) * trackWidth);
+  }, [currentSeconds]);
 
   const formatRuntime = (seconds) => {
     if (!seconds) return "";
@@ -46,26 +52,12 @@ export default function EpisodeTimelineScrubber({
     }
   }, [isPlaying, episodeFinished]);
 
-  const roundedSeconds = Math.floor(currentSeconds);
-  let minutes = Math.floor(roundedSeconds / 60);
-  let seconds = Math.floor(roundedSeconds % 60);
-
-  let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
-
   const confineAndConvertXPosition = (x) => {
-    let limitedX = Math.max(0, Math.min(x, trackWidth));
-
-    if (limitedX < 0) {
-      limitedX = 0;
-    }
-
-    if (limitedX > trackWidth) {
-      limitedX = trackWidth;
-    }
-
-    const seconds = (limitedX / trackWidth) * runtimeSeconds;
-
-    setCurrentSeconds(seconds);
+    const limitedX = Math.max(0, Math.min(x, trackWidth));
+    const seconds = Math.floor((limitedX / trackWidth) * runtimeSeconds);
+    scrubPositionRef.current = seconds;
+    // only update local visual state — parent stays frozen during drag
+    setScrubWidth(limitedX);
   };
 
   const handlePress = (event) => {
@@ -77,7 +69,9 @@ export default function EpisodeTimelineScrubber({
     setIsPlaying(!isPlaying);
   };
 
-  const leftOffset = 0;
+  const displaySeconds = Math.floor((scrubWidth / trackWidth) * runtimeSeconds);
+  const minutes = Math.floor(displaySeconds / 60);
+  const seconds = displaySeconds % 60;
 
   return (
     <View>
@@ -85,7 +79,7 @@ export default function EpisodeTimelineScrubber({
         <Text
           style={[
             styles.timeDisplay,
-            { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
+            { transform: [{ translateX: scrubWidth - 25 }] },
           ]}
         >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
       </View>
@@ -96,14 +90,15 @@ export default function EpisodeTimelineScrubber({
           onMoveShouldSetResponder={() => true}
           onResponderGrant={() => {
             setIsScrubbing(true);
-            handlePress;
           }}
           onResponderMove={handlePress}
           onResponderRelease={() => {
+            setCurrentSeconds(scrubPositionRef.current); // commit to parent on release
             setIsScrubbing(false);
             setScrubFinished(true);
           }}
           onResponderTerminate={() => {
+            setCurrentSeconds(scrubPositionRef.current);
             setIsScrubbing(false);
             setScrubFinished(true);
           }}
@@ -111,10 +106,10 @@ export default function EpisodeTimelineScrubber({
           <View
             style={[
               styles.currentPosition,
-              { transform: [{ translateX: currentWidth - 5 }] },
+              { transform: [{ translateX: scrubWidth - 5 }] },
             ]}
           />
-          <View style={[styles.purpleProgressBar, { width: currentWidth }]} />
+          <View style={[styles.purpleProgressBar, { width: scrubWidth }]} />
         </View>
 
         <View style={styles.controlsRow}>
