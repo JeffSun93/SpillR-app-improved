@@ -21,7 +21,7 @@ export default function FriendsAreWatching() {
 const styles = StyleSheet.create({
   description: {
     textAlign: "left",
-    color: "white",
+    color: "#8F8D90",
   },
   container: {
     marginTop: 40,

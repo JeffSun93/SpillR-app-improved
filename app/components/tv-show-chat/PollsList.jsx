@@ -74,9 +74,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    marginTop: 20,
+    marginTop: 0,
     marginLeft: 20,
-    marginBottom: 10,
+    marginBottom: 0,
     fontSize: 20,
     color: "white",
   },

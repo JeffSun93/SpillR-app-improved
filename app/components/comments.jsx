@@ -1,43 +1,85 @@
-import { Image, View, Text, StyleSheet } from "react-native";
-import { getUserById } from "../../../utils/utilsFunctions.js";
+import { ScrollView, View, Text, StyleSheet } from "react-native";
+import CommentCard from "./commentCard";
+import { getCommentsByEpisodeId } from "../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect } from "react";
-// import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { commentStyles } from "../../styles/commentStyles";
+import emojiLookup from "../../utils/emojiLookupObject.js";
 
-export default function CommentCard(props) {
-  const { body, user_id, created_at } = props;
-  const [username, setUserName] = useState(null);
-  const [userurl, setUserurl] = useState(null);
-  const [commentTime, setCommentTime] = useState(null);
+export default function Comments(props) {
+  const [comments, setComments] = useState([]);
+  const { currentSeconds, episode_id, isHome, userComments, isChat } = props;
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!user_id) return;
-      const result = await getUserById(user_id);
-      console.log(result);
-      setUserName(result.username);
-      setUserurl(result.avatar_url);
-      setCommentTime(created_at);
+    if (!episode_id) {
+      if (userComments) setComments(userComments);
+      return;
+    }
+    const fetchComments = async (id) => {
+      const results = await getCommentsByEpisodeId(id);
+      setComments(results);
     };
-    fetchUser();
-  }, [user_id]);
-  return (
-    <>
-      <Image style={styles.commentAvatar} source={{ uri: userurl }} />
-      <View style={styles.commentContent}>
-        <View style={styles.commentTopRow}>
-          <Text style={styles.commentUser}>@{username}</Text>
-          <Text style={styles.commentTime}>{commentTime}</Text>
-        </View>
+    fetchComments(episode_id);
+  }, [episode_id]);
 
-        <Text style={styles.commentMeta}>
-          you replied to @jazzmine1256 Love Island S4:
+  const filteredCommentsByRuntimeRange = comments.filter(
+    // needs to be fetched later instead
+    (comment) =>
+      comment.runtime_seconds >= currentSeconds - 1200 &&
+      comment.runtime_seconds <= currentSeconds,
+  );
+  return (
+    <ScrollView
+      style={commentStyles.commentsBox}
+      nestedScrollEnabled
+      showsVerticalScrollIndicator={false}
+    >
+      {filteredCommentsByRuntimeRange?.length > 0 ? (
+        filteredCommentsByRuntimeRange.map((comment) => {
+          return (
+            <View key={comment.comment_id}>
+              <CommentCard
+                isChat={isChat}
+                isLive={comment.is_live}
+                user_id={comment.user_id}
+                body={
+                  comment.body
+                    ? comment.body
+                    : emojiLookup(comment.reaction_type)
+                }
+                created_at={comment.created_at}
+                comment_id={comment.comment_id}
+                runtime_seconds={comment.runtime_seconds}
+                season_number={comment.season_number}
+                episode_number={comment.episode_number}
+                tv_show_name={comment.tv_show_name}
+                type={comment.Commenttype}
+                reactions_total={comment.reactions_total}
+                repliesTotal={comment.repliesTotal}
+                isReaction={comment.reaction_id}
+                isReply={comment.reply_id}
+                reactionType_total={comment.reactionType_total}
+              />
+
+              <View style={styles.divider} />
+            </View>
+          );
+        })
+      ) : (
+        <Text style={styles.noComments}>
+          {isHome
+            ? null
+            : `No reactions at this timestamp yet, keep playing to see more... or be the first?`}
         </Text>
-        <Text style={styles.commentText}>{body}</Text>
-      </View>
-    </>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  noComments: {
+    color: "#8E8E8E",
+    fontWeight: 700,
+  },
+
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",

@@ -9,142 +9,104 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { commentStyles } from "../../../styles/commentStyles";
+import Comments from "../comments";
+import ProfileHeader from "./Header";
+import SubLi from "./SubscribedLi";
 
 export default function UserPage() {
   const { loggedInUser } = useContext(UserContext);
+  const userComments = [
+    {
+      comment_id: 1,
+      user_id: loggedInUser.user_id,
+      body: "Exactly, why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
+      created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+      reply_id: "r1",
+      tv_show_name: "Love Island",
+      season_number: 4,
+      episode_number: 3,
+      reactions_total: 100,
+      reactionType_total: {
+        angryTotal: 10,
+        laughingTotal: 40,
+        sadTotal: 5,
+        fireTotal: 20,
+        deadTotal: 15,
+        heartTotal: 10,
+      },
+    },
+    {
+      comment_id: 2,
+      user_id: loggedInUser.user_id,
+      reaction_type: "laughing",
+      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      reaction_id: "re1",
+      tv_show_name: "Traitors",
+      season_number: 4,
+      episode_number: 2,
+    },
+    {
+      comment_id: 3,
+      user_id: loggedInUser.user_id,
+      body: "This cast is so messy but I cannot stop watching",
+      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+      tv_show_name: "Geordie Shore",
+      season_number: 12,
+      episode_number: 1,
+      repliesTotal: 12,
+      reactions_total: 120,
+      reactionType_total: {
+        angryTotal: 70,
+        laughingTotal: 6,
+        sadTotal: 10,
+        fireTotal: 7,
+        deadTotal: 9,
+        heartTotal: 20,
+      },
+    },
+  ];
 
+  for (let i = 0; i < userComments.length; i++) {
+    let type = "";
+    const obj = userComments[i];
+    const keys = Object.keys(obj);
+
+    if (keys.includes("reply_id")) {
+      type = "reply";
+    } else if (keys.includes("reaction_id")) {
+      type = "reaction";
+    } else {
+      type = "comment";
+    }
+
+    obj.Commenttype = type;
+  }
+  const firstName = loggedInUser.name.split(" ")[0];
   return (
-    <SafeAreaView style={styles.scrollArea}>
+    <View style={styles.scrollArea}>
       <ScrollView>
         <View style={styles.pageColor}>
-          <View style={styles.buttonNameContainer}>
-            <View style={styles.nameContainer}>
-              <Text style={styles.username}>{loggedInUser.name}</Text>
-              <Text style={styles.handle}>@{loggedInUser.username}</Text>
-            </View>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.buttonText}>Edit</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.profileRow}>
-            <Image
-              style={styles.userImage}
-              source={{ uri: loggedInUser.avatar_url }}
-            />
-
-            <View style={styles.statsContainer}>
-              <View style={styles.stat}>
-                <Text style={styles.statNumber}>10</Text>
-                <Text style={styles.statLabel}>Friends</Text>
-              </View>
-
-              <View style={styles.stat}>
-                <Text style={styles.statNumber}>19</Text>
-                <Text style={styles.statLabel}>Subscribed</Text>
-              </View>
-            </View>
-          </View>
-
-          <Text style={styles.bio}>
-            Love Island is life!!! Also stream the new BTS album if you're a
-            real one and not an OP x
-          </Text>
+          <ProfileHeader />
 
           <Text style={styles.sectionTitle}>Subscribed Shows</Text>
 
-          <View style={styles.showContainer}>
-            <Image
-              style={styles.showCard}
-              source={require("../../../assets/geordie-shore.png")}
-            />
-
-            <Image
-              style={styles.showCard}
-              source={require("../../../assets/traitors.png")}
-            />
-          </View>
+          <SubLi />
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <ScrollView
-            style={styles.commentsBox}
-            nestedScrollEnabled
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.commentRow}>
-              <Image
-                style={styles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={styles.commentContent}>
-                <View style={styles.commentTopRow}>
-                  <Text style={styles.commentUser}>@theesudani</Text>
-                  <Text style={styles.commentTime}>2m</Text>
-                </View>
-                <Text style={styles.commentMeta}>
-                  you replied to @jazzmine1256 Love Island S4:
-                </Text>
-                <Text style={styles.commentText}>
-                  Why would you volunteer that you've been with 5 girls in a
-                  night willingly? No gun to your head
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.commentRow}>
-              <Image
-                style={styles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={styles.commentContent}>
-                <View style={styles.commentTopRow}>
-                  <Text style={styles.commentUser}>@theesudani</Text>
-                  <Text style={styles.commentTime}>2h</Text>
-                </View>
-                <Text style={styles.commentMeta}>
-                  you reacted to @jazzmine1256 comment on Traitors S4 E2:
-                </Text>
-                <Text style={styles.commentText}>
-                  I am crying because she was wrong from the start and still so
-                  confident about it
-                </Text>
-              </View>
-            </View>
-
-            <View style={styles.divider} />
-
-            <View style={styles.commentRow}>
-              <Image
-                style={styles.commentAvatar}
-                source={{ uri: loggedInUser.avatar_url }}
-              />
-              <View style={styles.commentContent}>
-                <View style={styles.commentTopRow}>
-                  <Text style={styles.commentUser}>@theesudani</Text>
-                  <Text style={styles.commentTime}>1d</Text>
-                </View>
-                <Text style={styles.commentMeta}>
-                  you commented on Geordie Shore:
-                </Text>
-                <Text style={styles.commentText}>
-                  This cast is so messy but I cannot stop watching
-                </Text>
-              </View>
-            </View>
-          </ScrollView>
+          <Comments userComments={userComments} isHome={true} />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   scrollArea: {
+    paddingTop: 30,
     flex: 1,
-    backgroundColor: "#232222",
+    backgroundColor: "#101010",
   },
   nameContainer: {
     flex: 1,
@@ -165,19 +127,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    paddingHorizontal: "7.5%",
+    paddingHorizontal: "20",
     marginTop: 50,
   },
 
   handle: {
     color: "#a4a4a4ff",
-    paddingLeft: "7.5%",
+
     marginTop: 10,
     fontSize: 15,
   },
 
   editButton: {
-    marginTop: 50,
+    marginTop: 25,
     borderColor: "#2663f4",
     borderWidth: 1.2,
     borderRadius: 15,
@@ -201,7 +163,7 @@ const styles = StyleSheet.create({
   },
   userImage: {
     marginTop: 20,
-    marginLeft: "10%",
+    marginLeft: 20,
     height: 100,
     width: 100,
     borderRadius: 50,
@@ -228,13 +190,17 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     marginTop: 10,
     marginLeft: 20,
+    marginRight: 22,
     lineHeight: 20,
+
+    paddingVertical: 8,
   },
   sectionTitle: {
     color: "#8E8E8E",
     marginTop: 30,
     marginLeft: 20,
     marginBottom: 10,
+    fontWeight: 700,
   },
   showContainer: {
     flexDirection: "row",
@@ -245,57 +211,5 @@ const styles = StyleSheet.create({
     width: 185,
     height: 140,
     borderRadius: 14,
-  },
-  commentsBox: {
-    height: 230,
-    marginHorizontal: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  commentRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 14,
-  },
-  commentAvatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    marginRight: 10,
-    marginTop: 2,
-  },
-  commentContent: {
-    flex: 1,
-  },
-  commentTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  commentUser: {
-    color: "white",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  commentTime: {
-    color: "#8E8E8E",
-    fontSize: 12,
-  },
-  commentMeta: {
-    color: "#8E8E8E",
-    fontSize: 12,
-    marginTop: 2,
-    marginBottom: 4,
-  },
-  commentText: {
-    color: "white",
-    fontSize: 14,
-    lineHeight: 20,
-    paddingRight: 8,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#3a3a3a",
-    marginVertical: 10,
   },
 });

@@ -6,9 +6,9 @@ export default function Header() {
   return (
     <View style={globalStyles.container}>
       <View style={styles.titleContainer}>
-        <TitleText style={styles.header}>SpillR</TitleText>
+        <TitleText style={styles.header}></TitleText>
       </View>
-      <TitleText>Trending</TitleText>
+      <TitleText>Trending UK</TitleText>
     </View>
   );
 }

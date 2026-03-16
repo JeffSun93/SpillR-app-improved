@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
@@ -13,6 +17,13 @@ export default function EpisodeTimelineScrubber({
   const [episodeFinished, setEpisodeFinished] = useState(false);
 
   const runtimeSeconds = episodeRuntime * 60;
+
+  const formatRuntime = (seconds) => {
+    if (!seconds) return "";
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (isPlaying && !episodeFinished) {
@@ -36,7 +47,6 @@ export default function EpisodeTimelineScrubber({
   let minutes = Math.floor(roundedSeconds / 60);
   let seconds = Math.floor(roundedSeconds % 60);
 
-  const trackWidth = 300;
   let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
 
   const confineAndConvertXPosition = (x) => {
@@ -64,30 +74,22 @@ export default function EpisodeTimelineScrubber({
     setIsPlaying(!isPlaying);
   };
 
-  const leftOffset = 32;
+  const leftOffset = 0;
 
   return (
     <View>
-      <Text
-        style={[
-          styles.timeDisplay,
-          { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
-        ]}
-      >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      <View>
+        <Text
+          style={[
+            styles.timeDisplay,
+            { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
+          ]}
+        >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      </View>
       <View style={styles.buttonAndBarContainer}>
-        <Pressable
-          style={styles.buttonContainer}
-          onPress={handlePressPlayPause}
-        >
-          {isPlaying ? (
-            <AntDesign name="pause" style={styles.playOrPauseButton} />
-          ) : (
-            <Entypo name="controller-play" style={styles.playOrPauseButton} />
-          )}
-        </Pressable>
         <View
           style={styles.greyTrackBar}
-          onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
+          onStartShouldSetResponder={() => true}
           onMoveShouldSetResponder={() => true}
           onResponderGrant={() => {
             setIsScrubbing(true);
@@ -102,10 +104,24 @@ export default function EpisodeTimelineScrubber({
               styles.currentPosition,
               { transform: [{ translateX: currentWidth - 5 }] },
             ]}
-          ></View>
-          <View
-            style={[styles.purpleProgressBar, { width: currentWidth }]}
-          ></View>
+          />
+          <View style={[styles.purpleProgressBar, { width: currentWidth }]} />
+        </View>
+
+        <View style={styles.controlsRow}>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={handlePressPlayPause}
+          >
+            {isPlaying ? (
+              <AntDesign name="pause" style={styles.playOrPauseButton} />
+            ) : (
+              <Entypo name="controller-play" style={styles.playOrPauseButton} />
+            )}
+          </Pressable>
+          <Text style={styles.runtimeDisplay}>
+            {formatRuntime(runtimeSeconds)}
+          </Text>
         </View>
       </View>
     </View>
@@ -114,9 +130,14 @@ export default function EpisodeTimelineScrubber({
 
 const styles = StyleSheet.create({
   buttonAndBarContainer: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  controlsRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 15,
+    justifyContent: "space-between",
+    width: screenWidth - 65,
   },
   buttonContainer: {
     justifyContent: "center",
@@ -125,18 +146,19 @@ const styles = StyleSheet.create({
   },
   playOrPauseButton: {
     fontSize: 20,
+    paddingTop: 10,
     color: "white",
   },
   greyTrackBar: {
     height: 8,
-    width: 300,
+    width: screenWidth - 65,
     borderRadius: 5,
     backgroundColor: "#c4c4c4ac",
   },
   purpleProgressBar: {
     height: 8,
     borderRadius: 5,
-    backgroundColor: "#9D00FF",
+    backgroundColor: "#E500FF",
   },
   currentPosition: {
     position: "absolute",
@@ -147,7 +169,15 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   timeDisplay: {
+    marginBottom: 8,
     marginTop: 5,
+    color: "white",
+    width: 50,
+    textAlign: "center",
+  },
+  runtimeDisplay: {
+    marginBottom: 8,
+    marginTop: 8,
     color: "white",
     width: 50,
     textAlign: "center",

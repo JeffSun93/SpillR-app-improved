@@ -30,8 +30,8 @@ export async function getSeasonsByShowId(showId) {
   let { data, error } = await supabase
     .from("seasons")
     .select("*")
-    .eq("tv_show_id", showId);
-
+    .eq("tv_show_id", showId)
+    .order("season_number", { ascending: true });
   if (error) {
     throw error;
   }
@@ -42,8 +42,8 @@ export async function getEpisodesBySeasonId(seasonId) {
   let { data, error } = await supabase
     .from("episodes")
     .select("*")
-    .eq("season_id", seasonId);
-
+    .eq("season_id", seasonId)
+    .order("episode_number", { ascending: false });
   if (error) {
     throw error;
   }
@@ -70,6 +70,21 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
     show,
     seasons: seasonsWithEpisodes,
   };
+}
+
+export async function getSeasonsAndEpisodesByShowId(showId) {
+  const seasons = await getSeasonsByShowId(showId);
+  const seasonsWithEpisodes = [];
+
+  for (const season of seasons) {
+    const episodes = await getEpisodesBySeasonId(season.season_id);
+    seasonsWithEpisodes.push({
+      ...season,
+      episodes,
+    });
+  }
+
+  return { seasons: seasonsWithEpisodes };
 }
 
 export async function getEpisodeById(id) {
@@ -172,10 +187,9 @@ export async function getUserById(userId) {
     .from("profiles")
     .select("*")
     .eq("user_id", userId)
-    .single();
-  if (error) {
-    throw error;
-  }
+    .maybeSingle();
+
+  if (error) throw error;
   return data;
 }
 

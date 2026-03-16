@@ -2,11 +2,14 @@ import { View, ScrollView } from "react-native";
 import Header from "../components/home-page/header";
 import Trending from "../components/home-page/trending";
 import FriendsAreWatching from "../components/home-page/friendsAreWatching";
-import Comments from "../components/home-page/comments";
+import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useState } from "react";
 
 export default function Home() {
+  const [isHome, setIsHome] = useState(true);
+
   return (
     <SafeAreaView style={globalStyles.container}>
       <ScrollView
@@ -17,7 +20,7 @@ export default function Home() {
           <Header />
           <Trending />
           <FriendsAreWatching />
-          <Comments />
+          <Comments isHome={isHome} />
         </View>
       </ScrollView>
     </SafeAreaView>
