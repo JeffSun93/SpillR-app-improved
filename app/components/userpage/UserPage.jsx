@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { commentStyles } from "../../../styles/commentStyles";
-import Comments from "../comments";
+import Comments from "../Comments";
 import ProfileHeader from "./Header";
 import SubLi from "./SubscribedLi";
 
