@@ -8,8 +8,6 @@ import { useState, useEffect, useRef } from "react";
 import { commentStyles } from "../../styles/commentStyles";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 
-const SPOILER_DELAY = 30;
-
 export default function Comments(props) {
   const {
     setScrubFinished,
@@ -145,6 +143,8 @@ export default function Comments(props) {
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingBottom: 350 }}
       showsVerticalScrollIndicator={false}
     >
       {comments?.length > 0 ? (
@@ -294,7 +294,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   commentsBox: {
-    height: 230,
+    overflow: "visible",
+    flex: 1,
     marginHorizontal: 15,
     paddingHorizontal: 10,
     paddingVertical: 8,

@@ -1,4 +1,10 @@
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
 import SearchBar from "../components/searchBar";
@@ -10,6 +16,7 @@ import {
 } from "../../utils/utilsFunctions";
 import { globalStyles } from "../../styles/globalStyles";
 import TitleText from "../components/ui/TitleText";
+import { color } from "../../theme/color";
 
 export default function Search() {
   const [searchPhrase, setSearchPhrase] = useState("");
@@ -79,7 +86,7 @@ export default function Search() {
         ListFooterComponent={
           <View style={{ marginTop: 20 }}>
             {notFound && !loading && <Text>No shows found</Text>}
-            <Text style={globalStyles.title}>People liked</Text>
+            <Text style={globalStyles.sectionTitle}>People liked</Text>
             <Trending />
           </View>
         }
@@ -98,3 +105,14 @@ export default function Search() {
     </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 30,
+    color: "#ffffff",
+  },
+  titleContainer: {
+    alignItems: "center",
+    marginBottom: 5,
+  },
+});

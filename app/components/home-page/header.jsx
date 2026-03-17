@@ -8,7 +8,7 @@ export default function Header() {
       <View style={styles.titleContainer}>
         <TitleText style={styles.header}></TitleText>
       </View>
-      <TitleText>Trending UK</TitleText>
+      <TitleText style={globalStyles.sectionTitle}>Trending UK</TitleText>
     </View>
   );
 }

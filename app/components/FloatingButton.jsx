@@ -4,7 +4,13 @@ import PlusButton from "../../assets/Plus-button";
 import FloatingButtonMenu from "./FloatingButtonMenu";
 import EmojiPicker from "./EmojiPicker.jsx";
 
-export default function FloatingButton({ episodeId, showPost, setShowPost }) {
+export default function FloatingButton({
+  episodeId,
+  showPost,
+  setShowPost,
+  showPollInput,
+  setShowPollInput,
+}) {
   const [isClicked, setIsClicked] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -34,6 +40,8 @@ export default function FloatingButton({ episodeId, showPost, setShowPost }) {
             episodeId={episodeId}
             setShowPost={setShowPost}
             showPost={showPost}
+            setShowPollInput={setShowPollInput}
+            showPollInput={showPollInput}
             showEmojiPicker={showEmojiPicker}
             setShowEmojiPicker={setShowEmojiPicker}
           />

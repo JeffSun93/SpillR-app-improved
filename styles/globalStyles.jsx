@@ -10,7 +10,7 @@ export const globalStyles = StyleSheet.create({
 
   sectionTitle: {
     color: theme.color.text,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
     marginBottom: theme.spacing.sm,
   },

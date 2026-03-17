@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useContext } from "react";
-import { UserContext } from "../context/User";
+import { UserContext } from "../context/User.jsx";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
 
@@ -53,12 +53,14 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
+    gap: 5,
   },
   avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 35,
+    height: 35,
+    borderWidth: 0.5,
+    borderColor: "#ffffff",
+    borderRadius: 20,
     marginLeft: 0,
   },
   inputWrapper: {

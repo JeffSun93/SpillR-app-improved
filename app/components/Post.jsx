@@ -95,7 +95,7 @@ const Post = ({ comment_id, runtime_seconds, style }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 2,
+    paddingLeft: 20,
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 16,

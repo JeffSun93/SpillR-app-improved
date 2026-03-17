@@ -7,6 +7,8 @@ import { useState, useEffect, useContext } from "react";
 export default function FloatingButtonMenu({
   showPost,
   setShowPost,
+  setShowPollInput,
+  showPollInput,
   showEmojiPicker,
   setShowEmojiPicker,
   episodeId,
@@ -30,7 +32,10 @@ export default function FloatingButtonMenu({
       >
         <Reaction />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconGroup}>
+      <TouchableOpacity
+        style={styles.iconGroup}
+        onPress={() => setShowPollInput(!showPollInput)}
+      >
         <PollsIcon />
       </TouchableOpacity>
     </View>
