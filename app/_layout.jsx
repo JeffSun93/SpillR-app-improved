@@ -26,6 +26,7 @@ export default function RootLayout() {
           name="episode-live-chat"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="FriendList" options={{ headerShown: false }} />
       </Stack>
     </UserProvider>
   );

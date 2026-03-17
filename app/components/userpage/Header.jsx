@@ -34,7 +34,18 @@ export default function ProfileHeader({ userObj }) {
 
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
-            <TouchableOpacity style={{ alignItems: "center" }}>
+            <TouchableOpacity
+              style={{ alignItems: "center" }}
+              onPress={() =>
+                router.push({
+                  pathname: "/FriendList/[id]",
+                  params: {
+                    id: userObj.user_id,
+                    friendList: JSON.stringify(userObj.friends),
+                  },
+                })
+              }
+            >
               <Text style={styles.statNumber}>{userObj.friend_count}</Text>
               <Text style={styles.statLabel}>Friends</Text>
             </TouchableOpacity>

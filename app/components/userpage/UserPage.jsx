@@ -19,16 +19,19 @@ import { getUserByIdAPI } from "../../../utils/utilsFunctions";
 export default function UserPage() {
   const { loggedInUser } = useContext(UserContext);
   const [userObj, setUserObj] = useState({});
+  const [subscriptions, setSubscriptions] = useState([]);
 
   useEffect(() => {
     const fetchUserById = async () => {
       const result = await getUserByIdAPI(loggedInUser.user_id);
       setUserObj(result);
+      setSubscriptions(result.subscriptions);
     };
 
     fetchUserById();
   }, [loggedInUser.user_id]);
 
+  console.log(subscriptions);
   const userComments = [
     {
       comment_id: 1,
@@ -104,7 +107,7 @@ export default function UserPage() {
 
           <Text style={styles.sectionTitle}>Subscribed Shows</Text>
 
-          <SubLi userSubscriptions={userObj.subscriptions} />
+          <SubLi userSubscriptions={subscriptions} />
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
