@@ -34,3 +34,15 @@ export async function getRepliesByCommentId(comment_id) {
     throw error;
   }
 }
+
+export async function getTrendingTvShows() {
+  try {
+    const { data } = await axios.get(
+      "https://spillr-be.onrender.com/api/tv-shows?sort_by=comments&order=desc",
+    );
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
