@@ -21,6 +21,7 @@ import PostBox from "../components/PostBox.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
 
+export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
 
   //   const navigation = useNavigation();
@@ -32,7 +33,6 @@ import { EpisodeProvider } from "../context/Episode";
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [scrubFinished, setScrubFinished] = useState(false);
   const [showPost, setShowPost] = useState(false);
-  const [showPost, setShowPost] = useState(false);
 
   useEffect(() => {
     async function loadEpisode() {
@@ -43,18 +43,7 @@ import { EpisodeProvider } from "../context/Episode";
 
     loadEpisode();
   }, [id]);
-
-  useEffect(() => {
-    if (isPlaying && !socket.connected) {
-      socket.connect();
-      socket.emit("room:join", id);
-      console.log(`socket connected and joined room ${id}`);
-    }
-    return () => {
-      socket.disconnect();
-    };
-  }, [isPlaying]);
-
+t 
   useEffect(() => {
     if (isPlaying && !socket.connected) {
       socket.connect();
@@ -89,211 +78,11 @@ import { EpisodeProvider } from "../context/Episode";
           }}
         />
 
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
         <EpisodeProvider episodeId={episode.episode_id}>
-          <View style={styles.floating}>
-            <FloatingButton episodeId={episode.episode_id} />
-          </View>
-          <EpisodeProvider episodeId={episode.episode_id}>
-          <View style={styles.floating}>
-            <FloatingButton episodeId={episode.episode_id} />
-          </View>
           <View style={styles.container}>
             <ImageBackground
               source={{ uri: episode.episode_url }}
               style={styles.heroImage}
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
-        <EpisodeProvider episodeId={episode.episode_id}>
-          <View style={styles.floating}>
-            <FloatingButton episodeId={episode.episode_id} />
-          </View>
-          <EpisodeProvider episodeId={episode.episode_id}>
-          <View style={styles.floating}>
-            <FloatingButton episodeId={episode.episode_id} />
-          </View>
-          <View style={styles.container}>
-            <ImageBackground
-              source={{ uri: episode.episode_url }}
-              style={styles.heroImage}
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
-        <EpisodeProvider episodeId={episode.episode_id}>
-          <View style={styles.floating}>
-            <FloatingButton episodeId={episode.episode_id} />
-          </View>
-          <View style={styles.container}>
-            <ImageBackground
-              source={{ uri: episode.episode_url }}
-              style={styles.heroImage}
-            >
-              <LinearGradient
-                colors={[
-                  "rgba(102,102,102,0)",
-                  "rgba(16,16,16,0.90)",
-                  "rgba(16,16,16,1)",
-                ]}
-                locations={[0.01, 0.7, 1]}
-                style={styles.heroOverlay}
-              >
-                <Text style={styles.title}>
-                  S{seasonNumber} Ep:{" "}
-                  {!episode.episode_number
-                    ? "Season special"
-                    : episode.episode_number}
-                </Text>
-                <Text style={styles.showName}>{showName}</Text>
-                <View style={styles.timelineContainer}>
-                  <EpisodeTimelineScrubber
-                    setScrubFinished={setScrubFinished}
-                    episodeRuntime={episodeRuntime}
-                    currentSeconds={currentSeconds}
-                    setCurrentSeconds={setCurrentSeconds}
-                    isPlaying={isPlaying}
-                    setIsPlaying={setIsPlaying}
-                    isScrubbing={isScrubbing}
-                    setIsScrubbing={setIsScrubbing}
-                  />
-                </View>
-              </LinearGradient>
-            </ImageBackground>
-            <View style={styles.paragraph}>
-              <Text
-                style={styles.description}
-                numberOfLines={expanded ? undefined : 3}
-              >
-                {synopsis}
-              </Text>
-              <Text
-                style={styles.readMore}
-                onPress={() => setExpanded(!expanded)}
-              >
-                {expanded ? "Read less" : "Read more"}
-              </Text>
-            </View>
-            <View styles={{ height: 220, justifyContent: "center" }}>
-              <PollsList />
-            </View>
-          </View>
-
-        <View style={styles.container}>
-            <ImageBackground
-              source={{ uri: episode.episode_url }}
-              style={styles.heroImage}
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
-            >
-              <LinearGradient
-                colors={[
-                  "rgba(102,102,102,0)",
-                  "rgba(16,16,16,0.90)",
-                  "rgba(16,16,16,1)",
-                ]}
-                locations={[0.01, 0.7, 1]}
-                style={styles.heroOverlay}
-              >
-                <Text style={styles.title}>
-                  S{seasonNumber} Ep:{" "}
-                  {!episode.episode_number
-                    ? "Season special"
-                    : episode.episode_number}
-                </Text>
-                <Text style={styles.showName}>{showName}</Text>
-                <View style={styles.timelineContainer}>
-                  <EpisodeTimelineScrubber
-                    setScrubFinished={setScrubFinished}
-                    episodeRuntime={episodeRuntime}
-                    currentSeconds={currentSeconds}
-                    setCurrentSeconds={setCurrentSeconds}
-                    isPlaying={isPlaying}
-                    setIsPlaying={setIsPlaying}
-                    isScrubbing={isScrubbing}
-                    setIsScrubbing={setIsScrubbing}
-                  />
-                </View>
-              </LinearGradient>
-            </ImageBackground>
-            <View style={styles.paragraph}>
-              <Text
-                style={styles.description}
-                numberOfLines={expanded ? undefined : 3}
-              >
-                {synopsis}
-              </Text>
-              <Text
-                style={styles.readMore}
-                onPress={() => setExpanded(!expanded)}
-              >
-                {expanded ? "Read less" : "Read more"}
-              </Text>
-            </View>
-            <View styles={{ height: 220, justifyContent: "center" }}>
-              <PollsList />
-            </View>
-          </View>
-
-        <View style={styles.container}>
-            <ImageBackground
-              source={{ uri: episode.episode_url }}
-              style={styles.heroImage}
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
             >
               <LinearGradient
                 colors={[
@@ -364,14 +153,6 @@ import { EpisodeProvider } from "../context/Episode";
         />
       </View>
       {showPost && <PostBox episode_id={id} style={styles.postBar} />}
-      <View style={styles.fab}>
-        <FloatingButton
-          episodeId={episode.episode_id}
-          showPost={showPost}
-          setShowPost={setShowPost}
-        />
-      </View>
-      {showPost && <PostBox episode_id={id} style={styles.postBar} />}
     </View>
   );
 }
@@ -381,11 +162,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "80%",
     bottom: 25,
-    bottom: 25,
     left: 0,
     right: 0,
   },
-
   fab: {
     position: "absolute",
     bottom: 32,
@@ -423,7 +202,6 @@ const styles = StyleSheet.create({
   paragraph: {
     gap: 12,
     alignItems: "flex-start",
-    // marginLeft: 20,
     padding: 20,
     color: "white",
   },
@@ -434,7 +212,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexShrink: 0,
   },
-
   description: {
     flex: 1,
     flexWrap: "wrap",
