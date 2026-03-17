@@ -1,15 +1,15 @@
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../context/User";
-import { commentStyles } from "../../styles/commentStyles";
+import { UserContext } from "../context/User.jsx";
+import { commentStyles } from "../../styles/commentStyles.jsx";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";
-import Replies from "../../assets/comment";
-import Delete from "../../assets/delete";
-import Reaction from "../../assets/react";
+import Replies from "../../assets/comment.jsx";
+import Delete from "../../assets/delete.jsx";
+import Reaction from "../../assets/react.jsx";
 import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
-import RepliesList from "./RepliesList";
+import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
 
 //comment flow for a single comment card, complete with how long ago it was

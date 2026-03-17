@@ -1,11 +1,11 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import CommentCard from "./commentCard";
+import CommentCard from "./CommentCard.jsx";
 import {
   getCommentsByEpisodeId,
   getFilteredCommentsByEpisodeId,
 } from "../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect, useRef } from "react";
-import { commentStyles } from "../../styles/commentStyles";
+import { commentStyles } from "../../styles/commentStyles.jsx";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
 
