@@ -27,7 +27,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ focused }) => (
             <Image
               source={homeIcon}
-              tintColor={ focused ? "#fff" : "#9CA3AF",}
+              tintColor={focused ? "#fff" : "#9CA3AF"}
               style={{
                 width: 28,
                 height: 28,
@@ -44,7 +44,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ focused }) => (
             <Image
               source={searchIcon}
-              tintColor={ focused ? "#fff" : "#9CA3AF",}
+              tintColor={focused ? "#fff" : "#9CA3AF"}
               style={{
                 width: 28,
                 height: 28,
@@ -61,7 +61,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ focused }) => (
             <Image
               source={notificationIcon}
-              tintColor={ focused ? "#fff" : "#9CA3AF",}
+              tintColor={focused ? "#fff" : "#9CA3AF"}
               style={{
                 width: 28,
                 height: 28,
@@ -78,8 +78,7 @@ export default function TabsLayout() {
           tabBarIcon: ({ focused }) => (
             <Image
               source={userIcon}
-                              tintColor={ focused ? "#fff" : "#9CA3AF",}
-
+              tintColor={focused ? "#fff" : "#9CA3AF"}
               style={{
                 width: 28,
                 height: 28,
