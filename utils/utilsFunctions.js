@@ -17,9 +17,10 @@ export async function getTvShowById(id) {
   let { data, error } = await supabase // get tv show by id
     .from("tv_shows")
     .select("*")
-    .eq("tv_show_id", id)
+    .eq("tv_show_id", Number(id))
     .maybeSingle();
   console.log("Searching for show id:", id);
+
   if (error) {
     throw error;
   }
@@ -32,6 +33,7 @@ export async function getSeasonsByShowId(showId) {
     .select("*")
     .eq("tv_show_id", showId)
     .order("season_number", { ascending: true });
+
   if (error) {
     throw error;
   }
