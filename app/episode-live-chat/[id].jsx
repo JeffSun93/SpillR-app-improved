@@ -18,6 +18,8 @@ import FloatingButton from "../components/FloatingButton";
 import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostBox.jsx";
+import socket from "../../socket/connection";
+import { EpisodeProvider } from "../context/Episode";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -41,6 +43,17 @@ export default function LiveChatPage() {
 
     loadEpisode();
   }, [id]);
+t 
+  useEffect(() => {
+    if (isPlaying && !socket.connected) {
+      socket.connect();
+      socket.emit("room:join", id);
+      console.log(`socket connected and joined room ${id}`);
+    }
+    return () => {
+      socket.disconnect();
+    };
+  }, [isPlaying]);
 
   if (!episode) return <Text>Loading...</Text>;
 
@@ -65,6 +78,11 @@ export default function LiveChatPage() {
           }}
         />
 
+        <EpisodeProvider episodeId={episode.episode_id}>
+          <View style={styles.container}>
+            <ImageBackground
+              source={{ uri: episode.episode_url }}
+              style={styles.heroImage}
         <View style={styles.container}>
           <ImageBackground
             source={{ uri: episode.episode_url }}
@@ -79,56 +97,66 @@ export default function LiveChatPage() {
               locations={[0.01, 0.7, 1]}
               style={styles.heroOverlay}
             >
-              <Text style={styles.title}>
-                S{seasonNumber} Ep:{" "}
-                {!episode.episode_number
-                  ? "Season special"
-                  : episode.episode_number}
+              <LinearGradient
+                colors={[
+                  "rgba(102,102,102,0)",
+                  "rgba(16,16,16,0.90)",
+                  "rgba(16,16,16,1)",
+                ]}
+                locations={[0.01, 0.7, 1]}
+                style={styles.heroOverlay}
+              >
+                <Text style={styles.title}>
+                  S{seasonNumber} Ep:{" "}
+                  {!episode.episode_number
+                    ? "Season special"
+                    : episode.episode_number}
+                </Text>
+                <Text style={styles.showName}>{showName}</Text>
+                <View style={styles.timelineContainer}>
+                  <EpisodeTimelineScrubber
+                    setScrubFinished={setScrubFinished}
+                    episodeRuntime={episodeRuntime}
+                    currentSeconds={currentSeconds}
+                    setCurrentSeconds={setCurrentSeconds}
+                    isPlaying={isPlaying}
+                    setIsPlaying={setIsPlaying}
+                    isScrubbing={isScrubbing}
+                    setIsScrubbing={setIsScrubbing}
+                  />
+                </View>
+              </LinearGradient>
+            </ImageBackground>
+            <View style={styles.paragraph}>
+              <Text
+                style={styles.description}
+                numberOfLines={expanded ? undefined : 3}
+              >
+                {synopsis}
               </Text>
-              <Text style={styles.showName}>{showName}</Text>
-              <View style={styles.timelineContainer}>
-                <EpisodeTimelineScrubber
-                  setScrubFinished={setScrubFinished}
-                  episodeRuntime={episodeRuntime}
-                  currentSeconds={currentSeconds}
-                  setCurrentSeconds={setCurrentSeconds}
-                  isPlaying={isPlaying}
-                  setIsPlaying={setIsPlaying}
-                  isScrubbing={isScrubbing}
-                  setIsScrubbing={setIsScrubbing}
-                />
-              </View>
-            </LinearGradient>
-          </ImageBackground>
-          <View style={styles.paragraph}>
-            <Text
-              style={styles.description}
-              numberOfLines={expanded ? undefined : 3}
-            >
-              {synopsis}
-            </Text>
-            <Text
-              style={styles.readMore}
-              onPress={() => setExpanded(!expanded)}
-            >
-              {expanded ? "Read less" : "Read more"}
-            </Text>
+              <Text
+                style={styles.readMore}
+                onPress={() => setExpanded(!expanded)}
+              >
+                {expanded ? "Read less" : "Read more"}
+              </Text>
+            </View>
+            <View styles={{ height: 220, justifyContent: "center" }}>
+              <PollsList />
+            </View>
           </View>
-          <View styles={{ height: 220, justifyContent: "center" }}>
-            <PollsList />
-          </View>
-        </View>
 
-        <Comments
-          setScrubFinished={setScrubFinished}
-          scrubFinished={scrubFinished}
-          currentSeconds={currentSeconds}
-          episode_id={episode.episode_id}
-          isChat={true}
-          isPlaying={isPlaying}
-          isScrubbing={isScrubbing}
-          isHome={false}
-        />
+          <Comments
+            setScrubFinished={setScrubFinished}
+            scrubFinished={scrubFinished}
+            currentSeconds={currentSeconds}
+            episode_id={episode.episode_id}
+            isChat={true}
+            isPlaying={isPlaying}
+            isScrubbing={isScrubbing}
+            isHome={false}
+          />
+        </EpisodeProvider>
       </ScrollView>
       <View style={styles.fab}>
         <FloatingButton
@@ -188,7 +216,6 @@ const styles = StyleSheet.create({
   paragraph: {
     gap: 12,
     alignItems: "flex-start",
-    // marginLeft: 20,
     padding: 20,
     color: "white",
   },
@@ -199,7 +226,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     flexShrink: 0,
   },
-
   description: {
     flex: 1,
     flexWrap: "wrap",
