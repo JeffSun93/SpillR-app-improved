@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import FriendsAreWatchingCard from "./friendsAreWatchingCard";
+import FriendsAreWatchingCard from "./FriendsAreWatchingCard";
 import { globalStyles } from "../../../styles/globalStyles";
 
 export default function FriendsAreWatching() {
