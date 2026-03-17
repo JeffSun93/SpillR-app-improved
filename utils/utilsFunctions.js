@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient.js";
+import axios from "axios";
 
 export async function getTvShowByName(name) {
   let { data, error } = await supabase // get tv show by name
@@ -209,6 +210,29 @@ export async function getUserById(userId) {
   return data;
 }
 
+export async function getUserByIdAPI(user_id) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/id/${user_id}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserByUsernameAPI(username) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/username/${username}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 

@@ -8,10 +8,12 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-
-export default function ProfileHeader() {
+import { useRouter } from "expo-router";
+export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
   const firstName = loggedInUser.name.split(" ")[0];
+  const router = useRouter();
+
   return (
     <View>
       <View style={styles.buttonNameContainer}>
@@ -32,19 +34,20 @@ export default function ProfileHeader() {
 
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>10</Text>
-            <Text style={styles.statLabel}>Friends</Text>
+            <TouchableOpacity style={{ alignItems: "center" }}>
+              <Text style={styles.statNumber}>{userObj.friend_count}</Text>
+              <Text style={styles.statLabel}>Friends</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>19</Text>
+            <Text style={styles.statNumber}>{userObj.subscription_count}</Text>
             <Text style={styles.statLabel}>Subscribed</Text>
           </View>
         </View>
       </View>
       <Text style={styles.bio}>
-        Love Island is life!!! Also stream the new BTS album if you're a real
-        one and not an OP x
+        {userObj.bio ? userObj.bio : "Nothing to see here yet.."}
       </Text>
     </View>
   );
@@ -135,7 +138,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   bio: {
-    color: "#ffffff",
+    color: "rgb(214, 213, 213)",
     marginTop: 10,
     marginLeft: 20,
     marginRight: 22,

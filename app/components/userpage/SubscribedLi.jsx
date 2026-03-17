@@ -8,15 +8,11 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { globalStyles } from "../../../styles/globalStyles";
+import { useState } from "react";
 
-export default function SubLi() {
+export default function SubLi({ userSubscriptions }) {
+  const [subscriptions, setSubscriptions] = useState([]);
   const showArr = [
-    {
-      tv_show_id: 82386,
-      name: "EastEnders Revealed",
-      tv_show_img_url:
-        "https://static.tvmaze.com/uploads/images/original_untouched/554/1385631.jpg",
-    },
     {
       tv_show_id: 3508,
       name: "Gogglebox",
