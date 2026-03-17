@@ -24,7 +24,7 @@ export default function TvShowPage() {
   const [seasons, setSeasons] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const [show, setShow] = useState(null);
+  const [show, setShow] = useState({});
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
