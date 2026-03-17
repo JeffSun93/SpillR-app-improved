@@ -27,7 +27,11 @@ export default function Comments(props) {
 
   useEffect(() => {
     // missing piece to add websockets comments
+
+    socket.connect();
+
     const handleNewComment = (newComment) => {
+      console.log(newComment);
       if (String(newComment.episode_id) !== String(episode_id)) return;
 
       setComments((prevComments) => {
@@ -44,6 +48,7 @@ export default function Comments(props) {
 
     return () => {
       socket.off("comment:new", handleNewComment);
+      socket.disconnect();
     };
   }, [episode_id]);
 

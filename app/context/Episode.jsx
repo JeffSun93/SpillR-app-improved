@@ -1,6 +1,6 @@
 import { useEffect, useState, createContext } from "react";
 
-export const EpisodeContext = createContext(null);
+export const EpisodeContext = createContext({});
 
 export function EpisodeProvider(props) {
   const { episodeId, children } = props;
