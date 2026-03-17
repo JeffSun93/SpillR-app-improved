@@ -1,7 +1,7 @@
 import { View, ScrollView } from "react-native";
-import Header from "../components/home-page/header";
-import Trending from "../components/home-page/trending";
-import FriendsAreWatching from "../components/home-page/friendsAreWatching";
+import Header from "../components/home-page/Header";
+import Trending from "../components/home-page/Trending";
+import FriendsAreWatching from "../components/home-page/FriendsAreWatching";
 import Comments from "../components/Comments";
 import { globalStyles } from "../../styles/globalStyles";
 import { SafeAreaView } from "react-native-safe-area-context";

@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
-import TrendingCard from "./trendingCard";
+import TrendingCard from "./TrendingCard";
 import { globalStyles } from "../../../styles/globalStyles";
 
 const trendingTvShows = [
