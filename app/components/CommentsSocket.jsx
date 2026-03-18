@@ -30,6 +30,7 @@ export default function CommentsSocket(props) {
   const currentSecondsRef = useRef(currentSeconds);
   const { loggedInUser } = useContext(UserContext);
   const bufferRef = useRef([]);
+  const addOptimisticCommentRef = useRef(null);
 
   const addOptimisticComment = (newComment) => {
     setComments((prev) => {
@@ -38,6 +39,9 @@ export default function CommentsSocket(props) {
       return [newComment, ...prev];
     });
   };
+
+  addOptimisticCommentRef.current = addOptimisticComment;
+
   //add and display this comment immediately
 
   useEffect(() => {
