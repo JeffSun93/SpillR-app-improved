@@ -198,6 +198,22 @@ export async function searchExternalTvShows(name) {
   }
 }
 
+export async function searchLocalUsers(query) {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("user_id, name, username, avatar_url")
+      .or(`username.ilike.%${query}%,name.ilike.%${query}%`)
+      .limit(20);
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("User search failed:", error);
+    return [];
+  }
+}
+
 export async function getUserById(userId) {
   let { data, error } = await supabase
     .from("profiles")
