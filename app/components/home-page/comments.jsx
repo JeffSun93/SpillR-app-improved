@@ -15,6 +15,7 @@ export default function Comments(props) {
     fetchComments(episode_id);
   }, [episode_id]);
   return (
+<<<<<<< Updated upstream:app/components/home-page/comments.jsx
     <>
       <Text style={styles.sectionTitle}>Comments and replies</Text>
       <ScrollView
@@ -44,6 +45,50 @@ export default function Comments(props) {
         )}
       </ScrollView>
     </>
+=======
+    <ScrollView
+      style={commentStyles.commentsBox}
+      nestedScrollEnabled
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingBottom: 350 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {comments?.length > 0 ? (
+        comments.map((comment, index) => (
+          <View key={`${comment.comment_id},${index}`}>
+            <CommentCard
+              isHome={isHome}
+              isChat={isChat}
+              isLive={comment.is_live}
+              user_id={comment.user_id}
+              body={
+                comment.body ? comment.body : emojiLookup(comment.reaction_type)
+              }
+              created_at={comment.created_at}
+              comment_id={comment.comment_id}
+              runtime_seconds={comment.runtime_seconds}
+              season_number={comment.season_number}
+              episode_number={comment.episode_number}
+              tv_show_name={comment.tv_show_name || comment.name}
+              type={comment.Commenttype}
+              reactions_total={comment.reactions_total}
+              repliesTotal={comment.repliesTotal}
+              isReaction={comment.reaction_id}
+              isReply={comment.reply_id}
+              reactionType_total={comment.reactionType_total}
+            />
+            <View style={styles.divider} />
+          </View>
+        ))
+      ) : (
+        <Text style={styles.noComments}>
+          {isHome
+            ? null
+            : `No reactions at this timestamp yet, keep playing to see more... or be the first?`}
+        </Text>
+      )}
+    </ScrollView>
+>>>>>>> Stashed changes:app/components/Comments.jsx
   );
 }
 
