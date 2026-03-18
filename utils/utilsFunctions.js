@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient.js";
+import axios from "axios";
 
 export async function getTvShowByName(name) {
   let { data, error } = await supabase // get tv show by name
@@ -17,9 +18,10 @@ export async function getTvShowById(id) {
   let { data, error } = await supabase // get tv show by id
     .from("tv_shows")
     .select("*")
-    .eq("tv_show_id", id)
+    .eq("tv_show_id", Number(id))
     .maybeSingle();
   console.log("Searching for show id:", id);
+
   if (error) {
     throw error;
   }
@@ -30,7 +32,8 @@ export async function getSeasonsByShowId(showId) {
   let { data, error } = await supabase
     .from("seasons")
     .select("*")
-    .eq("tv_show_id", showId);
+    .eq("tv_show_id", showId)
+    .order("season_number", { ascending: true });
 
   if (error) {
     throw error;
@@ -42,8 +45,8 @@ export async function getEpisodesBySeasonId(seasonId) {
   let { data, error } = await supabase
     .from("episodes")
     .select("*")
-    .eq("season_id", seasonId);
-
+    .eq("season_id", seasonId)
+    .order("episode_number", { ascending: false });
   if (error) {
     throw error;
   }
@@ -70,6 +73,21 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
     show,
     seasons: seasonsWithEpisodes,
   };
+}
+
+export async function getSeasonsAndEpisodesByShowId(showId) {
+  const seasons = await getSeasonsByShowId(showId);
+  const seasonsWithEpisodes = [];
+
+  for (const season of seasons) {
+    const episodes = await getEpisodesBySeasonId(season.season_id);
+    seasonsWithEpisodes.push({
+      ...season,
+      episodes,
+    });
+  }
+
+  return { seasons: seasonsWithEpisodes };
 }
 
 export async function getEpisodeById(id) {
@@ -124,6 +142,19 @@ export async function getEpisodeById(id) {
 //   }
 // }
 
+export async function getFeedComments(user_id, offset) {
+  try {
+    const response = await fetch(
+      `https://spillr-be.onrender.com/api/comments/${user_id}/feed?offset=${offset}`,
+    );
+    const data = await response.json();
+    return data.comments;
+  } catch (error) {
+    console.log("Feed comment search failed", error);
+    return [];
+  }
+}
+
 export async function searchLocalTvShows(name) {
   try {
     const { data, error } = await supabase
@@ -167,18 +198,68 @@ export async function searchExternalTvShows(name) {
   }
 }
 
+export async function searchLocalUsers(query) {
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("user_id, name, username, avatar_url")
+      .or(`username.ilike.%${query}%,name.ilike.%${query}%`)
+      .limit(20);
+
+    if (error) throw error;
+    return data || [];
+  } catch (error) {
+    console.error("User search failed:", error);
+    return [];
+  }
+}
+
 export async function getUserById(userId) {
   let { data, error } = await supabase
     .from("profiles")
     .select("*")
     .eq("user_id", userId)
-    .single();
-  if (error) {
-    throw error;
-  }
+    .maybeSingle();
+
+  if (error) throw error;
   return data;
 }
 
+export async function getUserByIdAPI(user_id) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/id/${user_id}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserByUsernameAPI(username) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/username/${username}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getCommentsRepliesReactionsById(userId) {
+  console.log("fetching", userId);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/${userId}/history`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 

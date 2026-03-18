@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import FriendsAreWatchingCard from "./friendsAreWatchingCard";
+import FriendsAreWatchingCard from "./FriendsAreWatchingCard";
 import { globalStyles } from "../../../styles/globalStyles";
 
 export default function FriendsAreWatching() {
@@ -21,10 +21,11 @@ export default function FriendsAreWatching() {
 const styles = StyleSheet.create({
   description: {
     textAlign: "left",
-    color: "white",
+    color: "#8E8E8E",
+    fontWeight: 700,
   },
   container: {
-    marginTop: 40,
+    marginTop: 20,
     width: "100%",
     paddingHorizontal: 10,
   },

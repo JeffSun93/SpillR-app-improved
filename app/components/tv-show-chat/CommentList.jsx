@@ -19,7 +19,7 @@ export default function CommentList(props) {
     (comment) =>
       comment.runtime_seconds >= currentSeconds - 1200 &&
       comment.runtime_seconds <= currentSeconds,
-  ); // filtered by 20 minutes before the current time
+  );
 
   return (
     <ScrollView

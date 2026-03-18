@@ -1,32 +1,32 @@
-import { getSeasonsAndEpisodesByShowName } from "../../utils/utilsFunctions";
-
 import { useState, useEffect } from "react";
-import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import EpisodesList from "./EpisodesList";
 
-export default function Dropdown({ name }) {
-  const [seasons, setSeasons] = useState([]);
+export default function Dropdown({ name, seasons, tv_show_img_url }) {
   const [selectedSeason, setSelectedSeason] = useState({});
+  const [latestSeason, setLatestSeason] = useState(null);
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function loadSeasonsAndEpisodes() {
-      try {
-        setLoading(true);
-        const data = await getSeasonsAndEpisodesByShowName(name);
+    if (seasons.length > 0) {
+      let latestSeason = "";
+      latestSeason =
+        seasons[seasons.length - 1].episodes.length > 0
+          ? seasons[seasons.length - 1]
+          : seasons[seasons.length - 2];
 
-        setSeasons(data.seasons);
-        setSelectedSeason(data.seasons[0]);
-      } catch (error) {
-        console.log("Error loading seasons:", error);
-      } finally {
-        setLoading(false);
-      }
+      setSelectedSeason(latestSeason);
+      setLatestSeason(latestSeason);
     }
-
-    loadSeasonsAndEpisodes();
-  }, []);
+  }, [name]);
 
   const toggleDropdown = () => {
     setVisible(!visible);
@@ -43,43 +43,64 @@ export default function Dropdown({ name }) {
         <Text style={styles.buttonText}>
           {loading
             ? "Loading seasons..."
-            : `Season ${selectedSeason.season_number}`}
+            : selectedSeason.season_number > latestSeason?.season_number
+              ? `Next Season ${selectedSeason.season_number}`
+              : selectedSeason.season_number === latestSeason?.season_number
+                ? `Latest Season`
+                : `Season ${selectedSeason.season_number}`}
         </Text>
-        <Image
+        {/* <Image
           style={styles.dropdownArrow}
           source={require("../../assets/dropdown_arrow.png")}
-        />
+        /> */}
       </TouchableOpacity>
 
       {visible && (
-        <View style={styles.dropdown}>
+        <ScrollView
+          style={styles.dropdown}
+          nestedScrollEnabled={true}
+          contentContainerStyle={{ paddingTop: 2, paddingBottom: 0 }}
+          showsVerticalScrollIndicator={false}
+        >
           {seasons.map((season) => (
             <TouchableOpacity
               key={season.season_id}
               style={styles.dropdownItem}
               onPress={() => handleSelectSeason(season)}
             >
-              <Text>Season {season.season_number}</Text>
+              <Text style={styles.dropdownItem}>
+                Season {season.season_number}
+              </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
       )}
 
-      <EpisodesList selectedSeason={selectedSeason} showName={name} />
+      <EpisodesList
+        selectedSeason={selectedSeason}
+        showName={name}
+        tv_show_img_url={tv_show_img_url}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    top: 50,
     width: "100%",
+    zIndex: 999,
     marginLeft: 0,
   },
   button: {
+    width: "30%",
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#efefef",
+    justifyContent: "flex-start",
+    gap: 30,
+    marginLeft: 8,
+    marginBottom: 8,
+    backgroundColor: "#1B1B1B",
     height: 40,
     paddingHorizontal: 10,
     borderRadius: 6,
@@ -87,21 +108,34 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontSize: 14,
+    color: "#FFFFFF",
   },
 
   dropdownArrow: {
     width: 14,
     height: 14,
+    tintColor: "#FFFFFF",
+    resizeMode: "contain",
   },
 
   dropdown: {
-    backgroundColor: "#fff",
+    position: "absolute",
+    width: "30%",
+    top: 45,
+    left: 0,
+    right: 0,
+    marginLeft: 8,
+    marginBottom: 8,
+    backgroundColor: "#1B1B1B",
     borderRadius: 6,
-    marginTop: 5,
     paddingVertical: 5,
+    zIndex: 1000,
+    elevation: 5,
+    maxHeight: 350,
   },
 
   dropdownItem: {
     padding: 8,
+    color: "#FFFFFF",
   },
 });

@@ -1,51 +1,46 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import CommentCard from "./commentCard";
-import { getCommentsByEpisodeId } from "../../../utils/utilsFunctionsByApi.js";
-import { useState, useEffect } from "react";
+import CommentCard from "./CommentCard.jsx";
+import {
+  getCommentsByEpisodeId,
+  getFilteredCommentsByEpisodeId,
+} from "../../utils/utilsFunctionsByApi.js";
+import { UserContext } from "../../context/User.jsx";
+import { useState, useEffect, useRef, useContext } from "react";
+import { commentStyles } from "../../styles/commentStyles.jsx";
+import emojiLookup from "../../utils/emojiLookupObject.js";
+import socket from "../../socket/connection.js";
 
 export default function Comments(props) {
-  const [comments, setComments] = useState(null);
-  const { episode_id } = props;
+  const { isHome, isUser, isProfile, isChat, feedComments, userComments } =
+    props;
+
+  const [comments, setComments] = useState([]);
+  const { loggedInUser } = useContext(UserContext);
+
+  // Non-chat modes
   useEffect(() => {
-    if (!episode_id) return;
-    const fetchComments = async (id) => {
-      const results = await getCommentsByEpisodeId(id);
-      setComments(results);
-    };
-    fetchComments(episode_id);
-  }, [episode_id]);
+    if (isChat) return;
+
+    // Home feed — pre-fetched in parent, passed as feedComments prop
+    if (isHome) {
+      setComments(feedComments);
+      return;
+    }
+
+    // Logged-in user's own profile page
+    if (isUser) {
+      setComments(userComments);
+      return;
+    }
+
+    // Someone else's profile page
+    if (isProfile) {
+      setComments(userComments);
+      return;
+    }
+  }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);
+
   return (
-<<<<<<< Updated upstream:app/components/home-page/comments.jsx
-    <>
-      <Text style={styles.sectionTitle}>Comments and replies</Text>
-      <ScrollView
-        style={styles.commentsBox}
-        nestedScrollEnabled
-        showsVerticalScrollIndicator={false}
-      >
-        {comments?.length > 0 ? (
-          comments.map((comment, index) => {
-            return (
-              <>
-                <View style={styles.commentRow} key={comment.comment_id}>
-                  <CommentCard
-                    user_id={comment.user_id}
-                    body={comment.body}
-                    created_at={comment.created_at}
-                  />
-                </View>
-                {index !== comments.length - 1 && (
-                  <View style={styles.divider} />
-                )}
-              </>
-            );
-          })
-        ) : (
-          <Text>No comments yet</Text>
-        )}
-      </ScrollView>
-    </>
-=======
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
@@ -88,11 +83,15 @@ export default function Comments(props) {
         </Text>
       )}
     </ScrollView>
->>>>>>> Stashed changes:app/components/Comments.jsx
   );
 }
 
 const styles = StyleSheet.create({
+  noComments: {
+    color: "#8E8E8E",
+    fontWeight: 700,
+  },
+
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",
@@ -197,7 +196,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   commentsBox: {
-    height: 230,
+    overflow: "visible",
+    flex: 1,
     marginHorizontal: 15,
     paddingHorizontal: 10,
     paddingVertical: 8,

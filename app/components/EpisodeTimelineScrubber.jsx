@@ -1,18 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
+const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
+  setScrubFinished,
   setIsScrubbing,
   currentSeconds,
   setCurrentSeconds,
+  isPlaying,
+  setIsPlaying,
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [episodeFinished, setEpisodeFinished] = useState(false);
+  const [scrubWidth, setScrubWidth] = useState(0);
+  const scrubPositionRef = useRef(currentSeconds);
 
   const runtimeSeconds = episodeRuntime * 60;
+
+  // keep scrubWidth in sync with playback, but not during scrubbing
+  useEffect(() => {
+    setScrubWidth((currentSeconds / runtimeSeconds) * trackWidth);
+  }, [currentSeconds]);
+
+  const formatRuntime = (seconds) => {
+    if (!seconds) return "";
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  };
 
   useEffect(() => {
     if (isPlaying && !episodeFinished) {
@@ -32,27 +52,12 @@ export default function EpisodeTimelineScrubber({
     }
   }, [isPlaying, episodeFinished]);
 
-  const roundedSeconds = Math.floor(currentSeconds);
-  let minutes = Math.floor(roundedSeconds / 60);
-  let seconds = Math.floor(roundedSeconds % 60);
-
-  const trackWidth = 300;
-  let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
-
   const confineAndConvertXPosition = (x) => {
-    let limitedX = x;
-
-    if (limitedX < 0) {
-      limitedX = 0;
-    }
-
-    if (limitedX > trackWidth) {
-      limitedX = trackWidth;
-    }
-
-    const seconds = (limitedX / trackWidth) * runtimeSeconds;
-
-    setCurrentSeconds(seconds);
+    const limitedX = Math.max(0, Math.min(x, trackWidth));
+    const seconds = Math.floor((limitedX / trackWidth) * runtimeSeconds);
+    scrubPositionRef.current = seconds;
+    // only update local visual state — parent stays frozen during drag
+    setScrubWidth(limitedX);
   };
 
   const handlePress = (event) => {
@@ -64,48 +69,63 @@ export default function EpisodeTimelineScrubber({
     setIsPlaying(!isPlaying);
   };
 
-  const leftOffset = 32;
+  const displaySeconds = Math.floor((scrubWidth / trackWidth) * runtimeSeconds);
+  const minutes = Math.floor(displaySeconds / 60);
+  const seconds = displaySeconds % 60;
 
   return (
     <View>
-      <Text
-        style={[
-          styles.timeDisplay,
-          { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
-        ]}
-      >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      <View>
+        <Text
+          style={[
+            styles.timeDisplay,
+            { transform: [{ translateX: scrubWidth - 25 }] },
+          ]}
+        >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      </View>
       <View style={styles.buttonAndBarContainer}>
-        <Pressable
-          style={styles.buttonContainer}
-          onPress={handlePressPlayPause}
-        >
-          {isPlaying ? (
-            <AntDesign name="pause" style={styles.playOrPauseButton} />
-          ) : (
-            <Entypo name="controller-play" style={styles.playOrPauseButton} />
-          )}
-        </Pressable>
         <View
           style={styles.greyTrackBar}
-          onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
+          onStartShouldSetResponder={() => true}
           onMoveShouldSetResponder={() => true}
           onResponderGrant={() => {
             setIsScrubbing(true);
-            handlePress;
           }}
           onResponderMove={handlePress}
-          onResponderRelease={() => setIsScrubbing(false)}
-          onResponderTerminate={() => setIsScrubbing(false)}
+          onResponderRelease={() => {
+            setCurrentSeconds(scrubPositionRef.current); // commit to parent on release
+            setIsScrubbing(false);
+            setScrubFinished(true);
+          }}
+          onResponderTerminate={() => {
+            setCurrentSeconds(scrubPositionRef.current);
+            setIsScrubbing(false);
+            setScrubFinished(true);
+          }}
         >
           <View
             style={[
               styles.currentPosition,
-              { transform: [{ translateX: currentWidth - 5 }] },
+              { transform: [{ translateX: scrubWidth - 3 }] },
             ]}
-          ></View>
-          <View
-            style={[styles.purpleProgressBar, { width: currentWidth }]}
-          ></View>
+          />
+          <View style={[styles.purpleProgressBar, { width: scrubWidth }]} />
+        </View>
+
+        <View style={styles.controlsRow}>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={handlePressPlayPause}
+          >
+            {isPlaying ? (
+              <AntDesign name="pause" style={styles.playOrPauseButton} />
+            ) : (
+              <Entypo name="controller-play" style={styles.playOrPauseButton} />
+            )}
+          </Pressable>
+          <Text style={styles.runtimeDisplay}>
+            {formatRuntime(runtimeSeconds)}
+          </Text>
         </View>
       </View>
     </View>
@@ -114,9 +134,14 @@ export default function EpisodeTimelineScrubber({
 
 const styles = StyleSheet.create({
   buttonAndBarContainer: {
+    flexDirection: "column",
+    alignItems: "flex-start",
+  },
+  controlsRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginRight: 15,
+    justifyContent: "space-between",
+    width: screenWidth - 65,
   },
   buttonContainer: {
     justifyContent: "center",
@@ -125,29 +150,40 @@ const styles = StyleSheet.create({
   },
   playOrPauseButton: {
     fontSize: 20,
+    paddingTop: 10,
     color: "white",
   },
   greyTrackBar: {
-    height: 8,
-    width: 300,
+    height: 12,
+    width: screenWidth - 65,
     borderRadius: 5,
     backgroundColor: "#c4c4c4ac",
   },
   purpleProgressBar: {
-    height: 8,
+    height: 12,
     borderRadius: 5,
-    backgroundColor: "#9D00FF",
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    backgroundColor: "#E500FF",
   },
   currentPosition: {
     position: "absolute",
-    width: 8,
-    height: 8,
+    width: 3,
+    height: 25,
     borderRadius: 100,
     backgroundColor: "white",
     zIndex: 1,
   },
   timeDisplay: {
+    marginBottom: 8,
     marginTop: 5,
+    color: "white",
+    width: 50,
+    textAlign: "center",
+  },
+  runtimeDisplay: {
+    marginBottom: 8,
+    marginTop: 8,
     color: "white",
     width: 50,
     textAlign: "center",
