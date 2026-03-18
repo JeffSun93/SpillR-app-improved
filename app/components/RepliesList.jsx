@@ -47,7 +47,7 @@ const RepliesList = ({ comment_id }) => {
           contentContainerStyle={[styles.container, { paddingBottom: 100 }]}
         >
           {replylist.map((reply) => (
-            <ReplyCard key={reply.reply_id} reply={reply} />
+            <ReplyCard key={"reply-id-" + reply.reply_id} reply={reply} />
           ))}
         </ScrollView>
 
