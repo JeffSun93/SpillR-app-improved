@@ -1,6 +1,6 @@
 import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import PollItem from "./PollItem";
-import { globalStyles } from "../../../styles/globalStyles";
+import { globalStyles } from "../../styles/globalStyles";
 
 const polls = [
   {

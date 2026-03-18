@@ -11,8 +11,8 @@ import {
 } from "react-native";
 import { commentStyles } from "../../styles/commentStyles";
 import Comments from "../components/Comments";
-import ProfileHeader from "../components/userpage/Header";
-import SubLi from "../components/userpage/SubscribedLi";
+import ProfileHeader from "../components/ProfileHeader";
+import SubLi from "../components/SubscribedLi";
 import {
   getUserByIdAPI,
   getUserByUsernameAPI,

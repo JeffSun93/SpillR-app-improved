@@ -17,7 +17,7 @@ import SubLi from "../SubscribedLi";
 import {
   getUserByIdAPI,
   getCommentsRepliesReactionsById,
-} from "../../utils/utilsFunctions";
+} from "../../../utils/utilsFunctions";
 
 export default function UserPage() {
   const { loggedInUser } = useContext(UserContext);
