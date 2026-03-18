@@ -64,7 +64,7 @@ export default function Comments(props) {
               runtime_seconds={comment.runtime_seconds}
               season_number={comment.season_number}
               episode_number={comment.episode_number}
-              tv_show_name={comment.tv_show_name}
+              tv_show_name={comment.tv_show_name || comment.name}
               type={comment.Commenttype}
               reactions_total={comment.reactions_total}
               repliesTotal={comment.repliesTotal}

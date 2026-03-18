@@ -110,7 +110,7 @@ export default function CommentsSocket(props) {
     return () => clearInterval(interval);
   }, [isPlaying, isScrubbing, episode_id]);
 
-  // ─── Effect 5: Chat — reveal buffered comments in real time ──────────────────
+  // ─── Chat — reveal buffered comments in real time ──────────────────
   // Runs every second; drip-feeds buffered comments whose timestamp is now due
   useEffect(() => {
     if (isScrubbing || isHome) return;
