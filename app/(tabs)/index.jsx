@@ -16,28 +16,37 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  const fetchFeed = async (currentOffset) => {
+  const fetchFeed = async (offset) => {
     if (loading || !hasMore) return;
     setLoading(true);
-    const result = await getFeedComments(loggedInUser.user_id, currentOffset);
-    if (!result || result.length === 0) {
-      setHasMore(false);
-    } else {
+    try {
+      const result = await getFeedComments(loggedInUser.user_id, offset);
       setFeed((prev) => [...prev, ...result]);
-      setOffset((prev) => prev + result.length);
+      setOffset((prev) => prev + 5);
+
+      if (result.length < 5) {
+        setHasMore(false);
+      }
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchFeed(0);
   }, []);
 
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      fetchFeed(offset);
+    }
+  };
+
   const handleScroll = ({ nativeEvent }) => {
     const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
     const isNearBottom =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - 100;
-    if (isNearBottom) fetchFeed(offset);
+    if (isNearBottom) loadMore();
   };
 
   for (let i = 0; i < feed.length; i++) {
