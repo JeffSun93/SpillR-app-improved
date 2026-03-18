@@ -14,7 +14,7 @@ import EmojiPicker from "./EmojiPicker.jsx";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
-export default function CommentCard(props) {
+export default function CommentCardSocket(props) {
   const {
     comment_id,
     body,
@@ -94,7 +94,9 @@ export default function CommentCard(props) {
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
-            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            <Text style={commentStyles.commentTime}>
+              {isChat ? formatRuntime(runtime_seconds) : relativeTime}
+            </Text>
           </View>
           <Text style={commentStyles.commentMeta}>{meta}</Text>
           <Text style={commentStyles.commentText}>{body}</Text>

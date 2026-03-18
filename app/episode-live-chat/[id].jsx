@@ -15,7 +15,7 @@ import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
-import Comments from "../components/Comments.jsx";
+import CommentsSocket from "../components/CommentsSocket.jsx";
 import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
@@ -139,7 +139,7 @@ export default function LiveChatPage() {
             </View>
           </View>
 
-          <Comments
+          <CommentsSocket
             setScrubFinished={setScrubFinished}
             scrubFinished={scrubFinished}
             currentSeconds={currentSeconds}
