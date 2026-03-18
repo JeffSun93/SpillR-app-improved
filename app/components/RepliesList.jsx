@@ -11,13 +11,30 @@ import {
 import { useEffect, useState } from "react";
 import { getRepliesByCommentId } from "../../utils/utilsFunctionsByApi.js";
 import socket from "../../socket/connection.js";
+import { useContext } from "react";
+import { UserContext } from "../../context/User.jsx";
+import { preventAutoHideAsync } from "expo-router/build/utils/splash.js";
 
-const RepliesList = ({ comment_id }) => {
+const RepliesList = ({ comment_id, parentUsername }) => {
   const [replylist, setReplyList] = useState([]);
+  const { loggedInUser } = useContext(UserContext);
 
   useEffect(() => {
     const handleNewReply = (newReply) => {
       console.log(newReply);
+      console.log(parentUsername, "replies list");
+      newReply.parent_username = parentUsername;
+      newReply.avatar_url = loggedInUser.avatar_url;
+      newReply.replies_total = 0;
+      newReply.reactions_total = 0;
+      newReply.reactionType_total = {
+        sadTotal: 0,
+        heartTotal: 0,
+        fireTotal: 0,
+        deadTotal: 0,
+        laughingTotal: 0,
+        angryTotal: 0,
+      };
       setReplyList((prev) => [newReply, ...prev]);
     };
     socket.on("reply:new", handleNewReply);
@@ -31,6 +48,7 @@ const RepliesList = ({ comment_id }) => {
       const result = await getRepliesByCommentId(comment_id);
       if (result.length > 0) {
         setReplyList(result);
+        console.log(result);
       }
     };
     fetchRepliesForThisComment();

@@ -29,6 +29,7 @@ export default function CommentCard(props) {
     body,
     user_id,
     created_at,
+    parent_username,
     type,
     tv_show_name,
     episode_number,
@@ -43,6 +44,7 @@ export default function CommentCard(props) {
     isReaction,
     isReply,
   } = props;
+  console.log(parent_username, "comment card");
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);
@@ -179,7 +181,10 @@ export default function CommentCard(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} />
+          <RepliesList
+            comment_id={comment_id}
+            parentUsername={parent_username}
+          />
         </>
       )}
     </View>
