@@ -4,7 +4,8 @@ import {
   getCommentsByEpisodeId,
   getFilteredCommentsByEpisodeId,
 } from "../../utils/utilsFunctionsByApi.js";
-import { useState, useEffect, useRef } from "react";
+import { UserContext } from "../../context/User";
+import { useState, useEffect, useRef, useContext } from "react";
 import { commentStyles } from "../../styles/commentStyles.jsx";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
@@ -16,14 +17,19 @@ export default function Comments(props) {
     currentSeconds,
     episode_id,
     isHome,
-    userComments,
+    isUser,
+    isProfile,
     isChat,
+    feedComments,
+    userComments,
     isPlaying,
     isScrubbing,
   } = props;
 
   const [comments, setComments] = useState([]);
   const currentSecondsRef = useRef(currentSeconds);
+  const { loggedInUser } = useContext(UserContext);
+  const bufferRef = useRef([]);
 
   useEffect(() => {
     // missing piece to add websockets comments
@@ -48,118 +54,108 @@ export default function Comments(props) {
     };
   }, [episode_id]);
 
-  // Keep ref in sync so the polling interval always reads the latest value
-  // without needing currentSeconds as a dependency on the interval effect
+  // ─── Effect 1: Non-chat modes ─────────────────────────────────────────────────
   useEffect(() => {
-    currentSecondsRef.current = currentSeconds;
-  }, [currentSeconds]);
+    if (isChat) return;
 
-  // ─── Effect 1: isHome ───────────────────────────────────────────────────────
-  // Not in isChat mode — just reflect the passed-in userComments array directly
-  useEffect(() => {
-    if (!isHome) {
+    // Home feed — pre-fetched in parent, passed as feedComments prop
+    if (isHome) {
+      setComments(feedComments ?? []);
       return;
-    } else {
-      setComments(userComments);
     }
-  }, [isHome, userComments]);
 
-  // ─── Effect 2: t = 0 and not playing ───────────────────────────────────────
-  // Video is at the start and not playing — fetch ALL comments for the episode
-  useEffect(() => {
-    if (isHome || !episode_id) {
+    // Logged-in user's own profile page
+    if (isUser) {
+      setComments(userComments ?? []);
       return;
-    } else {
-      if (currentSeconds === 0 && !isPlaying) {
-        const fetchAllComments = async () => {
-          const result = await getCommentsByEpisodeId(episode_id);
-          setComments(result);
-        };
-        fetchAllComments();
-      }
     }
-  }, [currentSeconds, isPlaying, episode_id, isHome]);
 
-  const bufferRef = useRef([]);
+    // Someone else's profile page
+    if (isProfile) {
+      setComments(userComments ?? []);
+      return;
+    }
+  }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);
 
-  // ─── Effect 3: scrubbing ────────────────────────────────────────────────────
+  // ─── Effect 2: Chat — initial load ───────────────────────────────────────────
+  // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {
-    if (!scrubFinished || isHome || !episode_id) return;
+    if (!isChat || !episode_id) return;
+    if (currentSeconds !== 0 || isPlaying) return;
+
+    const fetchAllComments = async () => {
+      const result = await getCommentsByEpisodeId(episode_id);
+      setComments(result);
+    };
+    fetchAllComments();
+  }, [currentSeconds, isPlaying, episode_id]);
+
+  // ─── Effect 3: Chat — scrub ───────────────────────────────────────────────────
+  // User jumped to a new timestamp — fetch and show all comments up to that point
+  useEffect(() => {
+    if (!isChat || !episode_id) return;
     if (currentSecondsRef.current === 0 && !isPlaying) return;
 
     const safeSeconds = Math.floor(currentSecondsRef.current);
+
     getFilteredCommentsByEpisodeId(episode_id, safeSeconds).then((result) => {
       bufferRef.current = result;
-      // show all fetched results immediately — no filter, user jumped here deliberately
-      const sorted = [...result].sort(
-        (a, b) => b.runtime_seconds - a.runtime_seconds,
+      setComments(
+        [...result].sort((a, b) => b.runtime_seconds - a.runtime_seconds),
       );
-      setComments(sorted);
       setScrubFinished(false);
     });
   }, [scrubFinished]);
 
-  // ─── Effect 4: 30-second polling while playing ──────────────────────────────
-  // Fetches 3 mins ahead and buffers — does NOT set comments directly
+  // ─── Effect 4: Chat — 30s polling while playing ───────────────────────────────
+  // Pre-fetches comments 3 mins ahead into a buffer; never sets comments directly
   useEffect(() => {
-    if (isHome || !episode_id) return;
+    if (!isChat || !episode_id) return;
     if (!isPlaying || isScrubbing) return;
 
+    // Reset buffer when playback starts from zero
     if (bufferRef.current.length === 0 || currentSecondsRef.current === 0) {
       bufferRef.current = [];
       setComments([]);
     }
 
-    // immediate fetch so buffer is populated before first 30s tick
-    const fetchImmediate = async () => {
-      const safeSeconds = Math.floor(currentSecondsRef.current);
-      const results = await getFilteredCommentsByEpisodeId(
-        episode_id,
-        safeSeconds,
+    const mergeIntoBuffer = (incoming) => {
+      const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
+      const newComments = incoming.filter(
+        (c) => !existingIds.has(c.comment_id),
       );
-      bufferRef.current = (() => {
-        const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
-        const incoming = results.filter((c) => !existingIds.has(c.comment_id));
-        return [...bufferRef.current, ...incoming];
-      })();
+      bufferRef.current = [...bufferRef.current, ...newComments];
     };
-    fetchImmediate();
 
-    const interval = setInterval(async () => {
+    const fetchAhead = async () => {
       const safeSeconds = Math.floor(currentSecondsRef.current);
       const results = await getFilteredCommentsByEpisodeId(
         episode_id,
         safeSeconds,
       );
+      mergeIntoBuffer(results);
+    };
 
-      // merge into buffer with dedup
-      bufferRef.current = (() => {
-        const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
-        const incoming = results.filter((c) => !existingIds.has(c.comment_id));
-        return [...bufferRef.current, ...incoming];
-      })();
-    }, 30000);
-
+    fetchAhead();
+    const interval = setInterval(fetchAhead, 30000);
     return () => clearInterval(interval);
-  }, [isPlaying, isScrubbing, episode_id, isHome]);
+  }, [isPlaying, isScrubbing, episode_id]);
 
-  // ─── Effect 5: reveal buffered comments as currentSeconds advances ───────────
-  // Runs every second — filters buffer down to only what's due
-  // ─── Effect 5: reveal buffered comments as currentSeconds advances ───────────
+  // ─── Effect 5: Chat — reveal buffered comments in real time ──────────────────
+  // Runs every second; drip-feeds buffered comments whose timestamp is now due
   useEffect(() => {
     if (isScrubbing || isHome) return;
 
     const newlyDue = bufferRef.current.filter(
       (c) => c.runtime_seconds === currentSeconds,
     );
-
     if (newlyDue.length === 0) return;
 
     setComments((prev) => {
       const existingIds = new Set(prev.map((c) => c.comment_id));
       const incoming = newlyDue.filter((c) => !existingIds.has(c.comment_id));
       if (incoming.length === 0) return prev;
-      return [...incoming, ...prev]; // prepend to top
+      return [...incoming, ...prev];
     });
   }, [currentSeconds]);
 
@@ -173,8 +169,9 @@ export default function Comments(props) {
     >
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
-          <View key={comment.comment_id}>
+          <View key={`${comment.comment_id},${index}`}>
             <CommentCard
+              isHome={isHome}
               isChat={isChat}
               isLive={comment.is_live}
               user_id={comment.user_id}

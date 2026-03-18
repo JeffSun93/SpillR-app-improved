@@ -25,6 +25,7 @@ export default function CommentCard(props) {
     episode_number,
     season_number,
     runtime_seconds,
+    isHome,
     isChat,
     isLive,
     reactions_total,
@@ -67,7 +68,7 @@ export default function CommentCard(props) {
 
   const islive = isLive ? "live" : "replay";
 
-  const actor = username === loggedInUser.username ? "you" : `@${username}`;
+  const actor = username === loggedInUser.username ? "you" : "";
   const meta = type
     ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
     : `posted in ${islive}`;

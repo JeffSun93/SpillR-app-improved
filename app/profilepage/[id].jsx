@@ -41,8 +41,6 @@ export default function ProfilePage() {
     fetchUserById();
   }, [id]);
 
-  console.log(userObj);
-
   for (let i = 0; i < userComments.length; i++) {
     const obj = userComments[i];
 
@@ -67,7 +65,7 @@ export default function ProfilePage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <Comments userComments={userComments} isHome={true} />
+          <Comments userComments={userComments} isProfile={true} />
         </View>
       </ScrollView>
     </View>
