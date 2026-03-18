@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, Button, Pressable } from "react-native";
-import { globalStyles } from "../../../styles/globalStyles";
-import TitleText from "../ui/ShowTitleText";
+import { globalStyles } from "../../styles/globalStyles";
+import TitleText from "./ui/ShowTitleText";
 
 export default function PollItem({ poll, horizontal = true }) {
   //   const router = useRouter();

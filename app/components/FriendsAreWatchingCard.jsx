@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import { globalStyles } from "../../../styles/globalStyles";
+import { globalStyles } from "../../styles/globalStyles";
 
 export default function FriendsAreWatchingCards() {
   return (

@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { cleanText } from "../../utils/cleanText";
-import PollsList from "../components/tv-show-chat/PollsList";
+import PollsList from "../components/PollsList.jsx";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
 import CommentsSocket from "../components/CommentsSocket.jsx";
