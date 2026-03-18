@@ -23,7 +23,7 @@ const PostBox = ({ comment_id, currentSecond, style }) => {
     episode_id: episodeId,
     user_id: loggedInUser.user_id,
     // runtime_seconds: runtime_seconds,
-    runtime_seconds: currentSecond, //hardcoded for now
+    runtime_seconds: currentSecond ? currentSecond : 1, //hardcoded for now
     is_spoiler: false,
   };
   const handleSubmit = () => {
