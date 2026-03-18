@@ -45,7 +45,7 @@ export const commentStyles = StyleSheet.create({
     marginBottom: 4,
   },
   commentText: {
-    color: "white",
+    color: "#e4e4e4",
     fontSize: 14,
     lineHeight: 20,
     paddingRight: 8,

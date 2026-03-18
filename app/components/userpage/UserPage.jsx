@@ -40,8 +40,6 @@ export default function UserPage() {
     fetchUserById();
   }, [loggedInUser.user_id]);
 
-  console.log(userObj);
-
   for (let i = 0; i < userComments.length; i++) {
     const obj = userComments[i];
 

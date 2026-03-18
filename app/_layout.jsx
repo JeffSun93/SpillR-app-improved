@@ -12,6 +12,7 @@ export default function RootLayout() {
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
+    Agenda: require("../assets/fonts/Agenda.ttf"),
   });
 
   if (!fontsLoaded) return null;
