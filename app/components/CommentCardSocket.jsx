@@ -11,6 +11,7 @@ import Reaction from "../../assets/react.jsx";
 import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
 import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
+import socket from "../../socket/connection.js";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
@@ -33,6 +34,7 @@ export default function CommentCardSocket(props) {
     repliesTotal,
     isReaction,
     isReply,
+    setComments,
   } = props;
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
@@ -42,6 +44,7 @@ export default function CommentCardSocket(props) {
   );
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [deletePressed, setDeletePressed] = useState(false);
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -87,6 +90,26 @@ export default function CommentCardSocket(props) {
     fetchUser();
   }, [user_id]);
 
+  // DO NOT CHANGE BELOW
+
+  const handlePressDelete = (comment_id) => {
+    console.log("instruction to delete sent");
+    socket.emit("comment:delete", comment_id);
+    setDeletePressed(!deletePressed);
+
+    const removeComment = (comment_id) => {
+      console.log("remove func");
+      setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+    };
+
+    removeComment(comment_id);
+
+    console.log("useEffect ran");
+    socket.on("comment:remove", removeComment);
+  };
+
+  // DO NOT CHANGE ABOVE
+
   return (
     <View>
       <View style={commentStyles.commentRow}>
@@ -122,7 +145,10 @@ export default function CommentCardSocket(props) {
                 <Replies width={22} height={22} />
               </TouchableOpacity>
               {user_id === loggedInUser.user_id ? (
-                <TouchableOpacity style={styles.iconGroup}>
+                <TouchableOpacity
+                  style={styles.iconGroup}
+                  onPress={() => handlePressDelete(comment_id)}
+                >
                   <Delete
                     width={22}
                     height={22}

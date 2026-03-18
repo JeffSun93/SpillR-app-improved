@@ -44,24 +44,27 @@ export default function CommentsSocket(props) {
 
   //add and display this comment immediately
 
+  // DONT CHANGE BELOW FOR NOW - WORKING CHAT
+
   useEffect(() => {
     // missing piece to add websockets comments
     const handleNewComment = (newComment) => {
       console.log(newComment);
-      if (String(newComment.episode_id) !== String(episode_id)) return;
-      if (newComment.user_id === loggedInUser.user_id) {
-        addOptimisticComment(newComment);
-      } else {
-        const diff = Math.abs(
-          newComment.runtime_seconds - currentSecondsRef.current,
-        );
-        //if the new comment added is near your runtime seconds add it immediately
-        if (diff <= 30) {
-          addOptimisticComment(newComment);
-        }
-        // let the buffer/ticker handle it at the right time
-        bufferRef.current = [...bufferRef.current, newComment];
-      }
+      // if (String(newComment.episode_id) !== String(episode_id)) return;
+      // if (newComment.user_id === loggedInUser.user_id) {
+      //   addOptimisticComment(newComment);
+      // } else {
+      //   const diff = Math.abs(
+      //     newComment.runtime_seconds - currentSecondsRef.current,
+      //   );
+      //   //if the new comment added is near your runtime seconds add it immediately
+      //   if (diff <= 30) {
+      //     addOptimisticComment(newComment);
+      //   }
+      //   // let the buffer/ticker handle it at the right time
+      //   bufferRef.current = [...bufferRef.current, newComment];
+      // }
+      setComments((prev) => [newComment, ...prev]);
     };
     socket.on("comment:new", handleNewComment);
 
@@ -69,6 +72,8 @@ export default function CommentsSocket(props) {
       socket.off("comment:new", handleNewComment);
     };
   }, [episode_id]);
+
+  // DONT CHANGE ABOVE FOR NOW
 
   // ─── initial load ───────────────────────────────────────────
   // When video is at t=0 and paused, fetch all comments for the episode
@@ -196,6 +201,7 @@ export default function CommentsSocket(props) {
               isReaction={comment.reaction_id}
               isReply={comment.reply_id}
               reactionType_total={comment.reactionType_total}
+              setComments={setComments}
             />
             <View style={styles.divider} />
           </View>
