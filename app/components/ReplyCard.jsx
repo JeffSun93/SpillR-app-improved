@@ -15,6 +15,7 @@ const ReplyCard = ({ reply }) => {
     reactionType_total,
     parent_username,
   } = reply;
+  console.log(parent_username, "reply card");
   const { loggedInUser } = useContext(UserContext);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleReaction = (reactionType) => {
