@@ -181,10 +181,7 @@ export default function CommentCard(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList
-            comment_id={comment_id}
-            parentUsername={parent_username}
-          />
+          <RepliesList comment_id={comment_id} parentUsername={username} />
         </>
       )}
     </View>
