@@ -106,7 +106,7 @@ export default function EpisodeTimelineScrubber({
           <View
             style={[
               styles.currentPosition,
-              { transform: [{ translateX: scrubWidth - 5 }] },
+              { transform: [{ translateX: scrubWidth - 3 }] },
             ]}
           />
           <View style={[styles.purpleProgressBar, { width: scrubWidth }]} />
@@ -154,20 +154,22 @@ const styles = StyleSheet.create({
     color: "white",
   },
   greyTrackBar: {
-    height: 8,
+    height: 12,
     width: screenWidth - 65,
     borderRadius: 5,
     backgroundColor: "#c4c4c4ac",
   },
   purpleProgressBar: {
-    height: 8,
+    height: 12,
     borderRadius: 5,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
     backgroundColor: "#E500FF",
   },
   currentPosition: {
     position: "absolute",
-    width: 8,
-    height: 8,
+    width: 3,
+    height: 25,
     borderRadius: 100,
     backgroundColor: "white",
     zIndex: 1,

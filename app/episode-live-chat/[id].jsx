@@ -54,11 +54,12 @@ export default function LiveChatPage() {
     return () => {
       if (socket.connected) {
         socket.emit("room:leave", id);
+        socket.off("comment:new");
         console.log(`socket left room ${id}`);
         socket.disconnect();
       }
     };
-  }, []);
+  }, [id]);
 
   if (!episode) return <Text>Loading...</Text>;
 
