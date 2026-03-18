@@ -31,13 +31,33 @@ export default function CommentsSocket(props) {
   const { loggedInUser } = useContext(UserContext);
   const bufferRef = useRef([]);
 
+  const addOptimisticComment = (newComment) => {
+    setComments((prev) => {
+      const existingIds = new Set(prev.map((c) => c.comment_id));
+      if (existingIds.has(newComment.comment_id)) return prev;
+      return [newComment, ...prev];
+    });
+  };
+  //add and display this comment immediately
+
   useEffect(() => {
     // missing piece to add websockets comments
     const handleNewComment = (newComment) => {
       console.log(newComment);
       if (String(newComment.episode_id) !== String(episode_id)) return;
-
-      bufferRef.current = [...bufferRef.current, newComment];
+      if (newComment.user_id === loggedInUser.user_id) {
+        addOptimisticComment(newComment);
+      } else {
+        const diff = Math.abs(
+          newComment.runtime_seconds - currentSecondsRef.current,
+        );
+        //if the new comment added is near your runtime seconds add it immediately
+        if (diff <= 30) {
+          addOptimisticComment(newComment);
+        }
+        // let the buffer/ticker handle it at the right time
+        bufferRef.current = [...bufferRef.current, newComment];
+      }
     };
     socket.on("comment:new", handleNewComment);
 
@@ -113,19 +133,32 @@ export default function CommentsSocket(props) {
   // ─── Chat — reveal buffered comments in real time ──────────────────
   // Runs every second; drip-feeds buffered comments whose timestamp is now due
   useEffect(() => {
-    if (isScrubbing || isHome) return;
+    if (isScrubbing || isHome) {
+      return;
+    } else {
+      // newly due is an array created from the buffer array that contains all the comments that are due now using a filter
+      const newlyDue = bufferRef.current.filter(
+        (c) => c.runtime_seconds <= currentSeconds,
+      );
 
-    const newlyDue = bufferRef.current.filter(
-      (c) => c.runtime_seconds === currentSeconds,
-    );
-    if (newlyDue.length === 0) return;
-
-    setComments((prev) => {
-      const existingIds = new Set(prev.map((c) => c.comment_id));
-      const incoming = newlyDue.filter((c) => !existingIds.has(c.comment_id));
-      if (incoming.length === 0) return prev;
-      return [...incoming, ...prev];
-    });
+      bufferRef.current = bufferRef.current.filter(
+        (c) => c.runtime_seconds > currentSeconds,
+      );
+      //if theres nothing due return nothing
+      if (newlyDue.length === 0) {
+        return;
+      } else {
+        //else set the comments and deduplicate based on what is already rendered in the comments array
+        setComments((prev) => {
+          const existingIds = new Set(prev.map((c) => c.comment_id));
+          const incoming = newlyDue.filter(
+            (c) => !existingIds.has(c.comment_id),
+          );
+          if (incoming.length === 0) return prev;
+          return [...incoming, ...prev];
+        });
+      }
+    }
   }, [currentSeconds]);
 
   return (
