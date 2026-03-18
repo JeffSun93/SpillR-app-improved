@@ -19,14 +19,6 @@ const Post = ({ comment_id, runtime_seconds, style }) => {
   const { episodeId } = useContext(EpisodeContext);
   const [input, setInput] = useState("");
 
-  const comment = {
-    episode_id: episodeId,
-    user_id: loggedInUser.user_id,
-    // runtime_seconds: runtime_seconds,
-    runtime_seconds: 1, //hardcoded for now
-    is_spoiler: false,
-  };
-
   const reply = {
     comment_id: comment_id,
     episode_id: episodeId,
@@ -38,16 +30,9 @@ const Post = ({ comment_id, runtime_seconds, style }) => {
 
   const handleSubmit = () => {
     if (input) {
-      // console.log(input);
-      if (!comment_id) {
-        const newComment = { ...comment, body: input };
-        console.log("client sends comment:", newComment);
-        socket.emit("comment:post", newComment);
-      } else {
-        const newReply = { ...reply, body: input };
-        console.log("client sends reply:", newReply);
-        socket.emit("reply:post", newReply);
-      }
+      const newReply = { ...reply, body: input };
+      console.log("client sends reply:", newReply);
+      socket.emit("reply:post", newReply);
       setInput("");
     }
   };
