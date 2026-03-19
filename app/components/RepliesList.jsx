@@ -15,15 +15,15 @@ import { useContext } from "react";
 import { UserContext } from "../../context/User.jsx";
 import { preventAutoHideAsync } from "expo-router/build/utils/splash.js";
 
-const RepliesList = ({ comment_id, parent_username }) => {
+const RepliesList = ({ commentId, parentUsername }) => {
   const [replylist, setReplyList] = useState([]);
   const { loggedInUser } = useContext(UserContext);
 
   useEffect(() => {
     const handleNewReply = (newReply) => {
       console.log(newReply);
-      console.log(parent_username, "replies list");
-      newReply.parent_username = parent_username;
+      console.log(parentUsername, "replies list");
+      newReply.parent_username = parentUsername;
       newReply.avatar_url = loggedInUser.avatar_url;
       newReply.replies_total = 0;
       newReply.reactions_total = 0;
@@ -41,18 +41,18 @@ const RepliesList = ({ comment_id, parent_username }) => {
     return () => {
       socket.off("reply:new", handleNewReply);
     };
-  }, [comment_id]);
+  }, [commentId]);
 
   useEffect(() => {
     const fetchRepliesForThisComment = async () => {
-      const result = await getRepliesByCommentId(comment_id);
+      const result = await getRepliesByCommentId(commentId);
       if (result.length > 0) {
         setReplyList(result);
         console.log(result);
       }
     };
     fetchRepliesForThisComment();
-  }, [comment_id]);
+  }, [commentId]);
 
   return (
     <KeyboardAvoidingView
@@ -72,7 +72,7 @@ const RepliesList = ({ comment_id, parent_username }) => {
           ))}
         </ScrollView>
 
-        <Post comment_id={comment_id} />
+        <Post commentId={commentId} />
       </View>
     </KeyboardAvoidingView>
   );

@@ -228,7 +228,7 @@ export default function CommentCard(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} parentUsername={username} />
+          <RepliesList commentId={comment_id} parentUsername={username} />
         </>
       )}
     </View>
