@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Image, Button, Pressable } from "react-native";
 import { globalStyles } from "../../styles/globalStyles";
 import TitleText from "./ui/ShowTitleText";
+import socket from "../../socket/connection";
 
 export default function PollItem({ poll, horizontal = true }) {
   //   const router = useRouter();
@@ -14,6 +15,14 @@ export default function PollItem({ poll, horizontal = true }) {
 
       <View style={styles.buttons}>
         <Pressable
+          onPress={() =>
+            socket.emit("poll:vote", {
+              poll_id: poll.poll_id,
+              field_1: true,
+              field_2: false,
+              episode_id: poll.episode_id,
+            })
+          }
           style={({ pressed }) => [
             styles.button,
             pressed && styles.buttonPressed,
@@ -24,6 +33,14 @@ export default function PollItem({ poll, horizontal = true }) {
         </Pressable>
 
         <Pressable
+          onPress={() =>
+            socket.emit("poll:vote", {
+              poll_id: poll.poll_id,
+              field_1: true,
+              field_2: false,
+              episode_id: poll.episode_id,
+            })
+          }
           style={({ pressed }) => [
             styles.button,
             pressed && styles.buttonPressed,
