@@ -36,6 +36,19 @@ export default function CommentsSocket(props) {
     currentSecondsRef.current = currentSeconds;
   }, [currentSeconds]);
 
+  useEffect(() => {
+    socket.on("comment:flagged", (comment_id) => {
+      setComments((prev) =>
+        prev.map((c) =>
+          c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+        ),
+      );
+    });
+    return () => {
+      socket.off("comment:flagged");
+    };
+  }, []);
+
   // store the for release later
   const mergeIntoBuffer = (incoming) => {
     const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
