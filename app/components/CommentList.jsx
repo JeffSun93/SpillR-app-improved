@@ -50,7 +50,6 @@ export default function Comments(props) {
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
           <View key={`${comment.comment_id},${index}`}>
-            {console.log(comment.username, "comments username")}
             <CommentCard
               isHome={isHome}
               isChat={isChat}
@@ -61,7 +60,6 @@ export default function Comments(props) {
               }
               created_at={comment.created_at}
               comment_id={comment.comment_id}
-              parent_username={comment.username}
               runtime_seconds={comment.runtime_seconds}
               season_number={comment.season_number}
               episode_number={comment.episode_number}
