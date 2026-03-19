@@ -73,8 +73,14 @@ export default function PollsList({ id, horizontal = true }) {
     };
   }, []);
 
-  if (loading) return <Text>Loading polls...</Text>;
+  if (loading) return <Text style={styles.subtitle}>Loading polls...</Text>;
   if (error) return <Text>{error}</Text>;
+  if (polls.length === 0)
+    return (
+      <Text style={styles.subtitle}>
+        Polls will appear here if added ... so anything you want to ask chat?
+      </Text>
+    );
 
   if (horizontal) {
     return (
@@ -96,11 +102,11 @@ export default function PollsList({ id, horizontal = true }) {
 
   return (
     <View>
-      <Text>Polls</Text>
+      {polls.length > 0 ? <Text>Polls</Text> : ""}
       <View style={styles.pollsList}>
         {polls.map((poll) => (
           <View key={poll.poll_id} style={globalStyles.gridItem}>
-            <PollItem poll={polls} horizontal={horizontal} />
+            <PollItem poll={poll} horizontal={horizontal} />
           </View>
         ))}
       </View>
@@ -127,5 +133,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontSize: 20,
     color: "white",
+  },
+  subtitle: {
+    marginTop: 0,
+    marginLeft: 22,
+    marginRight: 25,
+    marginBottom: 0,
+    fontSize: 13,
+    color: "#8E8E8E",
   },
 });
