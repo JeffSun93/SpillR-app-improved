@@ -102,6 +102,21 @@ export async function getEpisodeById(id) {
   return data;
 }
 
+export async function retryRequest(func) {
+  const RETRY_COUNT = 4;
+  let count = RETRY_COUNT;
+  while (count > 0) {
+    try {
+      return await func();
+    } catch (error) {
+      if (![502, 503].includes(error?.response?.status) || count === 1)
+        throw error;
+      await new Promise((res) => setTimeout(res, 2000));
+    }
+    count -= 1;
+  }
+}
+
 // export async function searchTvShowsByName(name) {
 //   try {
 //     const { data: localData, error: localError } = await supabase

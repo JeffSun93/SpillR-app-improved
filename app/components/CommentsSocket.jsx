@@ -4,6 +4,8 @@ import {
   getCommentsByEpisodeId,
   getFilteredCommentsByEpisodeId,
 } from "../../utils/utilsFunctionsByApi.js";
+
+import { retryRequest } from "../../utils/utilsFunctions.js";
 import { UserContext } from "../../context/User.jsx";
 import { useState, useEffect, useRef, useContext } from "react";
 import { commentStyles } from "../../styles/commentStyles.jsx";
@@ -73,9 +75,8 @@ export default function CommentsSocket(props) {
   //fectchAhead and store for later
   const fetchAhead = async () => {
     const safeSeconds = Math.floor(currentSecondsRef.current);
-    const results = await getFilteredCommentsByEpisodeId(
-      episode_id,
-      safeSeconds,
+    const results = await retryRequest(() =>
+      getFilteredCommentsByEpisodeId(episode_id, safeSeconds),
     );
     mergeIntoBuffer(results);
   };
@@ -121,7 +122,9 @@ export default function CommentsSocket(props) {
     if (episode_id) {
       if (currentSeconds === 0 && !isPlaying) {
         const fetchAllComments = async () => {
-          const result = await getCommentsByEpisodeId(episode_id);
+          const result = await retryRequest(() =>
+            getCommentsByEpisodeId(episode_id),
+          );
           setComments(result);
         };
         fetchAllComments();
@@ -135,11 +138,9 @@ export default function CommentsSocket(props) {
       const safeSeconds = Math.floor(currentSecondsRef.current);
 
       const fetchCommentsByTime = async () => {
-        const result = await getFilteredCommentsByEpisodeId(
-          episode_id,
-          safeSeconds,
+        const result = await retryRequest(() =>
+          getFilteredCommentsByEpisodeId(episode_id, safeSeconds),
         );
-
         const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
 
         const newComments = result.filter(
