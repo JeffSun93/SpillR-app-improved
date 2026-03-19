@@ -18,8 +18,36 @@ const ReplyCard = ({ reply }) => {
   console.log(parent_username, "reply card");
   const { loggedInUser } = useContext(UserContext);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [reactionCount, setReactionCount] = useState(reactions_total);
+  const [Type_total, setType_total] = useState(reactionType_total);
+  const [lastReaction, setlastReaction] = useState("");
+
   const handleReaction = (reactionType) => {
     console.log("reacted with:", reactionType);
+
+    if (lastReaction === "") {
+      setlastReaction(reactionType);
+      setReactionCount((prev) => prev + 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+    } else if (lastReaction === reactionType) {
+      setlastReaction("");
+      setReactionCount((prev) => prev - 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] - 1,
+      }));
+    } else {
+      setlastReaction(reactionType);
+      setType_total((prev) => ({
+        ...prev,
+        [`${lastReaction}Total`]: prev[`${lastReaction}Total`] - 1,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+      // reactionCount stays the same — still 1 reaction total
+    }
     setShowEmojiPicker(false);
   };
 
@@ -49,15 +77,16 @@ const ReplyCard = ({ reply }) => {
             style={styles.iconGroup}
             onPress={() => setShowEmojiPicker(!showEmojiPicker)}
           >
-            <Text style={styles.iconCount}>{reactions_total}</Text>
+            <Text style={styles.iconCount}>{reactionCount}</Text>
             <Reaction width={18} height={18} />
           </TouchableOpacity>
         </View>
 
         {showEmojiPicker && reactionType_total && (
           <EmojiPicker
-            reactionType_total={reactionType_total}
+            reactionType_total={Type_total}
             onSelect={handleReaction}
+            lastReaction={lastReaction}
           />
         )}
       </View>

@@ -49,6 +49,9 @@ export default function CommentCardSocket(props) {
   const [deletePressed, setDeletePressed] = useState(false);
   const [spoilerPressed, setSpoilerPressed] = useState(false);
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+  const [reactionCount, setReactionCount] = useState(reactions_total);
+  const [Type_total, setType_total] = useState(reactionType_total);
+  const [lastReaction, setlastReaction] = useState("");
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -57,6 +60,30 @@ export default function CommentCardSocket(props) {
 
   const handleReaction = (reactionType) => {
     console.log("reacted with:", reactionType);
+
+    if (lastReaction === "") {
+      setlastReaction(reactionType);
+      setReactionCount((prev) => prev + 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+    } else if (lastReaction === reactionType) {
+      setlastReaction("");
+      setReactionCount((prev) => prev - 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] - 1,
+      }));
+    } else {
+      setlastReaction(reactionType);
+      setType_total((prev) => ({
+        ...prev,
+        [`${lastReaction}Total`]: prev[`${lastReaction}Total`] - 1,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+      // reactionCount stays the same — still 1 reaction total
+    }
     setShowEmojiPicker(false);
   };
 
@@ -146,7 +173,7 @@ export default function CommentCardSocket(props) {
             style={styles.iconGroup}
             onPress={() => setShowEmojiPicker(!showEmojiPicker)}
           >
-            <Text style={styles.iconCount}>{reactions_total}</Text>
+            <Text style={styles.iconCount}>{reactionCount}</Text>
             <Reaction width={22} height={22} />
           </TouchableOpacity>
 
@@ -185,8 +212,9 @@ export default function CommentCardSocket(props) {
 
       {showEmojiPicker && (
         <EmojiPicker
-          reactionType_total={reactionType_total}
+          reactionType_total={Type_total}
           onSelect={handleReaction}
+          lastReaction={lastReaction}
         />
       )}
 

@@ -47,6 +47,9 @@ export default function CommentCard(props) {
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);
+  const [reactionCount, setReactionCount] = useState(reactions_total);
+  const [Type_total, setType_total] = useState(reactionType_total);
+  const [lastReaction, setlastReaction] = useState("");
   const [relativeTime, setRelativeTime] = useState(
     created_at ? timeAgo(created_at) : "",
   );
@@ -81,6 +84,30 @@ export default function CommentCard(props) {
 
   const handleReaction = (reactionType) => {
     console.log("reacted with:", reactionType);
+
+    if (lastReaction === "") {
+      setlastReaction(reactionType);
+      setReactionCount((prev) => prev + 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+    } else if (lastReaction === reactionType) {
+      setlastReaction("");
+      setReactionCount((prev) => prev - 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] - 1,
+      }));
+    } else {
+      setlastReaction(reactionType);
+      setType_total((prev) => ({
+        ...prev,
+        [`${lastReaction}Total`]: prev[`${lastReaction}Total`] - 1,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+      // reactionCount stays the same — still 1 reaction total
+    }
     setShowEmojiPicker(false);
   };
 
@@ -101,7 +128,7 @@ export default function CommentCard(props) {
 
   const actor = username === loggedInUser.username ? "you" : "";
   const meta = type
-    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number === null ? "speacial" : episode_number}`
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number === null ? " (special)" : episode_number}`
     : `posted in ${islive}`;
 
   useEffect(() => {
@@ -139,7 +166,7 @@ export default function CommentCard(props) {
             style={styles.iconGroup}
             onPress={() => setShowEmojiPicker(!showEmojiPicker)}
           >
-            <Text style={styles.iconCount}>{reactions_total}</Text>
+            <Text style={styles.iconCount}>{reactionCount}</Text>
             <Reaction width={22} height={22} />
           </TouchableOpacity>
 
@@ -171,8 +198,9 @@ export default function CommentCard(props) {
 
       {showEmojiPicker && (
         <EmojiPicker
-          reactionType_total={reactionType_total}
+          reactionType_total={Type_total}
           onSelect={handleReaction}
+          lastReaction={lastReaction}
         />
       )}
 

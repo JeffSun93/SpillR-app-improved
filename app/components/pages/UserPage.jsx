@@ -50,6 +50,16 @@ export default function UserPage() {
     } else {
       obj.Commenttype = "comment";
     }
+    if (!obj.reactionType_total) {
+      obj.reactionType_total = {
+        angryTotal: 0,
+        laughingTotal: 0,
+        sadTotal: 0,
+        fireTotal: 0,
+        deadTotal: 0,
+        heartTotal: 0,
+      };
+    }
   }
   const firstName = loggedInUser.name.split(" ")[0];
   return (
