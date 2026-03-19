@@ -17,7 +17,7 @@ export default function FriendCard({ friendObj, userPageID }) {
     <Pressable
       onPress={() =>
         router.push({
-          pathname: "/profilepage/[id]",
+          pathname: "/profile-page/[id]",
           params: {
             id: friendObj.friend_user_id,
             username: friendObj.friend_username,

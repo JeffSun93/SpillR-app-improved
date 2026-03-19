@@ -228,6 +228,7 @@ export default function CommentsSocket(props) {
               isReaction={comment.reaction_id}
               isReply={comment.reply_id}
               reactionType_total={comment.reactionType_total}
+              isSpoiler={comment.is_spoiler}
               setComments={setComments}
             />
             <View style={styles.divider} />

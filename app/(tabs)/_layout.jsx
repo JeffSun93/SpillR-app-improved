@@ -1,17 +1,20 @@
 import { Tabs } from "expo-router";
 import { Image } from "react-native";
-
+import { useContext } from "react";
+import { UserContext } from "../../context/User.jsx";
 import homeIcon from "../../assets/home.png";
 import searchIcon from "../../assets/search-normal.png";
 import userIcon from "../../assets/user.png";
 import notificationIcon from "../../assets/notification-status.png";
 
 export default function TabsLayout() {
+  const { loggedInUser } = useContext(UserContext);
   return (
     <Tabs
       screenOptions={{
         headerTitle: "",
         tabBarShowLabel: false,
+        tabBarActiveTintColor: "transparent",
         tabBarStyle: {
           backgroundColor: "#000000",
           height: 70,
@@ -77,14 +80,15 @@ export default function TabsLayout() {
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <Image
-              source={userIcon}
-              tintColor={focused ? "#fff" : "#9CA3AF"}
+              source={{ uri: loggedInUser.avatar_url }}
+              // tintColor={focused ? "#fff" : "#9CA3AF"}
               style={{
                 width: 28,
                 height: 28,
                 borderWidth: 2,
                 borderColor: "white",
-                borderRadius: 12,
+                borderRadius: 14,
+                overflow: "hidden",
               }}
             />
           ),

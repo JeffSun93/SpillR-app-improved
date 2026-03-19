@@ -46,7 +46,7 @@ export default function ProfileHeader({ userObj }) {
               style={{ alignItems: "center" }}
               onPress={() =>
                 router.push({
-                  pathname: "/FriendList/[id]",
+                  pathname: "../friend-list/[id]",
                   params: {
                     id: userObj.user_id,
                     friendList: JSON.stringify(userObj.friends),

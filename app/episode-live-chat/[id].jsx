@@ -136,7 +136,7 @@ export default function LiveChatPage() {
               </Text>
             </View>
             <View styles={{ height: 220, justifyContent: "center" }}>
-              <PollsList />
+              <PollsList id={id} />
             </View>
           </View>
 

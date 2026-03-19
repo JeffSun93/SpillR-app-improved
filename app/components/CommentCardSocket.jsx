@@ -36,6 +36,7 @@ export default function CommentCardSocket(props) {
     repliesTotal,
     isReaction,
     isReply,
+    isSpoiler,
     setComments,
   } = props;
 
@@ -46,6 +47,9 @@ export default function CommentCardSocket(props) {
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [deletePressed, setDeletePressed] = useState(false);
+  const [spoilerPressed, setSpoilerPressed] = useState(false);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+  const spoilerTest = true;
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -97,6 +101,18 @@ export default function CommentCardSocket(props) {
 
   // DO NOT CHANGE ABOVE
 
+  const handlePressedSpoiler = (comment_id) => {
+    console.log("instruction to mark as spoiler sent");
+    socket.emit("spoiler:mark", comment_id);
+    setSpoilerPressed(!spoilerPressed);
+
+    setComments((prev) =>
+      prev.map((c) =>
+        c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+      ),
+    );
+  };
+
   return (
     <View>
       <View style={commentStyles.commentRow}>
@@ -104,6 +120,7 @@ export default function CommentCardSocket(props) {
           style={commentStyles.commentAvatar}
           source={{ uri: avatar_url }}
         />
+
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
@@ -112,7 +129,16 @@ export default function CommentCardSocket(props) {
             </Text>
           </View>
           <Text style={commentStyles.commentMeta}>{meta}</Text>
-          <Text style={commentStyles.commentText}>{body}</Text>
+
+          {isSpoiler && !spoilerRevealed && user_id !== loggedInUser.user_id ? (
+            <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
+              <Text style={commentStyles.commentText}>
+                ⚠️ Spoiler — tap to reveal
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <Text style={commentStyles.commentText}>{body}</Text>
+          )}
         </View>
       </View>
       {!isReaction && (
@@ -146,7 +172,10 @@ export default function CommentCardSocket(props) {
                   />
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity style={styles.iconGroup}>
+                <TouchableOpacity
+                  style={styles.iconGroup}
+                  onPress={() => handlePressedSpoiler(comment_id)}
+                >
                   <SpoilerFlag width={22} height={22} />
                 </TouchableOpacity>
               )}
@@ -301,4 +330,5 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 14,
   },
+  spoilerWarning: {},
 });

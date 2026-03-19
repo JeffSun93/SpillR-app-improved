@@ -144,28 +144,27 @@ export default function CommentCard(props) {
           </TouchableOpacity>
 
           {!isReply && (
-            <>
-              <TouchableOpacity
-                style={styles.iconGroup}
-                onPress={handleToggleReplies}
-              >
-                <Text style={styles.iconCount}>{repliesTotal}</Text>
-                <Replies width={22} height={22} />
-              </TouchableOpacity>
-              {user_id === loggedInUser.user_id ? (
-                <TouchableOpacity style={styles.iconGroup}>
-                  <Delete
-                    width={22}
-                    height={22}
-                    style={{ transform: [{ translateY: 2 }] }}
-                  />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.iconGroup}>
-                  <SpoilerFlag width={22} height={22} />
-                </TouchableOpacity>
-              )}
-            </>
+            <TouchableOpacity
+              style={styles.iconGroup}
+              onPress={handleToggleReplies}
+            >
+              <Text style={styles.iconCount}>{repliesTotal}</Text>
+              <Replies width={22} height={22} />
+            </TouchableOpacity>
+          )}
+
+          {user_id === loggedInUser.user_id ? (
+            <TouchableOpacity style={styles.iconGroup}>
+              <Delete
+                width={22}
+                height={22}
+                style={{ transform: [{ translateY: 2 }] }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.iconGroup}>
+              <SpoilerFlag width={22} height={22} />
+            </TouchableOpacity>
           )}
         </View>
       )}
