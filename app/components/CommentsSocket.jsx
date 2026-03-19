@@ -39,10 +39,10 @@ export default function CommentsSocket(props) {
   }, [currentSeconds]);
 
   useEffect(() => {
-    socket.on("comment:flagged", (comment_id) => {
+    socket.on("comment:flagged", ({ comment_id, is_spoiler }) => {
       setComments((prev) =>
         prev.map((c) =>
-          c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+          c.comment_id === comment_id ? { ...c, isSpoiler: is_spoiler } : c,
         ),
       );
     });
