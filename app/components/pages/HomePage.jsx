@@ -16,6 +16,13 @@ export default function Home() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    setFeed([]);
+    setOffset(0);
+    setHasMore(true);
+    fetchFeed(0);
+  }, [loggedInUser.user_id]);
+
   const fetchFeed = async (offset) => {
     if (loading || !hasMore) return;
     setLoading(true);
@@ -34,7 +41,7 @@ export default function Home() {
 
   useEffect(() => {
     fetchFeed(0);
-  }, []);
+  }, [loggedInUser.user_id]);
 
   const loadMore = () => {
     if (!loading && hasMore) {

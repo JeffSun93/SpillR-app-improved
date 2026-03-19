@@ -36,8 +36,8 @@ export default function PollItem({ poll, horizontal = true }) {
           onPress={() =>
             socket.emit("poll:vote", {
               poll_id: poll.poll_id,
-              field_1: true,
-              field_2: false,
+              field_1: false,
+              field_2: true,
               episode_id: poll.episode_id,
             })
           }
