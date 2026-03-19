@@ -2,6 +2,7 @@ import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import { useState, useEffect } from "react";
 import PollItem from "./PollItem";
 import { globalStyles } from "../../styles/globalStyles";
+import socket from "../../socket/connection";
 
 // const polls = [
 //   {
@@ -58,6 +59,19 @@ export default function PollsList({ id, horizontal = true }) {
       loadPolls();
     }
   }, [id]);
+
+  useEffect(() => {
+    function handlePollUpdate(updatedPolls) {
+      console.log("poll:update received", updatedPolls);
+      setPolls(updatedPolls);
+    }
+
+    socket.on("poll:update", handlePollUpdate);
+
+    return () => {
+      socket.off("poll:update", handlePollUpdate);
+    };
+  }, []);
 
   if (loading) return <Text>Loading polls...</Text>;
   if (error) return <Text>{error}</Text>;
