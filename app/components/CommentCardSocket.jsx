@@ -197,7 +197,11 @@ export default function CommentCardSocket(props) {
                   style={styles.iconGroup}
                   onPress={() => handlePressedSpoiler(comment_id)}
                 >
-                  <SpoilerFlag width={22} height={22} />
+                  <SpoilerFlag
+                    width={22}
+                    height={22}
+                    stroke={isSpoiler ? "#e14444" : "#fff"}
+                  />
                 </TouchableOpacity>
               )}
             </>

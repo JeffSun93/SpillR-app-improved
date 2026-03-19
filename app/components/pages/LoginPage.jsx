@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Pressable, ScrollView } from "react-native";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../context/User";
-import UserAccount from "./UserAccount";
-import { commentStyles } from "../../styles/commentStyles.jsx";
-import { globalStyles } from "../../styles/globalStyles.jsx";
+import { UserContext } from "../../../context/User.jsx";
+import UserAccount from "../UserAccount.jsx";
+import { commentStyles } from "../../../styles/commentStyles.jsx";
+import { globalStyles } from "../../../styles/globalStyles.jsx";
 
 export default function LoginPage() {
   const { loggedInUser, setLoggedInUser } = useContext(UserContext);

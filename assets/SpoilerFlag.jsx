@@ -1,6 +1,7 @@
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
-const SpoilerFlag = (props) => (
+
+const SpoilerFlag = ({ stroke = "#DEDEDE", ...props }) => (
   <Svg
     xmlns="http://www.w3.org/2000/svg"
     width={24}
@@ -9,7 +10,7 @@ const SpoilerFlag = (props) => (
     {...props}
   >
     <Path
-      stroke="#DEDEDE"
+      stroke={stroke}
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeMiterlimit={10}
@@ -18,4 +19,5 @@ const SpoilerFlag = (props) => (
     />
   </Svg>
 );
+
 export default SpoilerFlag;
