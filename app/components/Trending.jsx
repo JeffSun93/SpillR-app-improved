@@ -1,24 +1,27 @@
 import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
 import TrendingCard from "./TrendingCard";
 import { globalStyles } from "../../styles/globalStyles.jsx";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { getTrendingTvShows } from "../../utils/utilsFunctionsByApi.js";
 
 export default function Trending({ horizontal = true }) {
   const [trendingTvShows, setTrendingTvShows] = useState([]);
 
-  useEffect(() => {
-    async function fetchTrendingTvShows() {
-      try {
-        const trendingTVshows = await getTrendingTvShows();
-
-        setTrendingTvShows(trendingTVshows || []);
-      } catch (error) {
-        console.log(error);
+  useFocusEffect(
+    useCallback(() => {
+      async function fetchTrendingTvShows() {
+        try {
+          const trendingTVshows = await getTrendingTvShows();
+          setTrendingTvShows(trendingTVshows || []);
+        } catch (error) {
+          console.log(error);
+        }
       }
-    }
-    fetchTrendingTvShows();
-  }, []);
+      fetchTrendingTvShows();
+    }, []),
+  );
+
   if (horizontal) {
     return (
       <ScrollView
