@@ -15,12 +15,13 @@ import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/PollsList.jsx";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
-import CommentsSocket from "../components/CommentsSocket.jsx";
+import CommentList from "../components/CommentList";
 import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../../context/Episode";
+import useSocketComments from "../../hooks/useSocketComments.js";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -35,6 +36,15 @@ export default function LiveChatPage() {
   const [scrubSwitch, setScrubSwitch] = useState(false);
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
+
+  const { comments, setComments } = useSocketComments(
+    id,
+    currentSeconds,
+    isPlaying,
+    isScrubbing,
+    scrubSwitch,
+  );
+
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
@@ -199,14 +209,10 @@ export default function LiveChatPage() {
             </View>
           </View>
 
-          <CommentsSocket
-            setScrubSwitch={setScrubSwitch}
-            scrubSwitch={scrubSwitch}
-            currentSeconds={currentSeconds}
-            episodeId={episode.episode_id}
+          <CommentList
+            comments={comments}
+            setComments={setComments}
             isChat={true}
-            isPlaying={isPlaying}
-            isScrubbing={isScrubbing}
             isHome={false}
           />
         </ScrollView>

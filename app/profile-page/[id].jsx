@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <CommentList userComments={userComments} isProfile={true} />
+          <CommentList comments={userComments} isProfile={true} />
         </View>
       </ScrollView>
     </View>

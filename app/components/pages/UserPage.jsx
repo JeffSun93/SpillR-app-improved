@@ -74,7 +74,7 @@ export default function UserPage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <CommentList isUser={true} userComments={userComments} />
+          <CommentList isUser={true} comments={userComments} />
         </View>
       </ScrollView>
     </View>

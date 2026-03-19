@@ -77,7 +77,7 @@ export default function Home() {
           <HomePageHeader />
           <Trending />
           <FriendsAreWatching />
-          <CommentList isHome={true} feedComments={feed} />
+          <CommentList isHome={true} comments={feed} />
           {loading && (
             <ActivityIndicator color="#fff" style={{ marginVertical: 20 }} />
           )}
