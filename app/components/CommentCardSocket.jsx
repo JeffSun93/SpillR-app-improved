@@ -26,6 +26,8 @@ export default function CommentCardSocket(props) {
     episode_number,
     season_number,
     runtime_seconds,
+    avatar_url,
+    username,
     isHome,
     isChat,
     isLive,
@@ -36,8 +38,7 @@ export default function CommentCardSocket(props) {
     isReply,
     setComments,
   } = props;
-  const [username, setUserName] = useState(null);
-  const [userurl, setUserurl] = useState(null);
+
   const { loggedInUser } = useContext(UserContext);
   const [relativeTime, setRelativeTime] = useState(
     created_at ? timeAgo(created_at) : "",
@@ -76,22 +77,6 @@ export default function CommentCardSocket(props) {
     ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
     : `posted in ${islive}`;
 
-  useEffect(() => {
-    // THIS USE EFFECT IS FETCHING INFINITELY EVERY SECOND
-    console.log("fetchUser effect");
-    const fetchUser = async () => {
-      if (!user_id) return;
-      const result = await getUserById(user_id);
-
-      if (!result) return;
-
-      setUserName(result.username);
-      setUserurl(result.avatar_url);
-      setRelativeTime(timeAgo(created_at));
-    };
-    fetchUser();
-  }, [user_id]);
-
   // DO NOT CHANGE BELOW
 
   const handlePressDelete = (comment_id) => {
@@ -115,7 +100,10 @@ export default function CommentCardSocket(props) {
   return (
     <View>
       <View style={commentStyles.commentRow}>
-        <Image style={commentStyles.commentAvatar} source={{ uri: userurl }} />
+        <Image
+          style={commentStyles.commentAvatar}
+          source={{ uri: avatar_url }}
+        />
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
@@ -177,7 +165,7 @@ export default function CommentCardSocket(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} />
+          <RepliesList comment_id={comment_id} parent_username={username} />
         </>
       )}
     </View>

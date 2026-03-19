@@ -9,7 +9,8 @@ const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
-  setScrubFinished,
+  scrubSwitch,
+  setScrubSwitch,
   setIsScrubbing,
   currentSeconds,
   setCurrentSeconds,
@@ -95,12 +96,12 @@ export default function EpisodeTimelineScrubber({
           onResponderRelease={() => {
             setCurrentSeconds(scrubPositionRef.current); // commit to parent on release
             setIsScrubbing(false);
-            setScrubFinished(true);
+            setScrubSwitch(!scrubSwitch);
           }}
           onResponderTerminate={() => {
             setCurrentSeconds(scrubPositionRef.current);
             setIsScrubbing(false);
-            setScrubFinished(true);
+            setScrubSwitch(!scrubSwitch);
           }}
         >
           <View

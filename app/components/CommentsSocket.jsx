@@ -12,8 +12,8 @@ import socket from "../../socket/connection.js";
 
 export default function CommentsSocket(props) {
   const {
-    setScrubFinished,
-    scrubFinished,
+    setScrubSwitch,
+    scrubSwitch,
     currentSeconds,
     episode_id,
     isHome,
@@ -32,12 +32,39 @@ export default function CommentsSocket(props) {
   const bufferRef = useRef([]);
   const addOptimisticCommentRef = useRef(null);
 
+  useEffect(() => {
+    currentSecondsRef.current = currentSeconds;
+  }, [currentSeconds]);
+
+  // store the for release later
+  const mergeIntoBuffer = (incoming) => {
+    const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
+    const newComments = incoming.filter((c) => !existingIds.has(c.comment_id));
+    bufferRef.current = [...bufferRef.current, ...newComments];
+  };
+
+  //render immediately
   const addOptimisticComment = (newComment) => {
     setComments((prev) => {
       const existingIds = new Set(prev.map((c) => c.comment_id));
-      if (existingIds.has(newComment.comment_id)) return prev;
-      return [newComment, ...prev];
+      if (existingIds.has(newComment.comment_id)) {
+        return prev;
+      } else {
+        return [newComment, ...prev].sort(
+          (a, b) => b.runtime_seconds - a.runtime_seconds,
+        );
+      }
     });
+  };
+
+  //fectchAhead and store for later
+  const fetchAhead = async () => {
+    const safeSeconds = Math.floor(currentSecondsRef.current);
+    const results = await getFilteredCommentsByEpisodeId(
+      episode_id,
+      safeSeconds,
+    );
+    mergeIntoBuffer(results);
   };
 
   addOptimisticCommentRef.current = addOptimisticComment;
@@ -50,21 +77,22 @@ export default function CommentsSocket(props) {
     // missing piece to add websockets comments
     const handleNewComment = (newComment) => {
       console.log(newComment);
-      if (String(newComment.episode_id) !== String(episode_id)) return;
-      if (newComment.user_id === loggedInUser.user_id) {
-        addOptimisticComment(newComment);
-      } else {
-        const diff = Math.abs(
+
+      if (newComment.episode_id === episode_id) {
+        const isOwnComment = newComment.user_id === loggedInUser.user_id;
+
+        const differenceTime = Math.abs(
           newComment.runtime_seconds - currentSecondsRef.current,
         );
-        //if the new comment added is near your runtime seconds add it immediately
-        if (diff <= 30) {
-          addOptimisticComment(newComment);
-        }
-        // let the buffer/ticker handle it at the right time
+
+        // let the buffer/ticker just handle it at the right tim
         bufferRef.current = [...bufferRef.current, newComment];
+
+        //if the new comment added is near your runtime seconds or it's yours add it immediately
+        if (isOwnComment || differenceTime <= 40) {
+          addOptimisticCommentRef.current(newComment);
+        }
       }
-      setComments((prev) => [newComment, ...prev]);
     };
     socket.on("comment:new", handleNewComment);
 
@@ -75,96 +103,93 @@ export default function CommentsSocket(props) {
 
   // DONT CHANGE ABOVE FOR NOW
 
-  // ─── initial load ───────────────────────────────────────────
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (currentSeconds !== 0 || isPlaying) return;
+    if (episode_id) {
+      if (currentSeconds === 0 && !isPlaying) {
+        const fetchAllComments = async () => {
+          const result = await getCommentsByEpisodeId(episode_id);
+          setComments(result);
+        };
+        fetchAllComments();
+      }
+    }
+  }, [currentSeconds, isPlaying, episode_id]);
 
-    const fetchAllComments = async () => {
-      const result = await getCommentsByEpisodeId(episode_id);
-      setComments(result);
-    };
-    fetchAllComments();
-  }, [isChat, currentSeconds, isPlaying, episode_id]);
-
-  // ─── Chat — scrub ───────────────────────────────────────────────────
-  // User jumped to a new timestamp —, refresh the buffer array and fetch and show all comments up to that point
+  //scrubbing pattern
   useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (currentSecondsRef.current === 0 && !isPlaying) return;
+    if (episode_id && !isScrubbing) {
+      const safeSeconds = Math.floor(currentSecondsRef.current);
 
-    const safeSeconds = Math.floor(currentSecondsRef.current);
+      const fetchCommentsByTime = async () => {
+        const result = await getFilteredCommentsByEpisodeId(
+          episode_id,
+          safeSeconds,
+        );
 
-    getFilteredCommentsByEpisodeId(episode_id, safeSeconds).then((result) => {
-      bufferRef.current = result;
-      setComments(
-        [...result].sort((a, b) => b.runtime_seconds - a.runtime_seconds),
-      );
-      setScrubFinished(false);
-    });
-  }, [scrubFinished]);
+        const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
 
-  // ─── Chat — while playing, 30s polling starts ───────────────────────────────
+        const newComments = result.filter(
+          (c) => !existingIds.has(c.comment_id),
+        );
+
+        bufferRef.current = [...bufferRef.current, ...newComments];
+
+        setComments((prev) => {
+          const prevIds = new Set(prev.map((c) => c.comment_id));
+          const toAdd = result.filter((c) => !prevIds.has(c.comment_id));
+
+          return [...toAdd, ...prev].sort(
+            (a, b) => b.runtime_seconds - a.runtime_seconds,
+          );
+        });
+      };
+
+      fetchCommentsByTime();
+    }
+  }, [scrubSwitch, isScrubbing]);
+
+  // while playing, 30s polling starts
   // Pre-fetches comments 3 mins ahead into a buffer; never sets comments directly
   useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (!isPlaying || isScrubbing) return;
+    if (episode_id) {
+      if (isPlaying && !isScrubbing) {
+        const interval = setInterval(fetchAhead, 30000);
+        // Reset buffer when playback starts from zero
+        if (currentSecondsRef.current === 0) {
+          bufferRef.current = [];
+          setComments([]);
+        }
 
-    // Reset buffer when playback starts from zero
-    if (bufferRef.current.length === 0 || currentSecondsRef.current === 0) {
-      bufferRef.current = [];
-      setComments([]);
+        fetchAhead();
+        return () => clearInterval(interval);
+      }
     }
-
-    const mergeIntoBuffer = (incoming) => {
-      const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
-      const newComments = incoming.filter(
-        (c) => !existingIds.has(c.comment_id),
-      );
-      bufferRef.current = [...bufferRef.current, ...newComments];
-    };
-
-    const fetchAhead = async () => {
-      const safeSeconds = Math.floor(currentSecondsRef.current);
-      const results = await getFilteredCommentsByEpisodeId(
-        episode_id,
-        safeSeconds,
-      );
-      mergeIntoBuffer(results);
-    };
-
-    fetchAhead();
-    const interval = setInterval(fetchAhead, 30000);
-    return () => clearInterval(interval);
   }, [isPlaying, isScrubbing, episode_id]);
 
-  // ─── Chat — reveal buffered comments in real time ──────────────────
-  // Runs every second; drip-feeds buffered comments whose timestamp is now due
+  // reveal buffered comments in real time ──────────────────
+  // Runs every second because of ; drip-feeds buffered comments whose timestamp is now due
   useEffect(() => {
-    if (isScrubbing || isHome) {
-      return;
-    } else {
+    if (!isScrubbing && isPlaying) {
       // newly due is an array created from the buffer array that contains all the comments that are due now using a filter
       const newlyDue = bufferRef.current.filter(
         (c) => c.runtime_seconds <= currentSeconds,
       );
-
+      //buffer current must now drain those comments out of it
       bufferRef.current = bufferRef.current.filter(
         (c) => c.runtime_seconds > currentSeconds,
       );
-      //if theres nothing due return nothing
-      if (newlyDue.length === 0) {
-        return;
-      } else {
+      //if there is something due set the comments array
+      if (newlyDue.length > 0) {
         //else set the comments and deduplicate based on what is already rendered in the comments array
         setComments((prev) => {
           const existingIds = new Set(prev.map((c) => c.comment_id));
           const incoming = newlyDue.filter(
             (c) => !existingIds.has(c.comment_id),
           );
-          if (incoming.length === 0) return prev;
-          return [...incoming, ...prev];
+          return [...incoming, ...prev].sort(
+            (a, b) => b.runtime_seconds - a.runtime_seconds,
+          );
         });
       }
     }
@@ -189,6 +214,8 @@ export default function CommentsSocket(props) {
               body={
                 comment.body ? comment.body : emojiLookup(comment.reaction_type)
               }
+              avatar_url={comment.avatar_url}
+              username={comment.username}
               created_at={comment.created_at}
               comment_id={comment.comment_id}
               runtime_seconds={comment.runtime_seconds}

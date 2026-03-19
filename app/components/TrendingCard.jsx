@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import { useRouter } from "expo-router";
-import { globalStyles } from "../../../styles/globalStyles";
-import TitleText from "../ui/ShowTitleText";
+import { globalStyles } from "../../styles/globalStyles";
+import TitleText from "./ui/ShowTitleText";
 
 export default function TrendingCard({ show, horizontal = true }) {
   const router = useRouter();

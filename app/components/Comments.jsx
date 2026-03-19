@@ -50,7 +50,6 @@ export default function Comments(props) {
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
           <View key={`${comment.comment_id},${index}`}>
-            {console.log(comment.username, "comments username")}
             <CommentCard
               isHome={isHome}
               isChat={isChat}

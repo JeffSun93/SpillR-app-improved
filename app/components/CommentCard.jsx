@@ -44,7 +44,7 @@ export default function CommentCard(props) {
     isReaction,
     isReply,
   } = props;
-  console.log(parent_username, "comment card");
+
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);

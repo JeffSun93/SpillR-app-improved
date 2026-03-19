@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "../../../context/User";
+import { UserContext } from "../../context/User";
 import {
   ScrollView,
   View,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
+
 export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
   const firstName = userObj?.name?.split(" ")[0];

@@ -29,7 +29,22 @@ const PostBox = ({ comment_id, currentSecond, style }) => {
   const handleSubmit = () => {
     console.log(input);
     if (input) {
-      const newComment = { ...comment, body: input };
+      const newComment = {
+        ...comment,
+        body: input,
+        username: loggedInUser.username,
+        avatar_url: loggedInUser.avatar_url,
+        repliesTotal: 0,
+        reactions_total: 0,
+        reactionType_total: {
+          angryTotal: 0,
+          laughingTotal: 0,
+          sadTotal: 0,
+          fireTotal: 0,
+          deadTotal: 0,
+          heartTotal: 0,
+        },
+      };
       console.log("client sends comment:", newComment);
       socket.emit("comment:post", newComment);
     }

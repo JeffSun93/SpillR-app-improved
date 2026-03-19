@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import TitleText from "../ui/TitleText";
-import ShowTitleText from "../ui/ShowTitleText";
+import TitleText from "./ui/TitleText";
+import ShowTitleText from "./ui/ShowTitleText";
 
 export default function Header() {
   return (

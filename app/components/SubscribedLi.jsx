@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { globalStyles } from "../../../styles/globalStyles";
+import { globalStyles } from "../../styles/globalStyles";
 import { useState } from "react";
 
 export default function SubLi({ userSubscriptions }) {

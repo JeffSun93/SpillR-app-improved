@@ -1,53 +1,98 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import CommentCard from "./CommentCard";
-import { getCommentsByEpisodeId } from "../../../utils/utilsFunctionsByApi.js";
-import { useState, useEffect } from "react";
+import CommentCard from "./CommentCard.jsx";
+import {
+  getCommentsByEpisodeId,
+  getFilteredCommentsByEpisodeId,
+} from "../../utils/utilsFunctionsByApi.js";
+import { UserContext } from "../../context/User.jsx";
+import { useState, useEffect, useRef, useContext } from "react";
+import { commentStyles } from "../../styles/commentStyles.jsx";
+import emojiLookup from "../../utils/emojiLookupObject.js";
 
-export default function CommentList(props) {
+export default function Comments(props) {
+  const { isHome, isUser, isProfile, isChat, feedComments, userComments } =
+    props;
+
   const [comments, setComments] = useState([]);
-  const { episode_id, currentSeconds } = props;
-  useEffect(() => {
-    if (!episode_id) return;
-    const fetchComments = async (id) => {
-      const results = await getCommentsByEpisodeId(id);
-      setComments(results);
-    };
-    fetchComments(episode_id);
-  }, [episode_id]);
+  const { loggedInUser } = useContext(UserContext);
 
-  const filteredCommentsByRuntimeRange = comments.filter(
-    (comment) =>
-      comment.runtime_seconds >= currentSeconds - 1200 &&
-      comment.runtime_seconds <= currentSeconds,
-  );
+  // Non-chat modes
+  useEffect(() => {
+    if (isChat) return;
+
+    // Home feed — pre-fetched in parent, passed as feedComments prop
+    if (isHome) {
+      setComments(feedComments);
+      return;
+    }
+
+    // Logged-in user's own profile page
+    if (isUser) {
+      setComments(userComments);
+      return;
+    }
+
+    // Someone else's profile page
+    if (isProfile) {
+      setComments(userComments);
+      return;
+    }
+  }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);
 
   return (
     <ScrollView
-      style={styles.commentsBox}
+      style={commentStyles.commentsBox}
       nestedScrollEnabled
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingBottom: 350 }}
       showsVerticalScrollIndicator={false}
     >
-      {filteredCommentsByRuntimeRange?.length > 0 ? (
-        filteredCommentsByRuntimeRange.map((comment) => {
-          return (
-            <View key={comment.comment_id}>
-              <CommentCard
-                user_id={comment.user_id}
-                body={comment.body}
-                created_at={comment.created_at}
-              />
-              <View style={styles.divider} />
-            </View>
-          );
-        })
+      {comments?.length > 0 ? (
+        comments.map((comment, index) => (
+          <View key={`${comment.comment_id},${index}`}>
+            {console.log(comment.username, "comments username")}
+            <CommentCard
+              isHome={isHome}
+              isChat={isChat}
+              isLive={comment.is_live}
+              user_id={comment.user_id}
+              body={
+                comment.body ? comment.body : emojiLookup(comment.reaction_type)
+              }
+              created_at={comment.created_at}
+              comment_id={comment.comment_id}
+              parent_username={comment.username}
+              runtime_seconds={comment.runtime_seconds}
+              season_number={comment.season_number}
+              episode_number={comment.episode_number}
+              tv_show_name={comment.tv_show_name || comment.name}
+              type={comment.Commenttype}
+              reactions_total={comment.reactions_total}
+              repliesTotal={comment.repliesTotal}
+              isReaction={comment.reaction_id}
+              isReply={comment.reply_id}
+              reactionType_total={comment.reactionType_total}
+            />
+            <View style={styles.divider} />
+          </View>
+        ))
       ) : (
-        <Text>No comments yet</Text>
+        <Text style={styles.noComments}>
+          {isHome
+            ? null
+            : `No reactions at this timestamp yet, keep playing to see more... or be the first?`}
+        </Text>
       )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  noComments: {
+    color: "#8E8E8E",
+    fontWeight: 700,
+  },
+
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",
@@ -152,7 +197,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   commentsBox: {
-    height: 230,
+    overflow: "visible",
+    flex: 1,
     marginHorizontal: 15,
     paddingHorizontal: 10,
     paddingVertical: 8,

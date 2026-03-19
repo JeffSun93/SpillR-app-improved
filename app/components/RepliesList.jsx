@@ -15,15 +15,15 @@ import { useContext } from "react";
 import { UserContext } from "../../context/User.jsx";
 import { preventAutoHideAsync } from "expo-router/build/utils/splash.js";
 
-const RepliesList = ({ comment_id, parentUsername }) => {
+const RepliesList = ({ comment_id, parent_username }) => {
   const [replylist, setReplyList] = useState([]);
   const { loggedInUser } = useContext(UserContext);
 
   useEffect(() => {
     const handleNewReply = (newReply) => {
       console.log(newReply);
-      console.log(parentUsername, "replies list");
-      newReply.parent_username = parentUsername;
+      console.log(parent_username, "replies list");
+      newReply.parent_username = parent_username;
       newReply.avatar_url = loggedInUser.avatar_url;
       newReply.replies_total = 0;
       newReply.reactions_total = 0;

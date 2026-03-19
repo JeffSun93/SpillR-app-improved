@@ -12,7 +12,7 @@ import { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { cleanText } from "../../utils/cleanText";
-import PollsList from "../components/tv-show-chat/PollsList";
+import PollsList from "../components/PollsList.jsx";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
 import CommentsSocket from "../components/CommentsSocket.jsx";
@@ -32,7 +32,7 @@ export default function LiveChatPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [currentSeconds, setCurrentSeconds] = useState(0);
-  const [scrubFinished, setScrubFinished] = useState(false);
+  const [scrubSwitch, setScrubSwitch] = useState(false);
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
   useEffect(() => {
@@ -108,7 +108,8 @@ export default function LiveChatPage() {
                 <Text style={styles.showName}>{showName}</Text>
                 <View style={styles.timelineContainer}>
                   <EpisodeTimelineScrubber
-                    setScrubFinished={setScrubFinished}
+                    setScrubSwitch={setScrubSwitch}
+                    scrubSwitch={scrubSwitch}
                     episodeRuntime={episodeRuntime}
                     currentSeconds={currentSeconds}
                     setCurrentSeconds={setCurrentSeconds}
@@ -140,8 +141,8 @@ export default function LiveChatPage() {
           </View>
 
           <CommentsSocket
-            setScrubFinished={setScrubFinished}
-            scrubFinished={scrubFinished}
+            setScrubSwitch={setScrubSwitch}
+            scrubSwitch={scrubSwitch}
             currentSeconds={currentSeconds}
             episode_id={episode.episode_id}
             isChat={true}
