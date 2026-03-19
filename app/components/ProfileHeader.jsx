@@ -18,7 +18,7 @@ export default function ProfileHeader({ userObj }) {
     (friend) => friend.friend_user_id === loggedInUser.user_id,
   );
   const router = useRouter();
-
+  console.log(loggedInUser);
   return (
     <View>
       <View style={styles.buttonNameContainer}>
