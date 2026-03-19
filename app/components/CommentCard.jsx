@@ -44,11 +44,15 @@ export default function CommentCard(props) {
     isReaction,
     isReply,
     setComments,
+    isSpoiler,
+    avatarUrl: authorAvatarUrl,
+    username: authorUsername,
   } = props;
 
-  const [username, setUserName] = useState(null);
-  const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);
+
+  const [username, setUserName] = useState(authorUsername || null);
+  const [userurl, setUserurl] = useState(authorAvatarUrl || null);
   const [deletePressed, setDeletePressed] = useState(false);
   const [reactionCount, setReactionCount] = useState(reactions_total);
   const [Type_total, setType_total] = useState(reactionType_total);
@@ -59,7 +63,22 @@ export default function CommentCard(props) {
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [show, setShow] = useState(null);
+  const [spoilerPressed, setSpoilerPressed] = useState(false);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+
   const router = useRouter();
+
+  const handlePressedSpoiler = (comment_id) => {
+    console.log("instruction to mark as spoiler sent", comment_id);
+    socket.emit("spoiler:mark", comment_id);
+    setSpoilerPressed(!spoilerPressed);
+
+    setComments((prev) =>
+      prev.map((c) =>
+        c.comment_id === comment_id ? { ...c, is_spoiler: !c.is_spoiler } : c,
+      ),
+    );
+  };
 
   const handlePressDelete = (comment_id) => {
     if (isReply) return;
@@ -152,6 +171,7 @@ export default function CommentCard(props) {
     : `posted in ${islive}`;
 
   useEffect(() => {
+    if (authorUsername && authorAvatarUrl) return;
     const fetchUser = async () => {
       if (!user_id) return;
       const result = await getUserById(user_id);
@@ -172,12 +192,47 @@ export default function CommentCard(props) {
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
-            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            {isChat ? (
+              <Text style={commentStyles.commentTime}>
+                {formatRuntime(runtime_seconds)}
+              </Text>
+            ) : (
+              <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            )}
           </View>
-          <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
-            <Text style={commentStyles.commentMeta}>{meta}</Text>
-            <Text style={commentStyles.commentText}>{body}</Text>
-          </Pressable>
+          {isChat ? (
+            <>
+              <Text style={commentStyles.commentMeta}>{meta}</Text>
+              {isSpoiler &&
+              !spoilerRevealed &&
+              user_id !== loggedInUser.user_id ? (
+                <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
+                  <Text style={styles.spoilerWarning}>
+                    ⚠️ Spoiler — tap to reveal
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={commentStyles.commentText}>{body}</Text>
+              )}
+            </>
+          ) : (
+            <Pressable
+              onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}
+            >
+              <Text style={commentStyles.commentMeta}>{meta}</Text>
+              {isSpoiler &&
+              !spoilerRevealed &&
+              user_id !== loggedInUser.user_id ? (
+                <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
+                  <Text style={styles.spoilerWarning}>
+                    ⚠️ Spoiler — tap to reveal
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={commentStyles.commentText}>{body}</Text>
+              )}
+            </Pressable>
+          )}
         </View>
       </View>
       {!isReaction && (
