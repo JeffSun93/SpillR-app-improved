@@ -49,9 +49,6 @@ export default function CommentCardSocket(props) {
   const [deletePressed, setDeletePressed] = useState(false);
   const [spoilerPressed, setSpoilerPressed] = useState(false);
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
-  const [reactionCount, setReactionCount] = useState(reactions_total);
-  const [Type_total, setType_total] = useState(reactionType_total);
-  const [lastReaction, setlastReaction] = useState("");
 
   const handleToggleReplies = () => {
     if (!isChat) return;
