@@ -49,7 +49,6 @@ export default function CommentCardSocket(props) {
   const [deletePressed, setDeletePressed] = useState(false);
   const [spoilerPressed, setSpoilerPressed] = useState(false);
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
-  const spoilerTest = true;
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -102,7 +101,7 @@ export default function CommentCardSocket(props) {
   // DO NOT CHANGE ABOVE
 
   const handlePressedSpoiler = (comment_id) => {
-    console.log("instruction to mark as spoiler sent");
+    console.log("instruction to mark as spoiler sent", comment_id);
     socket.emit("spoiler:mark", comment_id);
     setSpoilerPressed(!spoilerPressed);
 
@@ -132,7 +131,7 @@ export default function CommentCardSocket(props) {
 
           {isSpoiler && !spoilerRevealed && user_id !== loggedInUser.user_id ? (
             <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
-              <Text style={commentStyles.commentText}>
+              <Text style={styles.spoilerWarning}>
                 ⚠️ Spoiler — tap to reveal
               </Text>
             </TouchableOpacity>
@@ -330,5 +329,9 @@ const styles = StyleSheet.create({
     height: 140,
     borderRadius: 14,
   },
-  spoilerWarning: {},
+  spoilerWarning: {
+    color: "#8E8E8E",
+    fontStyle: "italic",
+    fontSize: 14,
+  },
 });
