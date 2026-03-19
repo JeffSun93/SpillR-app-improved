@@ -103,7 +103,7 @@ export async function getEpisodeById(id) {
 }
 
 export async function retryRequest(func) {
-  const RETRY_COUNT = 4;
+  const RETRY_COUNT = 8;
   let count = RETRY_COUNT;
   while (count > 0) {
     try {
@@ -111,7 +111,7 @@ export async function retryRequest(func) {
     } catch (error) {
       if (![502, 503].includes(error?.response?.status) || count === 1)
         throw error;
-      await new Promise((res) => setTimeout(res, 2000));
+      await new Promise((res) => setTimeout(res, 4000));
     }
     count -= 1;
   }
