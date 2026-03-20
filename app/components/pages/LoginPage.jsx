@@ -53,7 +53,7 @@ export default function LoginPage() {
       user_id: "f6a7b8c9-d0e1-2345-fabc-456789012345",
       username: "3llasious",
       avatar_url:
-        "https://www.google.com/url?sa=t&source=web&rct=j&url=https%3A%2F%2Favatars.alphacoders.com%2Favatars%2Fview%2F246845&ved=0CBYQjRxqFwoTCNi-7PXprpMDFQAAAAAdAAAAABAI&opi=89978449",
+        "https://wallpapers.com/images/featured/hxh-pfp-5qrjodr1fhawfxwa.jpg",
       language: "English",
       name: "Ella Itopa",
       bio: "If there's a twist coming, I've already clocked it. Forensic rewatcher, timeline nerd, and certified dramatic irony enthusiast.",
