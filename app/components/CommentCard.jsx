@@ -128,6 +128,15 @@ export default function CommentCard(props) {
     console.log("reacted with:", reactionType);
 
     if (lastReaction === "") {
+      socket.emit("reaction:add", {
+        reaction_type: reactionType,
+        comment_id,
+        episode_id: comment.episode_id,
+        reply_id: null,
+        runtime_seconds,
+        user_id: loggedInUser.user_id,
+      });
+      console.log(`added reaction ${reactionType}`);
       setlastReaction(reactionType);
       setReactionCount((prev) => prev + 1);
       setType_total((prev) => ({
