@@ -1,8 +1,6 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import CommentCard from "./CommentCard.jsx";
-import CommentCardSocket from "./CommentCardSocket.jsx";
 import { commentStyles } from "../../styles/commentStyles.jsx";
-import emojiLookup from "../../utils/emojiLookupObject.js";
 
 export default function CommentList(props) {
   const { comments, setComments, isHome, isChat, isUser, isProfile } = props;
@@ -18,59 +16,12 @@ export default function CommentList(props) {
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
           <View key={`${comment.comment_id},${index}`}>
-            {isChat ? (
-              <CommentCardSocket
-                avatar_url={comment.avatar_url}
-                username={comment.username}
-                isSpoiler={comment.is_spoiler}
-                setComments={setComments}
-                isChat={isChat}
-                isHome={isHome}
-                isLive={comment.is_live}
-                user_id={comment.user_id}
-                body={
-                  comment.body ? comment.body : emojiLookup(comment.reaction_type)
-                }
-                created_at={comment.created_at}
-                comment_id={comment.comment_id}
-                runtime_seconds={comment.runtime_seconds}
-                season_number={comment.season_number}
-                episode_number={comment.episode_number}
-                tv_show_name={comment.tv_show_name || comment.name}
-                type={comment.Commenttype}
-                reactions_total={comment.reactions_total}
-                repliesTotal={comment.repliesTotal}
-                isReaction={comment.reaction_id}
-                isReply={comment.reply_id}
-                reactionType_total={comment.reactionType_total}
-              />
-            ) : (
-              <CommentCard
-                avatar_url={comment.avatar_url}
-                username={comment.username}
-                isSpoiler={comment.is_spoiler}
-                setComments={setComments}
-                isChat={isChat}
-                isHome={isHome}
-                isLive={comment.is_live}
-                user_id={comment.user_id}
-                body={
-                  comment.body ? comment.body : emojiLookup(comment.reaction_type)
-                }
-                created_at={comment.created_at}
-                comment_id={comment.comment_id}
-                runtime_seconds={comment.runtime_seconds}
-                season_number={comment.season_number}
-                episode_number={comment.episode_number}
-                tv_show_name={comment.tv_show_name || comment.name}
-                type={comment.Commenttype}
-                reactions_total={comment.reactions_total}
-                repliesTotal={comment.repliesTotal}
-                isReaction={comment.reaction_id}
-                isReply={comment.reply_id}
-                reactionType_total={comment.reactionType_total}
-              />
-            )}
+            <CommentCard
+              comment={comment}
+              setComments={setComments}
+              isChat={isChat}
+              isHome={isHome}
+            />
             <View style={styles.divider} />
           </View>
         ))
