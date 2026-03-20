@@ -64,10 +64,16 @@ const useSocketComments = (
       );
     };
 
+    const handleRemoveComment = (comment_id) => {
+      setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+    };
+
     socket.on("comment:flagged", handleFlagComment);
+    socket.on("comment:remove", handleRemoveComment);
 
     return () => {
       socket.off("comment:flagged", handleFlagComment);
+      socket.off("comment:remove", handleRemoveComment);
     };
   }, []);
 
