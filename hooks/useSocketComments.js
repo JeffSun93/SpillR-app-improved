@@ -76,7 +76,7 @@ const useSocketComments = (
     const handleNewComment = (newComment) => {
       console.log(newComment);
 
-      if (newComment.episode_id === episodeId) {
+      if (String(newComment.episode_id) === String(episodeId)) {
         const isOwnComment = newComment.user_id === loggedInUser.user_id;
 
         const differenceTime = Math.abs(
