@@ -74,6 +74,7 @@ const PostBox = ({ comment_id, currentSecond, style }) => {
 };
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     borderRadius: 30,
     paddingLeft: 16,
     marginTop: 20,
