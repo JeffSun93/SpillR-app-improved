@@ -93,7 +93,7 @@ export default function PollsList({ id, horizontal = true }) {
     return (
       <View>
         <Text style={styles.title}>Polls</Text>
-        <PollInput episode_id={id} />
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -102,6 +102,9 @@ export default function PollsList({ id, horizontal = true }) {
           {polls.map((poll) => (
             <PollItem key={poll.poll_id} poll={poll} horizontal={horizontal} />
           ))}
+          <View style={styles.pollInputWrapper}>
+            <PollInput episode_id={id} />
+          </View>
         </ScrollView>
       </View>
     );
@@ -125,6 +128,10 @@ export default function PollsList({ id, horizontal = true }) {
 }
 
 const styles = StyleSheet.create({
+  pollInputWrapper: {
+    width: 300,
+    height: 200,
+  },
   pollsList: {
     alignItems: "center",
     width: "100%",
