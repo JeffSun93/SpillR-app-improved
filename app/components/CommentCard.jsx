@@ -119,6 +119,11 @@ export default function CommentCard(props) {
     if (!show?.tv_show_id) return;
     router.push(`/tv-show/${show.tv_show_id}`);
   };
+  // const handleNavigateToUserPage = () => {
+  //   console.log("navigate to user pressed, user_id:", user_id);
+  //   if (!user_id) return;
+  //   router.push(`/profile-page/${user_id}`);
+  // };
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -201,7 +206,14 @@ export default function CommentCard(props) {
   return (
     <View>
       <View style={commentStyles.commentRow}>
+        {/* <Pressable
+          onPress={(e) => {
+            e.stopPropagation();
+            handleNavigateToUserPage();
+          }}
+        > */}
         <Image style={commentStyles.commentAvatar} source={{ uri: userurl }} />
+        {/* </Pressable> */}
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>

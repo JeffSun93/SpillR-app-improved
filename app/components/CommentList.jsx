@@ -9,7 +9,7 @@ export default function CommentList(props) {
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
-      keyboardShouldPersistTaps="handled"
+      keyboardShouldPersistTaps="always"
       contentContainerStyle={{ paddingBottom: 350 }}
       showsVerticalScrollIndicator={false}
     >
