@@ -9,7 +9,7 @@ export default function FloatingParticleProvider({ children }) {
 
   const spawnParticles = useCallback((emojiChar) => {
     const burst = [];
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 100; i++) {
       burst.push({ id: `${Date.now()}${i}`, char: emojiChar });
     }
     setParticles((prev) => [...prev, ...burst]);

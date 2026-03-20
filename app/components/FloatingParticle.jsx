@@ -11,8 +11,6 @@ export default function FloatingParticle({ emoji, onComplete }) {
   const startX = useRef(Math.random() * SCREEN_WIDTH - 25).current;
 
   useEffect(() => {
-    console.log("FloatingParticle mounted, emoji:", emoji);
-
     const drift = (Math.random() - 0.5) * 60;
     const duration = 1500 + Math.random() * 500;
     const delay = Math.random() * 180;
@@ -64,7 +62,7 @@ export default function FloatingParticle({ emoji, onComplete }) {
 const styles = StyleSheet.create({
   particle: {
     position: "absolute",
-    fontSize: 75,
+    fontSize: 35,
     bottom: 0,
     // alignSelf: "center",
     // left: Math.random() * SCREEN_WIDTH,
