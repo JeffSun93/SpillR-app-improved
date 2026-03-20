@@ -1,28 +1,37 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useState, useCallback } from "react";
 import emojiLookup from "../../utils/emojiLookupObject.js";
+
+import { useSpawnParticles } from "../../context/FloatingParticle";
 
 const EmojiPicker = ({ reactionType_total, onSelect, style, lastReaction }) => {
   const emojis = ["angry", "laughing", "sad", "fire", "dead", "heart"];
+  const spawnParticles = useSpawnParticles();
 
   return (
-    <View style={[styles.container, style]}>
-      {emojis.map((emoji) => (
-        <TouchableOpacity
-          key={emoji}
-          style={[
-            styles.emojiOption,
-            lastReaction === emoji && styles.selected,
-          ]}
-          onPress={() => onSelect(emoji)}
-        >
-          <Text style={styles.emoji}>{emojiLookup(emoji)}</Text>
-          {reactionType_total && (
-            <Text style={styles.count}>
-              {reactionType_total[`${emoji}Total`]}
-            </Text>
-          )}
-        </TouchableOpacity>
-      ))}
+    <View>
+      <View style={[styles.container, style]}>
+        {emojis.map((emoji) => (
+          <TouchableOpacity
+            key={emoji}
+            style={[
+              styles.emojiOption,
+              lastReaction === emoji && styles.selected,
+            ]}
+            onPress={() => {
+              spawnParticles(emojiLookup(emoji));
+              onSelect(emoji);
+            }}
+          >
+            <Text style={styles.emoji}>{emojiLookup(emoji)}</Text>
+            {reactionType_total && (
+              <Text style={styles.count}>
+                {reactionType_total[`${emoji}Total`]}
+              </Text>
+            )}
+          </TouchableOpacity>
+        ))}
+      </View>
     </View>
   );
 };

@@ -19,6 +19,7 @@ import Reaction from "../../assets/react.jsx";
 import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
 import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
+import emojiLookup from "../../utils/emojiLookupObject";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
