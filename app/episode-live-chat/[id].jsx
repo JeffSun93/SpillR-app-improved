@@ -37,7 +37,7 @@ export default function LiveChatPage() {
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
   const { loggedInUser } = useContext(UserContext);
-  const { userId } = loggedInUser;
+  const { user_id } = loggedInUser;
 
   useEffect(() => {
     async function loadEpisode() {
@@ -52,14 +52,15 @@ export default function LiveChatPage() {
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
-      socket.emit("room:join", { id, userId });
-      console.log(`socket connected and ${userId} joined room ${id}`);
+      console.log(loggedInUser);
+      socket.emit("room:join", { episodeId: id, userId: user_id });
+      console.log(`socket connected and ${user_id} joined room ${id}`);
     }
     return () => {
       if (socket.connected) {
-        socket.emit("room:leave", { id, userId });
+        socket.emit("room:leave", { episodeId: id, userId: user_id });
         socket.off("comment:new");
-        console.log(`socket ${userId} left room ${id}`);
+        console.log(`socket ${user_id} left room ${id}`);
         socket.disconnect();
       }
     };
