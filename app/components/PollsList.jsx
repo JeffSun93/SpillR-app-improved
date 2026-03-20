@@ -45,7 +45,7 @@ export default function PollsList({ id, horizontal = true }) {
         );
 
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
 
         setPolls(data.polls);
       } catch (err) {
@@ -66,10 +66,16 @@ export default function PollsList({ id, horizontal = true }) {
       setPolls(updatedPolls);
     }
 
+    function handlePollError(err) {
+      console.log(`Poll error received: ${err}`);
+    }
+
     socket.on("poll:update", handlePollUpdate);
+    socket.on("poll:error", handlePollError);
 
     return () => {
       socket.off("poll:update", handlePollUpdate);
+      socket.off("poll:error", handlePollError);
     };
   }, []);
 
