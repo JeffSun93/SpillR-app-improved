@@ -44,6 +44,19 @@ export async function getSeasonsByShowId(showId) {
   return data;
 }
 
+export async function getSeasonByID(seasonId) {
+  let { data, error } = await supabase
+    .from("seasons")
+    .select("*")
+    .eq("season_id", seasonId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
 export async function getEpisodesBySeasonId(seasonId) {
   let { data, error } = await supabase
     .from("episodes")

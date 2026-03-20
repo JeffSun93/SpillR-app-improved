@@ -1,6 +1,10 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import { globalStyles } from "../../styles/globalStyles";
-import { getEpisodeById } from "../../utils/utilsFunctions.js";
+import {
+  getEpisodeById,
+  getSeasonByID,
+  getTvShowById,
+} from "../../utils/utilsFunctions.js";
 import { useState, useEffect } from "react";
 
 export default function FriendsAreWatchingCards({
@@ -12,6 +16,12 @@ export default function FriendsAreWatchingCards({
   useEffect(() => {
     const fetchEpisodeById = async () => {
       const episode = await getEpisodeById(episodeId);
+      const seasonId = episode.season_id;
+      const season = await getSeasonByID(seasonId);
+      const tvShowId = season.tv_show_id;
+      const tvShow = await getTvShowById(tvShowId);
+      episode.seasonNumber = season.season_number;
+      episode.tvShowName = tvShow.name;
       setEpisodeInfo(episode);
     };
     fetchEpisodeById();
@@ -24,7 +34,8 @@ export default function FriendsAreWatchingCards({
           { marginBottom: 0, paddingBottom: 0, marginTop: 10, paddingLeft: 10 },
         ]}
       >
-        Tv-Show
+        {episodeInfo.tvShowName} S{episodeInfo.seasonNumber} ep
+        {episodeInfo.episode_number}
       </Text>
       <View style={styles.card}>
         {episodeInfo.episode_url && (
