@@ -1,8 +1,6 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import CommentCard from "./CommentCard.jsx";
-import CommentCardSocket from "./CommentCardSocket.jsx";
 import { commentStyles } from "../../styles/commentStyles.jsx";
-import emojiLookup from "../../utils/emojiLookupObject.js";
 
 export default function CommentList(props) {
   const { comments, setComments, isHome, isChat, isUser, isProfile } = props;
