@@ -264,7 +264,7 @@ export async function getUserByIdAPI(user_id) {
 }
 
 export async function getUserByUsernameAPI(username) {
-  console.log("fetching", user_id);
+  console.log("fetching", username);
   try {
     const { data } = await axios.get(`${urlApi}/profiles/username/${username}`);
     return data.user;

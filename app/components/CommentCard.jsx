@@ -84,21 +84,24 @@ export default function CommentCard(props) {
     }
   };
 
+  const removeComment = (comment_id) => {
+    console.log("remove func");
+    setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+  };
+
+  useEffect(() => {
+    socket.on("comment:remove", removeComment);
+    return () => {
+      socket.off("comment:remove", removeComment);
+    };
+  }, []);
+
   const handlePressDelete = (comment_id) => {
     if (isReply) return;
     console.log("instruction to delete sent");
     socket.emit("comment:delete", comment_id);
     setDeletePressed(!deletePressed);
-
-    const removeComment = (comment_id) => {
-      console.log("remove func");
-      setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
-    };
-
     removeComment(comment_id);
-
-    console.log("useEffect ran");
-    socket.on("comment:remove", removeComment);
   };
 
   useEffect(() => {
