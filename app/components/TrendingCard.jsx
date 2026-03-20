@@ -11,7 +11,7 @@ export default function TrendingCard({ show, horizontal = true }) {
 
   return (
     <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
-      <View style={globalStyles.color}>
+      <View style={[globalStyles.color, { width: IMAGE_WIDTH }]}>
         <Image
           source={{ uri: show.tv_show_img_url }}
           style={{
