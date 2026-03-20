@@ -87,18 +87,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12, // slightly tighter padding since they're narrower
   },
   container: {
+    flex: 1,
     borderRadius: 30,
     paddingLeft: 16,
     marginTop: 0,
     paddingVertical: 0,
     paddingHorizontal: 0,
     paddingTop: 15,
-    paddingBottom: 15,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
     width: 300,
-    height: 200,
   },
   avatar: {
     width: 35,
