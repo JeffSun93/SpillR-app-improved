@@ -1,7 +1,11 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import socket from "../../socket/connection";
+import { useState } from "react";
 
 export default function PollItem({ poll, horizontal = true }) {
+  const [selectedVote, setSelectedVote] = useState(null);
+
   const totalVotes = poll.poll_votes_count || 0;
   const option1Votes = poll.poll_field_1_count || 0;
   const option2Votes = poll.poll_field_2_count || 0;
@@ -14,8 +18,11 @@ export default function PollItem({ poll, horizontal = true }) {
       <Text style={styles.title}>{poll.poll_name}</Text>
 
       <Pressable
+        disabled={selectedVote === 1}
         onPress={() => {
-          console.log("pressed field 1");
+          setSelectedVote(1);
+          // console.log("pressed field 1");
+
           socket.emit("poll:vote", {
             poll_id: poll.poll_id,
             field_1: true,
@@ -26,6 +33,7 @@ export default function PollItem({ poll, horizontal = true }) {
         style={({ pressed }) => [
           styles.option,
           pressed && styles.buttonPressed,
+          selectedVote === 1 && styles.voted,
         ]}
       >
         <View style={styles.optionHeader}>
@@ -34,24 +42,33 @@ export default function PollItem({ poll, horizontal = true }) {
         </View>
 
         <View style={styles.barTrack}>
-          <View style={[styles.barFill, { width: `${field1Percent}%` }]} />
+          <LinearGradient
+            colors={["#ff7a18", "#ff2d55", "#a259ff"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.barFill, { width: `${field1Percent}%` }]}
+          />
         </View>
 
         <Text style={styles.voteCount}>{option1Votes} votes</Text>
       </Pressable>
 
       <Pressable
-        onPress={() =>
+        disabled={selectedVote === 2}
+        onPress={() => {
+          setSelectedVote(2);
+
           socket.emit("poll:vote", {
             poll_id: poll.poll_id,
             field_1: false,
             field_2: true,
             episode_id: poll.episode_id,
-          })
-        }
+          });
+        }}
         style={({ pressed }) => [
           styles.option,
           pressed && styles.buttonPressed,
+          selectedVote === 2 && styles.voted,
         ]}
       >
         <View style={styles.optionHeader}>
@@ -60,7 +77,12 @@ export default function PollItem({ poll, horizontal = true }) {
         </View>
 
         <View style={styles.barTrack}>
-          <View style={[styles.barFill, { width: `${field2Percent}%` }]} />
+          <LinearGradient
+            colors={["#ff7a18", "#ff2d55", "#a259ff"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={[styles.barFill, { width: `${field2Percent}%` }]}
+          />
         </View>
 
         <Text style={styles.voteCount}>{option2Votes} votes</Text>
@@ -118,7 +140,7 @@ const styles = StyleSheet.create({
 
   barTrack: {
     width: "100%",
-    height: 12,
+    height: 14,
     backgroundColor: "rgba(255,255,255,0.08)",
     borderRadius: 999,
     overflow: "hidden",
@@ -126,8 +148,10 @@ const styles = StyleSheet.create({
 
   barFill: {
     height: "100%",
-    backgroundColor: "#fe3a3a",
     borderRadius: 999,
+    shadowColor: "#ff2d55",
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
   },
 
   buttonPressed: {
@@ -139,6 +163,10 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
     fontSize: 12,
     fontWeight: "500",
+  },
+
+  voted: {
+    opacity: 0.6,
   },
 
   footer: {
