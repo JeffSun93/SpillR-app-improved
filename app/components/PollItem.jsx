@@ -4,7 +4,7 @@ import socket from "../../socket/connection";
 import { useState } from "react";
 
 export default function PollItem({ poll, horizontal = true }) {
-  const [selectedVote, setSelectedVote] = useState(null);
+  const [hasVoted, setHasVoted] = useState(null);
 
   const totalVotes = poll.poll_votes_count || 0;
   const option1Votes = poll.poll_field_1_count || 0;
@@ -18,9 +18,9 @@ export default function PollItem({ poll, horizontal = true }) {
       <Text style={styles.title}>{poll.poll_name}</Text>
 
       <Pressable
-        disabled={selectedVote === 1}
+        disabled={hasVoted}
         onPress={() => {
-          setSelectedVote(1);
+          setHasVoted(true);
           // console.log("pressed field 1");
 
           socket.emit("poll:vote", {
@@ -33,7 +33,7 @@ export default function PollItem({ poll, horizontal = true }) {
         style={({ pressed }) => [
           styles.option,
           pressed && styles.buttonPressed,
-          selectedVote === 1 && styles.voted,
+          hasVoted && styles.voted,
         ]}
       >
         <View style={styles.optionHeader}>
@@ -54,9 +54,9 @@ export default function PollItem({ poll, horizontal = true }) {
       </Pressable>
 
       <Pressable
-        disabled={selectedVote === 2}
+        disabled={hasVoted}
         onPress={() => {
-          setSelectedVote(2);
+          setHasVoted(true);
 
           socket.emit("poll:vote", {
             poll_id: poll.poll_id,
@@ -68,7 +68,7 @@ export default function PollItem({ poll, horizontal = true }) {
         style={({ pressed }) => [
           styles.option,
           pressed && styles.buttonPressed,
-          selectedVote === 2 && styles.voted,
+          hasVoted && styles.voted,
         ]}
       >
         <View style={styles.optionHeader}>
@@ -166,7 +166,8 @@ const styles = StyleSheet.create({
   },
 
   voted: {
-    opacity: 0.6,
+    opacity: 0.9,
+    borderColor: "purple",
   },
 
   footer: {
