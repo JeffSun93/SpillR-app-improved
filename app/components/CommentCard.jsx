@@ -25,34 +25,33 @@ import socket from "../../socket/connection.js";
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
 export default function CommentCard(props) {
+  const { comment, setComments, isChat, isHome } = props;
   const {
     comment_id,
-    body,
     user_id,
     created_at,
-    type,
-    tv_show_name,
+    Commenttype: type,
     episode_number,
     season_number,
     runtime_seconds,
-    isHome,
-    isChat,
-    isLive,
+    is_live: isLive,
     reactions_total,
     reactionType_total,
     repliesTotal,
     isReaction,
     isReply,
-    setComments,
-    isSpoiler,
-    avatarUrl: authorAvatarUrl,
+    is_spoiler: isSpoiler,
+    avatar_url,
     username: authorUsername,
-  } = props;
+  } = comment;
+
+  const tv_show_name = comment.tv_show_name || comment.name;
+  const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
   const { loggedInUser } = useContext(UserContext);
 
   const [username, setUserName] = useState(authorUsername || null);
-  const [userurl, setUserurl] = useState(authorAvatarUrl || null);
+  const [userurl, setUserurl] = useState(avatar_url || null);
   const [deletePressed, setDeletePressed] = useState(false);
   const [reactionCount, setReactionCount] = useState(reactions_total);
   const [Type_total, setType_total] = useState(reactionType_total);

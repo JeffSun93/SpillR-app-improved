@@ -48,31 +48,10 @@ export default function CommentList(props) {
               />
             ) : (
               <CommentCard
-                avatarUrl={comment.avatar_url}
-                username={comment.username}
-                isSpoiler={comment.is_spoiler}
+                comment={comment}
                 setComments={setComments}
                 isChat={isChat}
                 isHome={isHome}
-                isLive={comment.is_live}
-                user_id={comment.user_id}
-                body={
-                  comment.body
-                    ? comment.body
-                    : emojiLookup(comment.reaction_type)
-                }
-                created_at={comment.created_at}
-                comment_id={comment.comment_id}
-                runtime_seconds={comment.runtime_seconds}
-                season_number={comment.season_number}
-                episode_number={comment.episode_number}
-                tv_show_name={comment.tv_show_name || comment.name}
-                type={comment.Commenttype}
-                reactions_total={comment.reactions_total}
-                repliesTotal={comment.repliesTotal}
-                isReaction={comment.reaction_id}
-                isReply={comment.reply_id}
-                reactionType_total={comment.reactionType_total}
               />
             )}
             <View style={styles.divider} />
