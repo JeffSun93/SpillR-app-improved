@@ -109,16 +109,16 @@ const useSocketComments = (
     if (episodeId) {
       if (currentSeconds === 0 && !isPlaying) {
         const fetchAllComments = async () => {
-          const result = await retryRequest(() =>
-            getCommentsByEpisodeId(episodeId),
-          );
-          setComments(result);
+          try {
+            const result = await retryRequest(() =>
+              getCommentsByEpisodeId(episodeId),
+            );
+            setComments(result);
+          } catch (err) {
+            console.error("Failed to fetch comments:", err);
+          }
         };
-        try {
-          fetchAllComments();
-        } catch {
-          throw new Error("Failed to fetch comments");
-        }
+        fetchAllComments();
       }
     }
   }, [currentSeconds, isPlaying, episodeId]);
