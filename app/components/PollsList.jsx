@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import PollItem from "./PollItem";
 import { globalStyles } from "../../styles/globalStyles";
 import socket from "../../socket/connection";
+import PollInput from "./PollInput";
 
 // const polls = [
 //   {
@@ -62,7 +63,7 @@ export default function PollsList({ id, horizontal = true }) {
 
   useEffect(() => {
     function handlePollUpdate(updatedPolls) {
-      console.log("poll:update received", updatedPolls);
+      // console.log("poll:update received", updatedPolls);
       setPolls(updatedPolls);
     }
 
@@ -108,7 +109,8 @@ export default function PollsList({ id, horizontal = true }) {
 
   return (
     <View>
-      {polls.length > 0 ? <Text>Polls</Text> : ""}
+      <Text>Polls</Text>
+      {polls.length === 0 && <PollInput />}
       <View style={styles.pollsList}>
         {polls.map((poll) => (
           <View key={poll.poll_id} style={globalStyles.gridItem}>
