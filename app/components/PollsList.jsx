@@ -82,12 +82,12 @@ export default function PollsList({ id, horizontal = true }) {
 
   if (loading) return <Text style={styles.subtitle}>Loading polls...</Text>;
   if (error) return <Text>{error}</Text>;
-  if (polls.length === 0)
-    return (
-      <Text style={styles.subtitle}>
-        Polls will appear here if added ... so anything you want to ask chat?
-      </Text>
-    );
+  // if (polls.length === 0)
+  //   return (
+  //     <Text style={styles.subtitle}>
+  //       Polls will appear here if added ... so anything you want to ask chat?
+  //     </Text>
+  //   );
 
   if (horizontal) {
     return (
@@ -101,6 +101,7 @@ export default function PollsList({ id, horizontal = true }) {
           {polls.map((poll) => (
             <PollItem key={poll.poll_id} poll={poll} horizontal={horizontal} />
           ))}
+          <PollInput episode_id={id} />
         </ScrollView>
       </View>
     );
@@ -110,7 +111,7 @@ export default function PollsList({ id, horizontal = true }) {
   return (
     <View>
       <Text>Polls</Text>
-      {polls.length === 0 && <PollInput />}
+      {polls.length === 0 && <PollInput episode_id={id} />}
       <View style={styles.pollsList}>
         {polls.map((poll) => (
           <View key={poll.poll_id} style={globalStyles.gridItem}>
@@ -118,6 +119,7 @@ export default function PollsList({ id, horizontal = true }) {
           </View>
         ))}
       </View>
+      <PollInput episode_id={id} />
     </View>
   );
 }

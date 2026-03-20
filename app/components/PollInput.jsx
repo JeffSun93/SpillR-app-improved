@@ -11,6 +11,7 @@ import { useContext } from "react";
 import { UserContext } from "../../context/User";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
+import socket from "../../socket/connection.js";
 
 const PollInput = ({ comment_id, episode_id, style }) => {
   const { loggedInUser } = useContext(UserContext);
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 30,
     paddingLeft: 16,
-    marginTop: 20,
+    marginTop: 0,
     paddingVertical: 10,
     paddingHorizontal: 10,
     paddingTop: 15,
