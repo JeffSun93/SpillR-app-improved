@@ -5,16 +5,10 @@ const useSocketComments = (
   episodeId,
   loggedInUser,
   setComments,
-  currentSeconds,
+  currentSecondsRef,
   bufferRef,
   addOptimisticCommentRef,
 ) => {
-  const currentSecondsRef = useRef(currentSeconds);
-
-  useEffect(() => {
-    currentSecondsRef.current = currentSeconds;
-  }, [currentSeconds]);
-
   useEffect(() => {
     const handleFlagComment = ({ comment_id, isSpoiler }) => {
       setComments((prev) =>

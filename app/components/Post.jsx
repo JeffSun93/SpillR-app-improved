@@ -16,7 +16,7 @@ import socket from "../../socket/connection.js";
 
 const Post = ({ commentId, runtime_seconds, style, parentUsername }) => {
   const { loggedInUser } = useContext(UserContext);
-  const { episodeId } = useContext(EpisodeContext);
+  const { episodeId, currentSecondsRef } = useContext(EpisodeContext);
   const [input, setInput] = useState("");
 
   const reply = {
@@ -26,7 +26,7 @@ const Post = ({ commentId, runtime_seconds, style, parentUsername }) => {
     username: loggedInUser.username,
     parent_username: parentUsername,
     avatar_url: loggedInUser.avatar_url,
-    runtime_seconds: 1,
+    runtime_seconds: currentSecondsRef.current,
     is_spoiler: false,
     body: input,
   };

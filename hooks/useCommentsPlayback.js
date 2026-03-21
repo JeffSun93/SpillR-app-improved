@@ -14,9 +14,8 @@ const useCommentsPlayback = (
   setComments,
   bufferRef,
   addOptimisticCommentRef,
+  currentSecondsRef,
 ) => {
-  const currentSecondsRef = useRef(currentSeconds);
-
   const mergeIntoBuffer = (incoming) => {
     const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
     const newComments = incoming.filter((c) => !existingIds.has(c.comment_id));
@@ -31,7 +30,7 @@ const useCommentsPlayback = (
         return prev;
       } else {
         return [newComment, ...prev].sort(
-          (a, b) => a.runtime_seconds - b.runtime_seconds,
+          (a, b) => a.runtime_seconds - a.runtime_seconds,
         );
       }
     });
@@ -46,10 +45,6 @@ const useCommentsPlayback = (
     );
     mergeIntoBuffer(results);
   };
-
-  useEffect(() => {
-    currentSecondsRef.current = currentSeconds;
-  }, [currentSeconds]);
 
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {

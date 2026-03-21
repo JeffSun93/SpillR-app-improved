@@ -41,6 +41,9 @@ export default function LiveChatPage() {
   const [comments, setComments] = useState([]);
   const bufferRef = useRef([]);
   const addOptimisticCommentRef = useRef(null);
+  const currentSecondsRef = useRef(currentSeconds);
+
+  currentSecondsRef.current = currentSeconds;
 
   useCommentsPlayback(
     id,
@@ -51,12 +54,13 @@ export default function LiveChatPage() {
     setComments,
     bufferRef,
     addOptimisticCommentRef,
+    currentSecondsRef,
   );
   useSocketComments(
     id,
     loggedInUser,
     setComments,
-    currentSeconds,
+    currentSecondsRef,
     bufferRef,
     addOptimisticCommentRef,
   );
@@ -149,7 +153,10 @@ export default function LiveChatPage() {
   const synopsis = cleanText(episode.synopsis);
 
   return (
-    <EpisodeProvider episodeId={episode.episode_id}>
+    <EpisodeProvider
+      episodeId={episode.episode_id}
+      currentSecondsRef={currentSecondsRef}
+    >
       <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 0 }]}>
         <ScrollView
           scrollEnabled={!isScrubbing}
