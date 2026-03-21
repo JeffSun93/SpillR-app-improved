@@ -31,6 +31,7 @@ export default function CommentCard(props) {
     comment_id,
     user_id,
     created_at,
+    episode_id,
     Commenttype: type,
     episode_number,
     season_number,
@@ -68,15 +69,15 @@ export default function CommentCard(props) {
 
   const router = useRouter();
 
-  const handlePressedSpoiler = (comment_id) => {
+  const handlePressedSpoiler = (comment) => {
     if (setComments) {
-      socket.emit("spoiler:mark", comment_id);
+      socket.emit("spoiler:mark", comment);
       setComments((prev) =>
         prev.map((c) =>
-          c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+          c.comment_id === comment.comment_id ? { ...c, is_spoiler: true } : c,
         ),
       );
-      console.log("instruction to mark as spoiler sent", comment_id);
+      console.log("instruction to mark as spoiler sent", comment.comment_id);
     } else {
       console.log(
         "setComments is not defined, cannot update comment spoiler status",
@@ -89,12 +90,12 @@ export default function CommentCard(props) {
     setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
   };
 
-  const handlePressDelete = (comment_id) => {
+  const handlePressDelete = (comment) => {
     if (isReply) return;
     console.log("instruction to delete sent");
-    socket.emit("comment:delete", comment_id);
+    socket.emit("comment:delete", comment);
     setDeletePressed(!deletePressed);
-    removeComment(comment_id);
+    removeComment(comment.comment_id);
   };
 
   useEffect(() => {
@@ -281,14 +282,14 @@ export default function CommentCard(props) {
                 width={22}
                 height={22}
                 style={{ transform: [{ translateY: 2 }] }}
-                onPress={() => handlePressDelete(comment_id)}
+                onPress={() => handlePressDelete(comment)}
               />
             </TouchableOpacity>
           ) : (
             !isReply && (
               <TouchableOpacity
                 style={styles.iconGroup}
-                onPress={() => handlePressedSpoiler(comment_id)}
+                onPress={() => handlePressedSpoiler(comment)}
               >
                 <SpoilerFlag
                   width={22}

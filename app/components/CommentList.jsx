@@ -15,7 +15,7 @@ export default function CommentList(props) {
     >
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
-          <View key={`${comment.comment_id},${index}`}>
+          <View key={`${comment.comment_id}-${index}`}>
             <CommentCard
               comment={comment}
               setComments={setComments}
