@@ -47,7 +47,6 @@ export default function CommentCard(props) {
     username: authorUsername,
   } = comment;
   const tv_show_name = comment.tv_show_name || comment.name;
-  // console.log("comment obj:", JSON.stringify(comment, null, 2));
   const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
   const { loggedInUser } = useContext(UserContext);

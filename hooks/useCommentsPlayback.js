@@ -31,7 +31,7 @@ const useCommentsPlayback = (
         return prev;
       } else {
         return [newComment, ...prev].sort(
-          (a, b) => b.runtime_seconds - a.runtime_seconds,
+          (a, b) => a.runtime_seconds - b.runtime_seconds,
         );
       }
     });
