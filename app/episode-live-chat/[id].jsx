@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useRef } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { cleanText } from "../../utils/cleanText";
@@ -23,11 +23,12 @@ import socket from "../../socket/connection";
 import { EpisodeProvider } from "../../context/Episode";
 import { UserContext } from "../../context/User.jsx";
 import useSocketComments from "../../hooks/useSocketComments.js";
+import useCommentsPlayback from "../../hooks/useCommentsPlayback.js";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
-
-  //   const navigation = useNavigation();
+  const { loggedInUser } = useContext(UserContext);
+  const { user_id } = loggedInUser;
   const [episode, setEpisode] = useState(null);
   const [episodeRuntime, setEpisodeRuntime] = useState(60);
   const [isScrubbing, setIsScrubbing] = useState(false);
@@ -37,24 +38,39 @@ export default function LiveChatPage() {
   const [scrubSwitch, setScrubSwitch] = useState(false);
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
-  const { loggedInUser } = useContext(UserContext);
-  const { user_id } = loggedInUser;
+  const [comments, setComments] = useState([]);
+  const bufferRef = useRef([]);
+  const addOptimisticCommentRef = useRef(null);
 
-  const { comments, setComments } = useSocketComments(
+  useCommentsPlayback(
     id,
     currentSeconds,
     isPlaying,
     isScrubbing,
     scrubSwitch,
+    setComments,
+    bufferRef,
+    addOptimisticCommentRef,
+  );
+  useSocketComments(
+    id,
+    loggedInUser,
+    setComments,
+    currentSeconds,
+    bufferRef,
+    addOptimisticCommentRef,
   );
 
   useEffect(() => {
     async function loadEpisode() {
-      const data = await getEpisodeById(id);
-      setEpisode(data);
-      setEpisodeRuntime(data.runtime_total ?? 60);
+      try {
+        const data = await getEpisodeById(id);
+        setEpisode(data);
+        setEpisodeRuntime(data.runtime_total ?? 60);
+      } catch (error) {
+        console.log("failed to load episode:", error);
+      }
     }
-
     loadEpisode();
   }, [id]);
 
