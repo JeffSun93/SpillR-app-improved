@@ -9,6 +9,7 @@ export async function getTvShowByName(name) {
     .from("tv_shows")
     .select("*")
     .ilike("name", name)
+    .limit(1)
     .single();
 
   if (error) {
