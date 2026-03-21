@@ -225,7 +225,7 @@ export default function LiveChatPage() {
                 {expanded ? "Read less" : "Read more"}
               </Text>
             </View>
-            <View styles={{ height: 220, justifyContent: "center" }}>
+            <View style={{ height: 220, justifyContent: "center" }}>
               <PollsList id={id} />
             </View>
           </View>
