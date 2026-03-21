@@ -23,7 +23,6 @@ const RepliesList = ({ commentId, parentUsername }) => {
     const handleNewReply = (newReply) => {
       console.log(newReply);
       console.log(parentUsername, "replies list");
-      newReply.parent_username = parentUsername;
       newReply.replies_total = 0;
       newReply.reactions_total = 0;
       newReply.reactionType_total = {
@@ -71,7 +70,7 @@ const RepliesList = ({ commentId, parentUsername }) => {
           ))}
         </ScrollView>
 
-        <Post commentId={commentId} />
+        <Post commentId={commentId} parentUsername={parentUsername} />
       </View>
     </KeyboardAvoidingView>
   );
