@@ -3,7 +3,15 @@ import CommentCard from "./CommentCard.jsx";
 import { commentStyles } from "../../styles/commentStyles.jsx";
 
 export default function CommentList(props) {
-  const { comments, setComments, isHome, isChat, isUser, isProfile } = props;
+  const {
+    comments,
+    setComments,
+    setUserComments,
+    isHome,
+    isChat,
+    isUser,
+    isProfile,
+  } = props;
 
   return (
     <ScrollView
@@ -21,6 +29,7 @@ export default function CommentList(props) {
               setComments={setComments}
               isChat={isChat}
               isHome={isHome}
+              isUser={isUser}
             />
             <View style={styles.divider} />
           </View>

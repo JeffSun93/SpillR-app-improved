@@ -43,6 +43,7 @@ export default function CommentCard(props) {
     repliesTotal,
     isReaction,
     isReply,
+
     is_spoiler: isSpoiler,
     avatar_url,
     username: authorUsername,
@@ -94,6 +95,7 @@ export default function CommentCard(props) {
   };
 
   const handlePressDelete = async (comment) => {
+    console.log("handlePressDelete fired, isReply:", isReply);
     if (isReply) return;
     try {
       if (isChat) {
