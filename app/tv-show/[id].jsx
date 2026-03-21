@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
 import Dropdown from "../components/Dropdown";
 import { Stack } from "expo-router";
@@ -18,7 +18,12 @@ import { LinearGradient } from "expo-linear-gradient";
 import {
   getSeasonsAndEpisodesByShowName,
   getSeasonsAndEpisodesByShowId,
+  getUserByIdAPI,
+  addSubscriptionAPI,
+  deleteSubscriptionAPI,
 } from "../../utils/utilsFunctions";
+
+import { UserContext } from "../../context/User";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
@@ -28,9 +33,35 @@ export default function TvShowPage() {
   const [show, setShow] = useState({});
   const [expanded, setExpanded] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const { loggedInUser } = useContext(UserContext);
 
-  const handleSubscribe = () => {
-    setIsSubscribed(!isSubscribed);
+  useEffect(() => {
+    if (!show.tv_show_id || !loggedInUser) return;
+    const checkSubscription = async () => {
+      try {
+        const userData = await getUserByIdAPI(loggedInUser.user_id);
+        const already = userData.subscriptions?.some(
+          (s) => s.tv_show_id === show.tv_show_id,
+        );
+        setIsSubscribed(already);
+      } catch (err) {
+        console.log("subscription check error:", err.response?.data);
+      }
+    };
+    checkSubscription();
+  }, [show.tv_show_id]);
+
+  const handleSubscribe = async () => {
+    try {
+      if (isSubscribed) {
+        await deleteSubscriptionAPI(loggedInUser.user_id, show.tv_show_id);
+      } else {
+        await addSubscriptionAPI(loggedInUser.user_id, show.tv_show_id);
+      }
+      setIsSubscribed(!isSubscribed);
+    } catch (err) {
+      console.log("subscribe error:", err.response?.data);
+    }
   };
 
   useEffect(() => {

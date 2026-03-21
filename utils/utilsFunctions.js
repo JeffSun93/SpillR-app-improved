@@ -57,6 +57,37 @@ export async function getSeasonByID(seasonId) {
   return data;
 }
 
+export async function addSubscriptionAPI(user_id, tv_show_id) {
+  const { data } = await axios.post(
+    `https://spillr-be.onrender.com/api/subscriptions`,
+    {
+      user_id,
+      tv_show_id,
+    },
+  );
+  return data;
+}
+
+export async function deleteSubscriptionAPI(user_id, tv_show_id) {
+  const { data } = await axios.delete(
+    `https://spillr-be.onrender.com/api/subscriptions`,
+    {
+      data: { user_id, tv_show_id },
+    },
+  );
+  return data;
+}
+export async function deleteSubscriptionSupa(user_id, tv_show_id) {
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .delete()
+    .eq("user_id", user_id)
+    .eq("tv_show_id", tv_show_id)
+    .select();
+
+  if (error) throw error;
+  return data;
+}
 export async function getEpisodesBySeasonId(seasonId) {
   const response = await axios.get(
     `https://spillr-be.onrender.com/api/seasons/${seasonId}/episodes`,

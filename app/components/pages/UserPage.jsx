@@ -1,5 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 
 import { UserContext } from "../../../context/User";
 import {
@@ -25,38 +26,38 @@ export default function UserPage() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [userComments, setUserComments] = useState([]);
 
-  useEffect(() => {
-    const fetchUserById = async () => {
-      try {
-        const result = await getUserByIdAPI(loggedInUser.user_id);
-        console.log("user fetch ok:", result);
-        setUserObj(result);
-        setSubscriptions(result.subscriptions);
-      } catch (err) {
-        console.log(
-          "getUserByIdAPI failed:",
-          err.response?.status,
-          err.response?.data,
-        );
-      }
+  useFocusEffect(
+    useCallback(() => {
+      const fetchUserById = async () => {
+        try {
+          const result = await getUserByIdAPI(loggedInUser.user_id);
+          setUserObj(result);
+          setSubscriptions(result.subscriptions);
+        } catch (err) {
+          console.log(
+            "getUserByIdAPI failed:",
+            err.response?.status,
+            err.response?.data,
+          );
+        }
 
-      try {
-        const comments = await getCommentsRepliesReactionsById(
-          loggedInUser.user_id,
-        );
-        console.log("comments fetch ok:", comments);
-        setUserComments(comments);
-      } catch (err) {
-        console.log(
-          "getCommentsRepliesReactionsById failed:",
-          err.response?.status,
-          err.response?.data,
-        );
-      }
-    };
+        try {
+          const comments = await getCommentsRepliesReactionsById(
+            loggedInUser.user_id,
+          );
+          setUserComments(comments);
+        } catch (err) {
+          console.log(
+            "getCommentsRepliesReactionsById failed:",
+            err.response?.status,
+            err.response?.data,
+          );
+        }
+      };
 
-    fetchUserById();
-  }, [loggedInUser.user_id]);
+      fetchUserById();
+    }, [loggedInUser.user_id]),
+  );
 
   for (let i = 0; i < userComments.length; i++) {
     const obj = userComments[i];

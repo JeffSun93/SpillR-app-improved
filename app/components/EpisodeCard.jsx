@@ -34,7 +34,14 @@ export default function EpisodeCard({
                   tv_show_img_url,
               }}
             />
-            {isPremier && <View style={styles.liveIndicator} />}
+            {isPremier && (
+              <View style={styles.liveContainer}>
+                <View style={styles.glowRing}>
+                  <View style={styles.liveIndicator} />
+                </View>
+                <Text style={styles.liveText}>LIVE</Text>
+              </View>
+            )}
           </View>
           <Text
             style={styles.episodeInfo}
@@ -51,14 +58,33 @@ const styles = StyleSheet.create({
   imageContainer: {
     position: "relative",
   },
-  liveIndicator: {
+  liveContainer: {
     position: "absolute",
     bottom: 8,
     right: 8,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  glowRing: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: "rgba(34, 197, 94, 0.3)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  liveIndicator: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
     backgroundColor: "#22c55e",
+  },
+  liveText: {
+    color: "#fff",
+    fontSize: 11,
+    fontWeight: "700",
+    fontFamily: "Agenda-Bold",
   },
   episodeCard: {
     width: "100%",
