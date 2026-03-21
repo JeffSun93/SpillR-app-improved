@@ -20,7 +20,6 @@ const RepliesList = ({ commentId, parentUsername }) => {
   const { loggedInUser } = useContext(UserContext);
 
   useEffect(() => {
-    console.log(parentUsername, "replies list");
     const handleNewReply = (newReply) => {
       if (String(newReply.comment_id) !== String(commentId)) return;
       const replyToAdd = {
