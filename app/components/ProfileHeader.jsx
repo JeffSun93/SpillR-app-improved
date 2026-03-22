@@ -68,7 +68,7 @@ export default function ProfileHeader({ userObj }) {
           {isSelf ? (
             <Text style={styles.buttonText}>Edit</Text>
           ) : friendStatus ? (
-            <Text style={styles.buttonText}>Friends</Text>
+            <Text style={styles.buttonText}>Sent</Text>
           ) : (
             <Text style={styles.buttonText}>Add Friend</Text>
           )}

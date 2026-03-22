@@ -45,7 +45,7 @@ export default function NotificationsList() {
   return (
     <ScrollView style={styles.notifications}>
       {!friendRequests ? (
-        <Text>no friend requests yet</Text>
+        <Text style={styles.emptyText}>no friend requests yet...</Text>
       ) : (
         friendRequests.map((request) => (
           <NotificationCard
@@ -63,6 +63,12 @@ export default function NotificationsList() {
 }
 
 const styles = StyleSheet.create({
+  emptyText: {
+    color: "#ffffff",
+    padding: 16,
+    fontSize: 18,
+    fontWeight: "400",
+  },
   notifications: {
     paddingTop: 20,
     paddingBottom: 80,
