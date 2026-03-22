@@ -2,8 +2,12 @@ import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { useState, useContext, useCallback } from "react";
 import { useFocusEffect } from "expo-router";
 import { UserContext } from "../../context/User.jsx";
+import {
+  fetchFriendRequests,
+  acceptFriendAPI,
+  removeFriendAPI,
+} from "../../utils/utilsFunctions";
 
-import { fetchFriendRequests } from "../../utils/utilsFunctions";
 import NotificationCard from "./NotificationCard.jsx";
 
 export default function NotificationsList() {
@@ -14,6 +18,7 @@ export default function NotificationsList() {
     useCallback(() => {
       const getRequests = async () => {
         const data = await fetchFriendRequests(loggedInUser.user_id);
+        console.log("requests:", data);
         setFriendRequests(data);
       };
       getRequests();
@@ -22,6 +27,7 @@ export default function NotificationsList() {
 
   const handleAccept = async (user_id_1) => {
     try {
+      console.log(user_id_1, loggedInUser.user_id);
       await acceptFriendAPI(user_id_1, loggedInUser.user_id);
       setFriendRequests((prev) =>
         prev.filter((request) => request.user_id_1 !== user_id_1),

@@ -18,11 +18,9 @@ export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
   const firstName = userObj?.name?.split(" ")[0];
   const isSelf = userObj.user_id === loggedInUser.user_id;
-  const isFriend = userObj.friends?.some(
-    (friend) => friend.friend_user_id === loggedInUser.user_id,
-  );
 
   const [friendStatus, setFriendStatus] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState(false);
   const [localFriendCount, setLocalFriendCount] = useState(null);
 
   useEffect(() => {
@@ -30,15 +28,20 @@ export default function ProfileHeader({ userObj }) {
   }, [userObj.friend_count]);
 
   useEffect(() => {
-    const already = userObj.friends?.some(
+    const isAccepted = userObj.friends?.some(
       (friend) => friend.friend_user_id === loggedInUser.user_id,
     );
-    setFriendStatus(already);
+    setFriendStatus(isAccepted);
   }, [userObj.friends]);
 
-  const handleFriend = async () => {
-    console.log("handleFriend called:", loggedInUser.user_id, userObj.user_id);
+  useEffect(() => {
+    const isPending = userObj.pendingRequests?.some(
+      (request) => request.user_id_1 === loggedInUser.user_id,
+    );
+    setPendingStatus(isPending);
+  }, [userObj.pendingRequests]);
 
+  const handleFriend = async () => {
     try {
       if (friendStatus) {
         await removeFriendAPI(loggedInUser.user_id, userObj.user_id);
@@ -52,8 +55,9 @@ export default function ProfileHeader({ userObj }) {
       console.log("friend action error:", err);
     }
   };
+
   const router = useRouter();
-  console.log(loggedInUser);
+
   return (
     <View>
       <View style={styles.buttonNameContainer}>
@@ -68,6 +72,8 @@ export default function ProfileHeader({ userObj }) {
           {isSelf ? (
             <Text style={styles.buttonText}>Edit</Text>
           ) : friendStatus ? (
+            <Text style={styles.buttonText}>Friends</Text>
+          ) : pendingStatus ? (
             <Text style={styles.buttonText}>Sent</Text>
           ) : (
             <Text style={styles.buttonText}>Add Friend</Text>
