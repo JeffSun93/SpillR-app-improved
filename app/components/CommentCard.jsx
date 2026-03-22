@@ -282,7 +282,7 @@ export default function CommentCard(props) {
               onPress={handleToggleReplies}
             >
               <Text style={styles.iconCount}>
-                {repliesTotal || replies_total}
+                {comment.repliesTotal ?? comment.replies_total ?? 0}
               </Text>
               <Replies width={22} height={22} />
             </TouchableOpacity>
