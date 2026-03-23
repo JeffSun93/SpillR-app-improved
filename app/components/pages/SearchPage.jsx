@@ -61,11 +61,6 @@ export default function Search() {
     try {
       const localResults = await searchLocalTvShows(searchPhrase);
 
-      // if (localResults.length > 0) {
-      //   setSearchResults(localResults);
-      //   return;
-      // }
-
       const hasExactMatch = localResults.some(
         (show) => show.name.toLowerCase() === searchPhrase.toLowerCase(),
       );
