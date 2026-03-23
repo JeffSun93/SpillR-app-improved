@@ -39,13 +39,17 @@ export default function CommentCard(props) {
     reactions_total,
     reactionType_total,
     repliesTotal,
-    isReaction,
-    isReply,
+    isReaction: rawIsReaction,
+    isReply: rawIsReply,
     replies_total,
     is_spoiler: isSpoiler,
     avatar_url,
     username: authorUsername,
   } = comment;
+
+  const isReaction = rawIsReaction ?? type === "reaction";
+  const isReply = rawIsReply ?? type === "reply";
+
   const tv_show_name = comment.tv_show_name || comment.name;
   const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
