@@ -89,9 +89,17 @@ export default function CommentCard(props) {
     }
   };
 
-  const removeComment = (comment_id) => {
+  const removeComment = (item) => {
     if (!setComments) return;
-    setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+
+    setComments((previousList) =>
+      previousList.filter((listItem) => {
+        if (isReply) {
+          return listItem.reply_id !== item.reply_id;
+        }
+        return listItem.comment_id !== item.comment_id;
+      }),
+    );
   };
 
   const handlePressDelete = async (comment) => {
@@ -110,7 +118,7 @@ export default function CommentCard(props) {
         console.error("Delete failed:", err);
       }
     }
-    removeComment(comment.comment_id);
+    removeComment(comment);
     console.log("removeComment called with:", comment.comment_id);
   };
 
