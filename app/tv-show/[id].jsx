@@ -22,7 +22,7 @@ import {
   addSubscriptionAPI,
   deleteSubscriptionAPI,
 } from "../../utils/utilsFunctions";
-
+import LottieView from "lottie-react-native";
 import { UserContext } from "../../context/User";
 
 export default function TvShowPage() {
@@ -91,103 +91,123 @@ export default function TvShowPage() {
     loadData();
   }, [id]);
 
-  if (!show || seasons.length === 0) return <Text>Loading...</Text>;
-
   const description = cleanText(show.description);
 
-  return (
-    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 0 }]}>
-      <Stack.Screen
-        options={{
-          headerTransparent: true,
-          headerTitle: "",
-          headerTintColor: "#FFFFFF",
-          headerStyle: {
-            backgroundColor: "transparent",
+  if (loading) {
+    return (
+      <View
+        style={[
+          globalStyles.container,
+          {
+            flex: 1,
+            paddingHorizontal: 0,
+            justifyContent: "center",
+            alignItems: "center",
           },
-          headerShadowVisible: false,
-        }}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="never"
-        automaticallyAdjustContentInsets={false}
-        contentContainerStyle={{ paddingTop: 0, paddingBottom: 100 }}
-        showsVerticalScrollIndicator={false}
+        ]}
       >
-        <View style={globalStyles.container}>
-          <View style={styles.imageContainer}>
-            {seasons.length > 0 && (
-              <Image
-                source={{
-                  uri: seasons[0].season_img_url
-                    ? seasons[0].season_img_url
-                    : seasons[seasons.length - 3]?.season_img_url
-                      ? seasons[seasons.length - 3].season_img_url
-                      : show.tv_show_img_url
-                        ? show.tv_show_img_url
-                        : null,
-                }}
-                style={styles.image}
-              />
-            )}
+        <LottieView
+          source={require("../../assets/coloured-loader-lottie.json")}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150, color: "#E600FF" }}
+        />
+      </View>
+    );
+  } else {
+    return (
+      <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 0 }]}>
+        <Stack.Screen
+          options={{
+            headerTransparent: true,
+            headerTitle: "",
+            headerTintColor: "#FFFFFF",
+            headerStyle: {
+              backgroundColor: "transparent",
+            },
+            headerShadowVisible: false,
+          }}
+        />
+        <ScrollView
+          contentInsetAdjustmentBehavior="never"
+          automaticallyAdjustContentInsets={false}
+          contentContainerStyle={{ paddingTop: 0, paddingBottom: 100 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={globalStyles.container}>
+            <View style={styles.imageContainer}>
+              {seasons.length > 0 && (
+                <Image
+                  source={{
+                    uri: seasons[0].season_img_url
+                      ? seasons[0].season_img_url
+                      : seasons[seasons.length - 3]?.season_img_url
+                        ? seasons[seasons.length - 3].season_img_url
+                        : show.tv_show_img_url
+                          ? show.tv_show_img_url
+                          : null,
+                  }}
+                  style={styles.image}
+                />
+              )}
 
-            <LinearGradient
-              colors={[
-                "rgba(16,16,16,0)",
-                "rgba(16,16,16,0.6)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0, 0.5, 1]}
-              style={styles.overlay}
-            >
-              <Text style={styles.title}>{show.name}</Text>
-              <Text
-                style={styles.description}
-                numberOfLines={expanded ? undefined : 3}
+              <LinearGradient
+                colors={[
+                  "rgba(16,16,16,0)",
+                  "rgba(16,16,16,0.6)",
+                  "rgba(16,16,16,1)",
+                ]}
+                locations={[0, 0.5, 1]}
+                style={styles.overlay}
               >
-                {description}
-              </Text>
+                <Text style={styles.title}>{show.name}</Text>
+                <Text
+                  style={styles.description}
+                  numberOfLines={expanded ? undefined : 3}
+                >
+                  {description}
+                </Text>
 
-              <Text
-                style={styles.readMore}
-                onPress={() => setExpanded(!expanded)}
-              >
-                {expanded ? "Read less" : "Read more"}
-              </Text>
-            </LinearGradient>
-          </View>
-          <TouchableOpacity
-            style={[
-              styles.editButton,
-              {
-                borderColor: isSubscribed ? "#E500FF" : "#d8d7d7",
-                backgroundColor: isSubscribed
-                  ? "rgba(229,0,255,0.15)"
-                  : "rgba(0,0,0,0.4)",
-              },
-            ]}
-            onPress={handleSubscribe}
-          >
-            <Text
+                <Text
+                  style={styles.readMore}
+                  onPress={() => setExpanded(!expanded)}
+                >
+                  {expanded ? "Read less" : "Read more"}
+                </Text>
+              </LinearGradient>
+            </View>
+            <TouchableOpacity
               style={[
-                styles.buttonText,
-                { color: isSubscribed ? "#E500FF" : "#d8d7d7" },
+                styles.editButton,
+                {
+                  borderColor: isSubscribed ? "#E500FF" : "#d8d7d7",
+                  backgroundColor: isSubscribed
+                    ? "rgba(229,0,255,0.15)"
+                    : "rgba(0,0,0,0.4)",
+                },
               ]}
+              onPress={handleSubscribe}
             >
-              {isSubscribed ? "Subscribed" : "Subscribe"}
-            </Text>
-          </TouchableOpacity>
-          <Dropdown
-            name={show.name}
-            seasons={seasons}
-            tv_show_img_url={show.tv_show_img_url}
-          />
-        </View>
-      </ScrollView>
-    </View>
-  );
+              <Text
+                style={[
+                  styles.buttonText,
+                  { color: isSubscribed ? "#E500FF" : "#d8d7d7" },
+                ]}
+              >
+                {isSubscribed ? "Subscribed" : "Subscribe"}
+              </Text>
+            </TouchableOpacity>
+            <Dropdown
+              name={show.name}
+              seasons={seasons}
+              tv_show_img_url={show.tv_show_img_url}
+            />
+          </View>
+        </ScrollView>
+      </View>
+    );
+  }
 }
-
 const styles = StyleSheet.create({
   editButton: {
     alignSelf: "flex-end",
