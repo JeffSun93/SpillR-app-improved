@@ -29,8 +29,9 @@ export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
   const { loggedInUser } = useContext(UserContext);
   const { user_id } = loggedInUser;
-  const [episode, setEpisode] = useState(null);
+  const [episode, setEpisode] = useState("");
   const [episodeRuntime, setEpisodeRuntime] = useState(60);
+  const [loading, setLoading] = useState(false);
   const [isScrubbing, setIsScrubbing] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [expanded, setExpanded] = useState(false);
@@ -67,12 +68,16 @@ export default function LiveChatPage() {
 
   useEffect(() => {
     async function loadEpisode() {
+      setLoading(true);
       try {
         const data = await getEpisodeById(id);
         setEpisode(data);
+        console.log(data);
         setEpisodeRuntime(data.runtime_total ?? 60);
       } catch (error) {
         console.log("failed to load episode:", error);
+      } finally {
+        setLoading(false);
       }
     }
     loadEpisode();
@@ -89,12 +94,27 @@ export default function LiveChatPage() {
     };
   }, [id, user_id]);
 
-  if (!episode) return <Text>Loading...</Text>;
-
   const isUpcoming =
     episode.release_date &&
     new Date(`${episode.release_date}T${episode.release_time ?? "00:00:00"}`) >
       new Date();
+
+  if (loading) {
+    return (
+      <View
+        style={[
+          globalStyles.container,
+          {
+            flex: 1,
+            paddingHorizontal: 0,
+            justifyContent: "center",
+            alignItems: "center",
+          },
+        ]}
+      ></View>
+    );
+  }
+
   if (isUpcoming) {
     const formattedAirtime = new Date(
       `${episode.release_date}T${episode.release_time ?? "00:00:00"}`,

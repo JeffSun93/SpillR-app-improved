@@ -10,6 +10,7 @@ import {
 } from "../../utils/utilsFunctions";
 
 import NotificationCard from "./NotificationCard.jsx";
+import LottieView from "lottie-react-native";
 
 export default function NotificationsList() {
   const { loggedInUser } = useContext(UserContext);
@@ -34,6 +35,7 @@ export default function NotificationsList() {
       getNotifications();
     }, [loggedInUser.user_id]),
   );
+
   const handleAccept = async (user_id_1) => {
     try {
       console.log(user_id_1, loggedInUser.user_id);
@@ -60,7 +62,19 @@ export default function NotificationsList() {
   return (
     <ScrollView style={styles.notifications}>
       {!friendRequests ? (
-        <Text style={styles.emptyText}>no friend requests yet...</Text>
+        <View style={styles.loadingContainer}>
+          <LottieView
+            source={require("../../assets/coloured-loader-lottie.json")}
+            autoPlay
+            loop
+            style={{
+              width: 150,
+              height: 150,
+              color: "#E600FF",
+              marginTop: "50%",
+            }}
+          />
+        </View>
       ) : (
         friendRequests.map((request) => (
           <NotificationCard
@@ -74,7 +88,19 @@ export default function NotificationsList() {
         ))
       )}
       {!notifications || notifications.length === 0 ? (
-        <Text style={styles.emptyText}>no notifications yet...</Text>
+        <View style={styles.loadingContainer}>
+          <LottieView
+            source={require("../../assets/coloured-loader-lottie.json")}
+            autoPlay
+            loop
+            style={{
+              width: 150,
+              height: 150,
+              color: "#E600FF",
+              marginTop: "50%",
+            }}
+          />
+        </View>
       ) : (
         notifications.map((notification) => (
           <NotificationCard
@@ -99,6 +125,10 @@ export default function NotificationsList() {
 }
 
 const styles = StyleSheet.create({
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   emptyText: {
     color: "#ffffff",
     padding: 16,
