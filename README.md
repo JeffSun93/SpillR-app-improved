@@ -137,16 +137,17 @@ The app connects to `https://spillr-be-improved.onrender.com` via WebSocket. All
 
 ### Events emitted (Client → Server)
 
-| Event            | Purpose                      |
-| ---------------- | ---------------------------- |
-| `room:join`      | Enter an episode's live room |
-| `room:leave`     | Leave the episode room       |
-| `comment:post`   | Post a new comment           |
-| `comment:delete` | Delete a comment             |
-| `reaction:add`   | Add an emoji reaction        |
-| `reply:post`     | Post a reply                 |
-| `poll:create`    | Create a poll                |
-| `poll:vote`      | Vote on a poll option        |
+| Event            | Purpose                                           |
+| ---------------- | ------------------------------------------------- |
+| `user:login`     | Claim a user session (single session per account) |
+| `room:join`      | Enter an episode's live room                      |
+| `room:leave`     | Leave the episode room                            |
+| `comment:post`   | Post a new comment                                |
+| `comment:delete` | Delete a comment                                  |
+| `reaction:add`   | Add an emoji reaction                             |
+| `reply:post`     | Post a reply                                      |
+| `poll:create`    | Create a poll                                     |
+| `poll:vote`      | Vote on a poll option                             |
 
 ### Events received (Server → Client)
 

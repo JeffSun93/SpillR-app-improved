@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import FriendsAreWatchingCard from "./FriendsAreWatchingCard";
 import { globalStyles } from "../../styles/globalStyles";
@@ -125,25 +125,36 @@ export default function FriendsAreWatching() {
     }, []),
   );
 
+  const activeRooms = roomStatus.filter((room) => room.userWatching > 0);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.description}>Everyone is talking about ...</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={globalStyles.horizontalList}
-      >
-        {roomStatus.map((room) => {
-          return (
+      <Text style={styles.description}>
+        {activeRooms.length > 0 ? "Everyone is talking about ..." : "Live now"}
+      </Text>
+      {activeRooms.length > 0 ? (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={globalStyles.horizontalList}
+        >
+          {activeRooms.map((room) => (
             <FriendsAreWatchingCard
               key={room.episodeId}
               episodeId={room.episodeId}
               friendsWatching={room.friendsWatching}
               userWatching={room.userWatching}
             />
-          );
-        })}
-      </ScrollView>
+          ))}
+        </ScrollView>
+      ) : (
+        <View style={styles.empty}>
+          <Text style={styles.emptyEmoji}>🍿</Text>
+          <Text style={styles.emptyText}>
+            Crickets... nobody's watching yet!{"\n"}Jump in and start the party 🎉
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -158,5 +169,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: "100%",
     paddingHorizontal: 10,
+  },
+  empty: {
+    alignItems: "center",
+    paddingVertical: 24,
+    gap: 8,
+  },
+  emptyEmoji: {
+    fontSize: 52,
+  },
+  emptyText: {
+    color: "#B3B3B3",
+    fontSize: 15,
+    fontWeight: "500",
+    textAlign: "center",
+    lineHeight: 24,
   },
 });

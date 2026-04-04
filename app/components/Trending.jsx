@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, FlatList, StyleSheet } from "react-native";
+import { ScrollView, View, Text, FlatList, StyleSheet, Platform } from "react-native";
 import TrendingCard from "./TrendingCard";
 import { globalStyles } from "../../styles/globalStyles.jsx";
 import { useState, useCallback } from "react";
@@ -28,6 +28,7 @@ export default function Trending({ horizontal = true }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={globalStyles.horizontalList}
+        style={Platform.OS === "web" ? { maxHeight: 240 } : undefined}
       >
         {trendingTvShows?.length > 0 &&
           trendingTvShows.map((show) => (

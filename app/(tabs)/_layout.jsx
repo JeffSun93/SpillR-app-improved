@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, Redirect } from "expo-router";
 import { Image } from "react-native";
 import { useContext } from "react";
 import { UserContext } from "../../context/User.jsx";
@@ -9,6 +9,9 @@ import notificationIcon from "../../assets/notification-status.png";
 
 export default function TabsLayout() {
   const { loggedInUser } = useContext(UserContext);
+
+  if (!loggedInUser) return <Redirect href="/login" />;
+
   return (
     <Tabs
       screenOptions={{

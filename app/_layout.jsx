@@ -1,12 +1,12 @@
-import { Stack } from "expo-router";
-import { UserProvider } from "../context/User";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { UserProvider, UserContext } from "../context/User";
 import {
   useFonts,
   Inter_400Regular,
   Inter_500Medium,
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import FloatingParticleProvider from "../context/FloatingParticle";
 import socket from "../socket/connection.js";
 
@@ -19,16 +19,36 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-export default function RootLayout() {
+function SocketInit() {
   useEffect(() => {
     socket.connect();
-    console.log(`socket connected!!!!`);
+    console.log("socket connected!!!!");
+
     return () => {
       socket.disconnect();
-      console.log("socket deregietered!!!!");
+      console.log("socket deregistered!!!!");
     };
   }, []);
 
+  return null;
+}
+
+function AuthGuard() {
+  const { loggedInUser } = useContext(UserContext);
+  const router = useRouter();
+  const segments = useSegments();
+
+  useEffect(() => {
+    const inLoginPage = segments[0] === "login";
+    if (!loggedInUser && !inLoginPage) {
+      router.replace("/login");
+    }
+  }, [loggedInUser, segments]);
+
+  return null;
+}
+
+export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,
@@ -50,6 +70,8 @@ export default function RootLayout() {
   return (
     <FloatingParticleProvider>
       <UserProvider>
+        <SocketInit />
+        <AuthGuard />
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
