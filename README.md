@@ -1,23 +1,25 @@
 # SpillR — Frontend
 
-![Demo](https://github.com/user-attachments/assets/54c711aa-d961-448b-a67c-9b01bd51015c)
+<video src="https://github.com/user-attachments/assets/54c711aa-d961-448b-a67c-9b01bd51015c" controls width="100%"></video>
 
 > **Group project — 6 members** | React Native · Expo · Socket.io · Supabase
 
 A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
 
+> This frontend is designed to be used alongside the [Spillr backend](https://github.com/JeffSun93/spillr-BE-improved). API documentation is available at [spillr-be-improved.onrender.com](https://spillr-be-improved.onrender.com).
+
 ---
 
 ## Tech Stack
 
-| Layer        | Technology                                                                      |
-| ------------ | ------------------------------------------------------------------------------- |
-| Mobile / Web | React Native + Expo (~54), Expo Router                                          |
-| Real-time    | Socket.io Client (WebSocket)                                                    |
-| Database     | Supabase (PostgreSQL via `@supabase/supabase-js`)                               |
-| HTTP         | Axios                                                                           |
-| Animations   | Lottie React Native                                                             |
-| Backend API  | Node.js + Express + Socket.io ([repo](https://spillr-be-improved.onrender.com)) |
+| Layer        | Technology                                       |
+| ------------ | ------------------------------------------------ |
+| Mobile / Web | React Native + Expo (~54), Expo Router           |
+| Real-time    | Socket.io Client (WebSocket)                     |
+| Database     | Supabase (PostgreSQL via `@supabase/supabase-js`) |
+| HTTP         | Axios                                            |
+| Animations   | Lottie React Native                              |
+| Backend API  | Node.js + Express + Socket.io                    |
 
 ---
 
