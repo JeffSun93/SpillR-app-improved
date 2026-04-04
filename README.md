@@ -1,20 +1,91 @@
 # SpillR — Frontend
 
-A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
+![Demo](https://github.com/user-attachments/assets/54c711aa-d961-448b-a67c-9b01bd51015c)
 
-Built with React Native (Expo) and Socket.io.
+> **Group project — 6 members** | React Native · Expo · Socket.io · Supabase
+
+A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
 
 ---
 
 ## Tech Stack
 
-- **React Native** + **Expo** (~54) — cross-platform mobile app
-- **Expo Router** — file-based navigation (tabs + stacks)
-- **Socket.io Client** — real-time comments, reactions, polls, and friend presence
-- **Supabase** (`@supabase/supabase-js`) — direct database queries
-- **Axios** — REST API calls to the backend
-- **Lottie** — animations
-- **Expo Linear Gradient** — image overlays
+| Layer        | Technology                                                                      |
+| ------------ | ------------------------------------------------------------------------------- |
+| Mobile / Web | React Native + Expo (~54), Expo Router                                          |
+| Real-time    | Socket.io Client (WebSocket)                                                    |
+| Database     | Supabase (PostgreSQL via `@supabase/supabase-js`)                               |
+| HTTP         | Axios                                                                           |
+| Animations   | Lottie React Native                                                             |
+| Backend API  | Node.js + Express + Socket.io ([repo](https://spillr-be-improved.onrender.com)) |
+
+---
+
+## My Contributions
+
+### 1. Friends Are Watching — Live Presence (full-stack)
+
+Designed and implemented the real-time "who's watching" feature — the most technically complex part of the project due to its layered Socket.io architecture.
+
+**Backend design:**
+
+- Two in-memory Maps: `userEpisodeMap` (`userId → episodeId`) and `episodeUserMap` (`episodeId → Set<userId>`) track all active viewers in real time
+- On `room:join`: user is added to both maps; `friend:join` is emitted to sockets in the `watch:<userId>` room; `room:userIn` is broadcast globally
+- On `room:leave` / socket `disconnect`: maps are cleaned up atomically; `friend:leave` and `room:userOut` are emitted to trigger UI updates on all clients
+- `room:load` event: client sends their friend list on mount; server returns friend statuses (`friendsList:status`) and per-episode viewer counts (`roomList:status`) in one round-trip
+
+**Frontend design:**
+
+- `FriendsAreWatching` component fetches the logged-in user's friend list, emits `room:load`, and maintains local `roomStatus` state
+- Listens to 5 socket events (`roomList:status`, `room:userIn`, `room:userOut`, `friend:join`, `friend:leave`) to keep counts in sync without polling
+- Renders a horizontally scrollable list of `FriendsAreWatchingCard` — each card shows the episode, friend count, and total viewer count, linking to the live chat
+
+### 2. TV Show Data Sync Script (backend)
+
+Built the `syncShowData` script that populates the database with real TV show data from two external APIs.
+
+**The pipeline:**
+
+1. **TVmaze (primary source)** — fetches show metadata, season list, and all episodes per season with rate-limiting (`sleep(50ms)` between requests to avoid hitting API limits)
+2. **TVDB (enrichment layer)** — independently looks up the same show on TVDB v4, fetches season images and episode details; TVDB failures are non-fatal and the script continues with TVmaze data only
+3. **Merge logic** — season images fall back in priority order: TVmaze → TVDB → show poster; episode synopses and images are merged similarly, with TVDB filling gaps; non-ASCII whitespace in TVDB text is normalised
+4. **Output** — cleaned data is serialised as JS module files (`tv-shows.js`, `seasons.js`, `episodes.js`) ready for seeding; a timestamped log records which shows succeeded or failed
+
+The key challenge was handling two APIs with different schemas, partial data, independent failure modes, and rate limits — while ensuring the output is always consistent and seedable.
+
+### 3. Backend MVC Structure & Routes
+
+Set up the initial MVC file structure for the backend (routes / controllers / services / models) and wrote a portion of the Express route handlers, establishing the pattern used across the project.
+
+### 4. Trending TV Shows (full-stack)
+
+Built the trending shows feature end-to-end. Backend: `GET /api/tv-shows?sort_by=comments&order=desc` endpoint sorted by comment activity. Frontend: `Trending` component and `TrendingCard` — a horizontally scrollable carousel that fetches and displays the most-discussed shows.
+
+### 5. Comments System (frontend, partial)
+
+Contributed to parts of the frontend comment system, including some of the `CommentCard` UI work.
+
+---
+
+## My Improvements (post-fork)
+
+After forking the original project, the following improvements were made across both the frontend and backend:
+
+### Single Session Locking
+
+Implemented a socket-based single session system to prevent the same account from being used in multiple browser tabs simultaneously. When a user selects an account, a `user:login` event is emitted; the server checks an in-memory `activeUserSocketMap` and either grants the session (`login:success`) or rejects it (`login:rejected`). The lock is automatically released on socket disconnect. On the frontend, rejected accounts show an inline "in use" indicator alongside a native alert.
+
+### Auth Guard & Login-first Flow
+
+Changed the app's entry flow so that account selection is always required on launch — no default user is pre-loaded. An `AuthGuard` component redirects to `/login` whenever `loggedInUser` is null, and the tab layout uses Expo Router's `<Redirect>` to prevent any screen from rendering before a user is selected, eliminating null-user crashes.
+
+### Backend Deployment (Docker + Render)
+
+Independently set up and deployed the backend to Render using Docker. Wrote the `Dockerfile` (Node 22 Alpine, production-only dependencies via `npm ci --omit=dev`) and `.dockerignore`, and configured the Render service to build and deploy from the Docker image automatically on every push to `main`.
+
+### API Documentation Page
+
+Built a comprehensive dark-themed static HTML API documentation page (`/public/docs.html`) covering all REST endpoints, Socket.io events, and database schema. Configured Express to serve it as the default route (`/`) instead of the Socket.io test page.
 
 ---
 
