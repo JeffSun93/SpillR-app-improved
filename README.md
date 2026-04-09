@@ -2,7 +2,7 @@
 
 <video src="https://github.com/user-attachments/assets/54c711aa-d961-448b-a67c-9b01bd51015c" controls width="100%"></video>
 
-> **Group project — 6 members** | React Native · Expo · Socket.io · Supabase
+> **Group project — 6 members** | React Native · Expo · Socket.io · REST API
 
 A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
 
@@ -16,10 +16,9 @@ A real-time TV show social platform. Watch episodes together, post comments tied
 | ------------ | ------------------------------------------------ |
 | Mobile / Web | React Native + Expo (~54), Expo Router           |
 | Real-time    | Socket.io Client (WebSocket)                     |
-| Database     | Supabase (PostgreSQL via `@supabase/supabase-js`) |
 | HTTP         | Axios                                            |
 | Animations   | Lottie React Native                              |
-| Backend API  | Node.js + Express + Socket.io                    |
+| Backend API  | Node.js + Express + PostgreSQL + Socket.io       |
 
 ---
 
@@ -81,6 +80,18 @@ Implemented a socket-based single session system to prevent the same account fro
 
 Changed the app's entry flow so that account selection is always required on launch — no default user is pre-loaded. An `AuthGuard` component redirects to `/login` whenever `loggedInUser` is null, and the tab layout uses Expo Router's `<Redirect>` to prevent any screen from rendering before a user is selected, eliminating null-user crashes.
 
+### Remove Supabase — Migrate All Data Fetching to REST API
+
+Removed all direct Supabase client calls from `utilsFunctions.js` and replaced them with REST API calls via Axios. Added 11 new backend endpoints to support the migration:
+
+- `GET /api/tv-shows/search`, `/api/tv-shows/name/:name`, `/api/tv-shows/:id`, `/api/tv-shows/:id/seasons`
+- `GET /api/seasons/:id`
+- `DELETE /api/comments/:id`, `DELETE /api/comments/replies/:id`
+- `GET /api/profiles/search`
+- `POST /api/profiles/friends`, `PATCH /api/profiles/friends`, `DELETE /api/profiles/friends`
+
+The frontend no longer has any direct database dependency — all data flows through the backend REST API. The Supabase client (`lib/supabaseClient.js`) is now unused.
+
 ### Backend Deployment (Docker + Render)
 
 Independently set up and deployed the backend to Render using Docker. Wrote the `Dockerfile` (Node 22 Alpine, production-only dependencies via `npm ci --omit=dev`) and `.dockerignore`, and configured the Render service to build and deploy from the Docker image automatically on every push to `main`.
@@ -117,8 +128,7 @@ npm install
 Create a `.env` file in the project root:
 
 ```env
-EXPO_PUBLIC_SUPABASE_URL=https://rhzhgfuzjusctjyfniwk.supabase.co
-EXPO_PUBLIC_SUPABASE_KEY=<your_supabase_anon_key>
+EXPO_PUBLIC_API_URL=https://spillr-be-improved.onrender.com
 ```
 
 > Variables must be prefixed with `EXPO_PUBLIC_` to be accessible in Expo.
@@ -172,11 +182,11 @@ Scan the QR code in the terminal with the Expo Go app, or press `a` (Android), `
 ├── socket/
 │   └── connection.js            # Socket.io client instance
 ├── lib/
-│   └── supabaseClient.js        # Supabase client initialisation
+│   └── supabaseClient.js        # Supabase client (unused — kept for reference)
 ├── utils/
 │   ├── constants.js             # API base URL
-│   ├── utilsFunctions.js        # Supabase queries
-│   ├── utilsFunctionsByApi.js   # REST API calls (Axios)
+│   ├── utilsFunctions.js        # Data-fetching helpers (REST API via Axios)
+│   ├── utilsFunctionsByApi.js   # Additional REST API calls (Axios)
 │   ├── CleanTime.js             # Relative time formatting
 │   ├── cleanText.js             # HTML tag stripper
 │   └── emojiLookupObject.js     # Emoji reaction map
@@ -250,14 +260,13 @@ Comments in the live chat are tied to `runtime_seconds` — the point in the epi
 
 ### Search strategy
 
-1. Searches local Supabase database first
-2. Falls back to external TVmaze API if no match
-3. Saves new results to the local database
+1. Searches local database via `GET /api/tv-shows/search`
+2. Falls back to external TVmaze API via `POST /api/tv-shows` if no match
+3. New results are saved to the database by the backend
 
 ### API access
 
-- **Supabase** (direct): shows, episodes, seasons, subscriptions, user/friend data
-- **REST API** (Axios): comments, replies, notifications, trending shows
+All data fetching goes through the backend REST API via Axios — there is no longer any direct database dependency in the frontend.
 
 ---
 
