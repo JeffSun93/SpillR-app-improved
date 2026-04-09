@@ -1,129 +1,63 @@
-import { supabase } from "../lib/supabaseClient.js";
 import axios from "axios";
 import { url } from "./constants.js";
 
 const urlApi = url + "/api";
 
 export async function getTvShowByName(name) {
-  let { data, error } = await supabase // get tv show by name
-    .from("tv_shows")
-    .select("*")
-    .ilike("name", name)
-    .limit(1)
-    .single();
-
-  if (error) {
-    throw error;
-  }
-  return data;
+  const { data } = await axios.get(`${urlApi}/tv-shows/name/${encodeURIComponent(name)}`);
+  return data.show;
 }
 
 export async function deleteComment(commentId) {
-  const { error } = await supabase
-    .from("comments")
-    .delete()
-    .eq("comment_id", commentId);
-
-  if (error) throw error;
+  await axios.delete(`${urlApi}/comments/${commentId}`);
 }
 
 export async function deleteReply(replyId) {
-  const { error } = await supabase
-    .from("replies")
-    .delete()
-    .eq("reply_id", replyId);
-
-  if (error) throw error;
+  await axios.delete(`${urlApi}/comments/replies/${replyId}`);
 }
 
 export async function getTvShowById(id) {
-  let { data, error } = await supabase // get tv show by id
-    .from("tv_shows")
-    .select("*")
-    .eq("tv_show_id", Number(id))
-    .maybeSingle();
-  console.log("Searching for show id:", id);
-
-  if (error) {
-    throw error;
-  }
-  return data;
+  const { data } = await axios.get(`${urlApi}/tv-shows/${id}`);
+  return data.show;
 }
 
 export async function getSeasonsByShowId(showId) {
-  let { data, error } = await supabase
-    .from("seasons")
-    .select("*")
-    .eq("tv_show_id", showId)
-    .order("season_number", { ascending: true });
-
-  if (error) {
-    throw error;
-  }
-  return data;
+  const { data } = await axios.get(`${urlApi}/tv-shows/${showId}/seasons`);
+  return data.seasons;
 }
 
 export async function getSeasonByID(seasonId) {
-  let { data, error } = await supabase
-    .from("seasons")
-    .select("*")
-    .eq("season_id", seasonId)
-    .single();
-
-  if (error) {
-    throw error;
-  }
-  return data;
+  const { data } = await axios.get(`${urlApi}/seasons/${seasonId}`);
+  return data.season;
 }
 
 export async function addSubscriptionAPI(user_id, tv_show_id) {
-  const { data } = await axios.post(
-    `https://spillr-be.onrender.com/api/subscriptions`,
-    {
-      user_id,
-      tv_show_id,
-    },
-  );
+  const { data } = await axios.post(`${urlApi}/subscriptions`, {
+    user_id,
+    tv_show_id,
+  });
   return data;
 }
 
 export async function deleteSubscriptionAPI(user_id, tv_show_id) {
-  const { data } = await axios.delete(
-    `https://spillr-be.onrender.com/api/subscriptions`,
-    {
-      data: { user_id, tv_show_id },
-    },
-  );
+  const { data } = await axios.delete(`${urlApi}/subscriptions`, {
+    data: { user_id, tv_show_id },
+  });
   return data;
 }
 
 export async function fetchFriendRequests(user_id) {
   try {
-    const response = await axios.get(
-      `https://spillr-be.onrender.com/api/profiles/${user_id}/requests`,
-    );
-    return response.data.requests;
+    const { data } = await axios.get(`${urlApi}/profiles/${user_id}/requests`);
+    return data.requests;
   } catch (err) {
     console.log(err);
   }
 }
 
-export async function deleteSubscriptionSupa(user_id, tv_show_id) {
-  const { data, error } = await supabase
-    .from("subscriptions")
-    .delete()
-    .eq("user_id", user_id)
-    .eq("tv_show_id", tv_show_id)
-    .select();
-
-  if (error) throw error;
-  return data;
-}
 export async function getEpisodesBySeasonId(seasonId) {
-  const response = await axios.get(
-    `https://spillr-be.onrender.com/api/seasons/${seasonId}/episodes`,
-  );
-  return response.data.episodes;
+  const { data } = await axios.get(`${urlApi}/seasons/${seasonId}/episodes`);
+  return data.episodes;
 }
 
 export async function getSeasonsAndEpisodesByShowName(showName) {
@@ -164,15 +98,8 @@ export async function getSeasonsAndEpisodesByShowId(showId) {
 }
 
 export async function getEpisodeById(id) {
-  let { data, error } = await supabase
-    .from("episodes")
-    .select("*")
-    .eq("episode_id", id)
-    .single();
-  if (error) {
-    throw error;
-  }
-  return data;
+  const { data } = await axios.get(`${urlApi}/episodes/${id}`);
+  return data.episode;
 }
 
 export async function retryRequest(func) {
@@ -191,77 +118,26 @@ export async function retryRequest(func) {
 }
 
 export async function addFriendRequestAPI(user_id_1, user_id_2) {
-  const { data, error } = await supabase
-    .from("friends")
-    .insert({ user_id_1, user_id_2, is_accepted: false })
-    .select()
-    .single();
-
-  if (error) throw error;
-  return data;
+  const { data } = await axios.post(`${urlApi}/profiles/friends`, {
+    user_id_1,
+    user_id_2,
+  });
+  return data.friend;
 }
 
 export async function removeFriendAPI(user_id_1, user_id_2) {
-  const { error } = await supabase
-    .from("friends")
-    .delete()
-    .or(
-      `and(user_id_1.eq.${user_id_1},user_id_2.eq.${user_id_2}),and(user_id_1.eq.${user_id_2},user_id_2.eq.${user_id_1})`,
-    );
-
-  if (error) throw error;
+  await axios.delete(`${urlApi}/profiles/friends`, {
+    data: { user_id_1, user_id_2 },
+  });
 }
 
 export async function acceptFriendAPI(user_id_1, user_id_2) {
-  const { data, error } = await supabase
-    .from("friends")
-    .update({ is_accepted: true })
-    .match({ user_id_1, user_id_2 })
-    .select()
-    .single();
-  if (error) throw error;
-  return data;
+  const { data } = await axios.patch(`${urlApi}/profiles/friends`, {
+    user_id_1,
+    user_id_2,
+  });
+  return data.friend;
 }
-
-// export async function searchTvShowsByName(name) {
-//   try {
-//     const { data: localData, error: localError } = await supabase
-//       .from("tv_shows")
-//       .select("*")
-//       .ilike("name", `%${name}%`)
-//       .limit(20);
-
-//     if (localError) {
-//       throw localError;
-//     }
-//     if (localData && localData.length > 0) return localData;
-
-//     const externalResponse = await fetch(
-//       "https://spillr-be.onrender.com/api/tv-shows",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ show_name: name }),
-//       },
-//     );
-
-//     if (!externalResponse.ok) {
-//       console.error("External API error:", externalResponse.statusText);
-//       return "not found";
-//     }
-
-//     const externalData = await externalResponse.json();
-
-//     if (externalData && externalData.length > 0) return externalData;
-
-//     return "not found";
-//   } catch (error) {
-//     console.error("Search failed:", error);
-//     return "not found";
-//   }
-// }
 
 export async function getFeedComments(user_id, offset) {
   try {
@@ -288,15 +164,10 @@ export async function getNotificationsForThisUser(user_id) {
 
 export async function searchLocalTvShows(name) {
   try {
-    const { data, error } = await supabase
-      .from("tv_shows")
-      .select("*")
-      .ilike("name", `%${name}%`)
-      .limit(20);
-
-    if (error) throw error;
-
-    return data || [];
+    const { data } = await axios.get(`${urlApi}/tv-shows/search`, {
+      params: { q: name },
+    });
+    return data.shows || [];
   } catch (error) {
     console.error("Local search failed:", error);
     return [];
@@ -328,29 +199,14 @@ export async function searchExternalTvShows(name) {
 
 export async function searchLocalUsers(query) {
   try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("user_id, name, username, avatar_url")
-      .or(`username.ilike.%${query}%,name.ilike.%${query}%`)
-      .limit(20);
-
-    if (error) throw error;
-    return data || [];
+    const { data } = await axios.get(`${urlApi}/profiles/search`, {
+      params: { q: query },
+    });
+    return data.users || [];
   } catch (error) {
     console.error("User search failed:", error);
     return [];
   }
-}
-
-export async function getUserById(userId) {
-  let { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
-
-  if (error) throw error;
-  return data;
 }
 
 export async function getUserByIdAPI(user_id) {
