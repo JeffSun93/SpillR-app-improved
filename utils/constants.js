@@ -1,1 +1,1 @@
-export const url = "https://spillr-be-improved.onrender.com";
+export const url = process.env.EXPO_PUBLIC_API_URL || "https://spillr-be-improved.onrender.com";

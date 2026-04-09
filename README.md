@@ -131,7 +131,13 @@ Create a `.env` file in the project root:
 EXPO_PUBLIC_API_URL=https://spillr-be-improved.onrender.com
 ```
 
-> Variables must be prefixed with `EXPO_PUBLIC_` to be accessible in Expo.
+If you are running the backend locally, point it to your local server instead:
+
+```env
+EXPO_PUBLIC_API_URL=http://localhost:9090
+```
+
+> Variables must be prefixed with `EXPO_PUBLIC_` to be accessible in Expo. If `EXPO_PUBLIC_API_URL` is not set, the app falls back to the production URL.
 
 ### 4. Start the development server
 
