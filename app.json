@@ -21,21 +21,24 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#E6F4FE"
+      },
+      "package": "com.ss21.SpillRapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-font"
+    ],
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "4d39f966-f690-47df-9e8b-00f062a21a8b"
+        "projectId": "e373913c-1125-466f-a6b9-989643f8f2d2"
       }
-    }
+    },
+    "owner": "jeffsun93"
   }
 }
