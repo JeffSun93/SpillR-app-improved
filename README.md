@@ -4,6 +4,8 @@
 
 > **Group project — 6 members** | React Native · Expo · Socket.io · REST API
 
+**[Try the app in your browser (no install required)](https://appetize.io/app/b_ltq655xwyjronhukr6umgyowvm)**
+
 A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
 
 > This frontend is designed to be used alongside the [Spillr backend](https://github.com/JeffSun93/spillr-BE-improved). API documentation is available at [spillr-be-improved.onrender.com](https://spillr-be-improved.onrender.com).
