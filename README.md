@@ -4,7 +4,7 @@
 
 > **Group project — 6 members** | React Native · Expo · Socket.io · REST API
 
-**[Try the app in your browser (no install required)](https://appetize.io/app/b_ltq655xwyjronhukr6umgyowvm)**
+**[Try live demo](https://spiller.netlify.app)**
 
 A real-time TV show social platform. Watch episodes together, post comments tied to specific moments, react with emojis, create polls, and see what your friends are watching — all in real time.
 
